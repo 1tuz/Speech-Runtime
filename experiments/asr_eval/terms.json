@@ -1,0 +1,3520 @@
+{
+  "version": "terms-v1",
+  "source": "research/wave2/V8-eval-plan.md §2.3",
+  "note": "class=wordform: 'exact_latin' означает точное совпадение русской словоформы; accept_translit для wordform/command/number не заполняется.",
+  "terms": [
+    {
+      "id": "kubernetes",
+      "class": "tools",
+      "accept": [
+        "Kubernetes"
+      ],
+      "accept_translit": [
+        "кубернетес",
+        "кубернетис",
+        "кубер"
+      ]
+    },
+    {
+      "id": "docker",
+      "class": "tools",
+      "accept": [
+        "Docker"
+      ],
+      "accept_translit": [
+        "докер"
+      ]
+    },
+    {
+      "id": "podman",
+      "class": "tools",
+      "accept": [
+        "Podman"
+      ],
+      "accept_translit": [
+        "подман"
+      ]
+    },
+    {
+      "id": "helm",
+      "class": "tools",
+      "accept": [
+        "Helm"
+      ],
+      "accept_translit": [
+        "хелм"
+      ]
+    },
+    {
+      "id": "istio",
+      "class": "tools",
+      "accept": [
+        "Istio"
+      ],
+      "accept_translit": [
+        "истио"
+      ]
+    },
+    {
+      "id": "linkerd",
+      "class": "tools",
+      "accept": [
+        "Linkerd"
+      ],
+      "accept_translit": [
+        "линкерд"
+      ]
+    },
+    {
+      "id": "envoy",
+      "class": "tools",
+      "accept": [
+        "Envoy"
+      ],
+      "accept_translit": [
+        "энвой"
+      ]
+    },
+    {
+      "id": "nginx",
+      "class": "tools",
+      "accept": [
+        "Nginx"
+      ],
+      "accept_translit": [
+        "энджинкс",
+        "нжинкс"
+      ]
+    },
+    {
+      "id": "traefik",
+      "class": "tools",
+      "accept": [
+        "Traefik"
+      ],
+      "accept_translit": [
+        "трафик"
+      ]
+    },
+    {
+      "id": "haproxy",
+      "class": "tools",
+      "accept": [
+        "HAProxy"
+      ],
+      "accept_translit": [
+        "хапрокси"
+      ]
+    },
+    {
+      "id": "postgresql",
+      "class": "tools",
+      "accept": [
+        "PostgreSQL",
+        "Postgres"
+      ],
+      "accept_translit": [
+        "постгрес",
+        "постгресс"
+      ]
+    },
+    {
+      "id": "mysql",
+      "class": "tools",
+      "accept": [
+        "MySQL"
+      ],
+      "accept_translit": [
+        "майэскьюэль",
+        "мускул"
+      ]
+    },
+    {
+      "id": "mariadb",
+      "class": "tools",
+      "accept": [
+        "MariaDB"
+      ],
+      "accept_translit": [
+        "мариадиби"
+      ]
+    },
+    {
+      "id": "mongodb",
+      "class": "tools",
+      "accept": [
+        "MongoDB"
+      ],
+      "accept_translit": [
+        "монгодиби",
+        "монга"
+      ]
+    },
+    {
+      "id": "redis",
+      "class": "tools",
+      "accept": [
+        "Redis"
+      ],
+      "accept_translit": [
+        "редис",
+        "рэйдис"
+      ]
+    },
+    {
+      "id": "memcached",
+      "class": "tools",
+      "accept": [
+        "Memcached"
+      ],
+      "accept_translit": [
+        "мемкешт"
+      ]
+    },
+    {
+      "id": "kafka",
+      "class": "tools",
+      "accept": [
+        "Kafka"
+      ],
+      "accept_translit": [
+        "кафка"
+      ]
+    },
+    {
+      "id": "rabbitmq",
+      "class": "tools",
+      "accept": [
+        "RabbitMQ"
+      ],
+      "accept_translit": [
+        "рэббит"
+      ]
+    },
+    {
+      "id": "clickhouse",
+      "class": "tools",
+      "accept": [
+        "ClickHouse"
+      ],
+      "accept_translit": [
+        "кликхаус"
+      ]
+    },
+    {
+      "id": "cassandra",
+      "class": "tools",
+      "accept": [
+        "Cassandra"
+      ],
+      "accept_translit": [
+        "кассандра"
+      ]
+    },
+    {
+      "id": "elasticsearch",
+      "class": "tools",
+      "accept": [
+        "Elasticsearch"
+      ],
+      "accept_translit": [
+        "эластик",
+        "эластиксерч"
+      ]
+    },
+    {
+      "id": "opensearch",
+      "class": "tools",
+      "accept": [
+        "OpenSearch"
+      ],
+      "accept_translit": [
+        "опенсерч"
+      ]
+    },
+    {
+      "id": "grafana",
+      "class": "tools",
+      "accept": [
+        "Grafana"
+      ],
+      "accept_translit": [
+        "графана"
+      ]
+    },
+    {
+      "id": "prometheus",
+      "class": "tools",
+      "accept": [
+        "Prometheus"
+      ],
+      "accept_translit": [
+        "прометей",
+        "прометеус"
+      ]
+    },
+    {
+      "id": "victoriametrics",
+      "class": "tools",
+      "accept": [
+        "VictoriaMetrics"
+      ],
+      "accept_translit": [
+        "викторияметрикс"
+      ]
+    },
+    {
+      "id": "loki",
+      "class": "tools",
+      "accept": [
+        "Loki"
+      ],
+      "accept_translit": [
+        "локи"
+      ]
+    },
+    {
+      "id": "tempo",
+      "class": "tools",
+      "accept": [
+        "Tempo"
+      ],
+      "accept_translit": [
+        "темпо"
+      ]
+    },
+    {
+      "id": "jaeger",
+      "class": "tools",
+      "accept": [
+        "Jaeger"
+      ],
+      "accept_translit": [
+        "егер",
+        "йегер"
+      ]
+    },
+    {
+      "id": "zipkin",
+      "class": "tools",
+      "accept": [
+        "Zipkin"
+      ],
+      "accept_translit": [
+        "зипкин"
+      ]
+    },
+    {
+      "id": "jenkins",
+      "class": "tools",
+      "accept": [
+        "Jenkins"
+      ],
+      "accept_translit": [
+        "дженкинс"
+      ]
+    },
+    {
+      "id": "gitlab",
+      "class": "tools",
+      "accept": [
+        "GitLab"
+      ],
+      "accept_translit": [
+        "гитлаб"
+      ]
+    },
+    {
+      "id": "github",
+      "class": "tools",
+      "accept": [
+        "GitHub"
+      ],
+      "accept_translit": [
+        "гитхаб"
+      ]
+    },
+    {
+      "id": "ansible",
+      "class": "tools",
+      "accept": [
+        "Ansible"
+      ],
+      "accept_translit": [
+        "ансибл"
+      ]
+    },
+    {
+      "id": "terraform",
+      "class": "tools",
+      "accept": [
+        "Terraform"
+      ],
+      "accept_translit": [
+        "терраформ"
+      ]
+    },
+    {
+      "id": "pulumi",
+      "class": "tools",
+      "accept": [
+        "Pulumi"
+      ],
+      "accept_translit": [
+        "пулуми"
+      ]
+    },
+    {
+      "id": "vault",
+      "class": "tools",
+      "accept": [
+        "Vault"
+      ],
+      "accept_translit": [
+        "волт"
+      ]
+    },
+    {
+      "id": "consul",
+      "class": "tools",
+      "accept": [
+        "Consul"
+      ],
+      "accept_translit": [
+        "консул"
+      ]
+    },
+    {
+      "id": "etcd",
+      "class": "tools",
+      "accept": [
+        "etcd"
+      ],
+      "accept_translit": [
+        "етсиди",
+        "этсиди"
+      ]
+    },
+    {
+      "id": "minio",
+      "class": "tools",
+      "accept": [
+        "MinIO"
+      ],
+      "accept_translit": [
+        "минио"
+      ]
+    },
+    {
+      "id": "ceph",
+      "class": "tools",
+      "accept": [
+        "Ceph"
+      ],
+      "accept_translit": [
+        "цеф",
+        "кеф"
+      ]
+    },
+    {
+      "id": "nfs",
+      "class": "tools",
+      "accept": [
+        "NFS"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "s3",
+      "class": "tools",
+      "accept": [
+        "S3"
+      ],
+      "accept_translit": [
+        "эс три"
+      ]
+    },
+    {
+      "id": "grpc",
+      "class": "tools",
+      "accept": [
+        "gRPC"
+      ],
+      "accept_translit": [
+        "джи ар пи си"
+      ]
+    },
+    {
+      "id": "rest",
+      "class": "tools",
+      "accept": [
+        "REST"
+      ],
+      "accept_translit": [
+        "рест"
+      ]
+    },
+    {
+      "id": "graphql",
+      "class": "tools",
+      "accept": [
+        "GraphQL"
+      ],
+      "accept_translit": [
+        "графкьюэль"
+      ]
+    },
+    {
+      "id": "websocket",
+      "class": "tools",
+      "accept": [
+        "WebSocket"
+      ],
+      "accept_translit": [
+        "вебсокет"
+      ]
+    },
+    {
+      "id": "oauth",
+      "class": "tools",
+      "accept": [
+        "OAuth"
+      ],
+      "accept_translit": [
+        "о аут",
+        "оаут"
+      ]
+    },
+    {
+      "id": "oidc",
+      "class": "tools",
+      "accept": [
+        "OIDC"
+      ],
+      "accept_translit": [
+        "ойдиси"
+      ]
+    },
+    {
+      "id": "jwt",
+      "class": "tools",
+      "accept": [
+        "JWT"
+      ],
+      "accept_translit": [
+        "джот",
+        "джей даблъю ти"
+      ]
+    },
+    {
+      "id": "mtls",
+      "class": "tools",
+      "accept": [
+        "mTLS"
+      ],
+      "accept_translit": [
+        "эм ти эл эс"
+      ]
+    },
+    {
+      "id": "airflow",
+      "class": "tools",
+      "accept": [
+        "Airflow"
+      ],
+      "accept_translit": [
+        "эйрфлоу"
+      ]
+    },
+    {
+      "id": "spark",
+      "class": "tools",
+      "accept": [
+        "Spark"
+      ],
+      "accept_translit": [
+        "спарк"
+      ]
+    },
+    {
+      "id": "flink",
+      "class": "tools",
+      "accept": [
+        "Flink"
+      ],
+      "accept_translit": [
+        "флинк"
+      ]
+    },
+    {
+      "id": "dbt",
+      "class": "tools",
+      "accept": [
+        "dbt"
+      ],
+      "accept_translit": [
+        "дибити"
+      ]
+    },
+    {
+      "id": "superset",
+      "class": "tools",
+      "accept": [
+        "Superset"
+      ],
+      "accept_translit": [
+        "суперсет"
+      ]
+    },
+    {
+      "id": "keycloak",
+      "class": "tools",
+      "accept": [
+        "Keycloak"
+      ],
+      "accept_translit": [
+        "кейклок"
+      ]
+    },
+    {
+      "id": "harbor",
+      "class": "tools",
+      "accept": [
+        "Harbor"
+      ],
+      "accept_translit": [
+        "харбор"
+      ]
+    },
+    {
+      "id": "nexus",
+      "class": "tools",
+      "accept": [
+        "Nexus"
+      ],
+      "accept_translit": [
+        "нексус"
+      ]
+    },
+    {
+      "id": "artifactory",
+      "class": "tools",
+      "accept": [
+        "Artifactory"
+      ],
+      "accept_translit": [
+        "артифактори"
+      ]
+    },
+    {
+      "id": "sonarqube",
+      "class": "tools",
+      "accept": [
+        "SonarQube"
+      ],
+      "accept_translit": [
+        "сонаркуб"
+      ]
+    },
+    {
+      "id": "sentry",
+      "class": "tools",
+      "accept": [
+        "Sentry"
+      ],
+      "accept_translit": [
+        "сентри"
+      ]
+    },
+    {
+      "id": "kibana",
+      "class": "tools",
+      "accept": [
+        "Kibana"
+      ],
+      "accept_translit": [
+        "кибана"
+      ]
+    },
+    {
+      "id": "logstash",
+      "class": "tools",
+      "accept": [
+        "Logstash"
+      ],
+      "accept_translit": [
+        "логстэш"
+      ]
+    },
+    {
+      "id": "fluentd",
+      "class": "tools",
+      "accept": [
+        "Fluentd"
+      ],
+      "accept_translit": [
+        "флюентди"
+      ]
+    },
+    {
+      "id": "fluentbit",
+      "class": "tools",
+      "accept": [
+        "Fluent Bit"
+      ],
+      "accept_translit": [
+        "флюент бит"
+      ]
+    },
+    {
+      "id": "vector",
+      "class": "tools",
+      "accept": [
+        "Vector"
+      ],
+      "accept_translit": [
+        "вектор"
+      ]
+    },
+    {
+      "id": "telegraf",
+      "class": "tools",
+      "accept": [
+        "Telegraf"
+      ],
+      "accept_translit": [
+        "телеграф"
+      ]
+    },
+    {
+      "id": "zabbix",
+      "class": "tools",
+      "accept": [
+        "Zabbix"
+      ],
+      "accept_translit": [
+        "заббикс"
+      ]
+    },
+    {
+      "id": "nagios",
+      "class": "tools",
+      "accept": [
+        "Nagios"
+      ],
+      "accept_translit": [
+        "наджиос"
+      ]
+    },
+    {
+      "id": "pagerduty",
+      "class": "tools",
+      "accept": [
+        "PagerDuty"
+      ],
+      "accept_translit": [
+        "пейджердьюти"
+      ]
+    },
+    {
+      "id": "opsgenie",
+      "class": "tools",
+      "accept": [
+        "Opsgenie"
+      ],
+      "accept_translit": [
+        "опсджини"
+      ]
+    },
+    {
+      "id": "argocd",
+      "class": "tools",
+      "accept": [
+        "Argo CD"
+      ],
+      "accept_translit": [
+        "арго си ди",
+        "аргосиди"
+      ]
+    },
+    {
+      "id": "argoworkflows",
+      "class": "tools",
+      "accept": [
+        "Argo Workflows"
+      ],
+      "accept_translit": [
+        "арго воркфлоуз"
+      ]
+    },
+    {
+      "id": "flux",
+      "class": "tools",
+      "accept": [
+        "Flux"
+      ],
+      "accept_translit": [
+        "флакс"
+      ]
+    },
+    {
+      "id": "kustomize",
+      "class": "tools",
+      "accept": [
+        "Kustomize"
+      ],
+      "accept_translit": [
+        "кастомайз"
+      ]
+    },
+    {
+      "id": "helmfile",
+      "class": "tools",
+      "accept": [
+        "Helmfile"
+      ],
+      "accept_translit": [
+        "хелмфайл"
+      ]
+    },
+    {
+      "id": "k9s",
+      "class": "tools",
+      "accept": [
+        "k9s"
+      ],
+      "accept_translit": [
+        "кейнайнс"
+      ]
+    },
+    {
+      "id": "lens",
+      "class": "tools",
+      "accept": [
+        "Lens"
+      ],
+      "accept_translit": [
+        "ленс"
+      ]
+    },
+    {
+      "id": "rancher",
+      "class": "tools",
+      "accept": [
+        "Rancher"
+      ],
+      "accept_translit": [
+        "ранчер"
+      ]
+    },
+    {
+      "id": "openshift",
+      "class": "tools",
+      "accept": [
+        "OpenShift"
+      ],
+      "accept_translit": [
+        "опеншифт"
+      ]
+    },
+    {
+      "id": "nomad",
+      "class": "tools",
+      "accept": [
+        "Nomad"
+      ],
+      "accept_translit": [
+        "номад"
+      ]
+    },
+    {
+      "id": "vagrant",
+      "class": "tools",
+      "accept": [
+        "Vagrant"
+      ],
+      "accept_translit": [
+        "вагрант"
+      ]
+    },
+    {
+      "id": "packer",
+      "class": "tools",
+      "accept": [
+        "Packer"
+      ],
+      "accept_translit": [
+        "пакер"
+      ]
+    },
+    {
+      "id": "buildah",
+      "class": "tools",
+      "accept": [
+        "Buildah"
+      ],
+      "accept_translit": [
+        "билда"
+      ]
+    },
+    {
+      "id": "skopeo",
+      "class": "tools",
+      "accept": [
+        "Skopeo"
+      ],
+      "accept_translit": [
+        "скопео"
+      ]
+    },
+    {
+      "id": "containerd",
+      "class": "tools",
+      "accept": [
+        "containerd"
+      ],
+      "accept_translit": [
+        "контейнерди"
+      ]
+    },
+    {
+      "id": "crio",
+      "class": "tools",
+      "accept": [
+        "CRI-O"
+      ],
+      "accept_translit": [
+        "си ар ай о"
+      ]
+    },
+    {
+      "id": "runc",
+      "class": "tools",
+      "accept": [
+        "runc"
+      ],
+      "accept_translit": [
+        "ранси"
+      ]
+    },
+    {
+      "id": "calico",
+      "class": "tools",
+      "accept": [
+        "Calico"
+      ],
+      "accept_translit": [
+        "калико"
+      ]
+    },
+    {
+      "id": "cilium",
+      "class": "tools",
+      "accept": [
+        "Cilium"
+      ],
+      "accept_translit": [
+        "силиум"
+      ]
+    },
+    {
+      "id": "flannel",
+      "class": "tools",
+      "accept": [
+        "Flannel"
+      ],
+      "accept_translit": [
+        "фланел"
+      ]
+    },
+    {
+      "id": "coredns",
+      "class": "tools",
+      "accept": [
+        "CoreDNS"
+      ],
+      "accept_translit": [
+        "кордиэнэс"
+      ]
+    },
+    {
+      "id": "metallb",
+      "class": "tools",
+      "accept": [
+        "MetalLB"
+      ],
+      "accept_translit": [
+        "метал эл би"
+      ]
+    },
+    {
+      "id": "certmanager",
+      "class": "tools",
+      "accept": [
+        "cert-manager"
+      ],
+      "accept_translit": [
+        "серт менеджер"
+      ]
+    },
+    {
+      "id": "externaldns",
+      "class": "tools",
+      "accept": [
+        "external-dns"
+      ],
+      "accept_translit": [
+        "экстернал диэнэс"
+      ]
+    },
+    {
+      "id": "keda",
+      "class": "tools",
+      "accept": [
+        "KEDA"
+      ],
+      "accept_translit": [
+        "кеда"
+      ]
+    },
+    {
+      "id": "knative",
+      "class": "tools",
+      "accept": [
+        "Knative"
+      ],
+      "accept_translit": [
+        "кейнатив"
+      ]
+    },
+    {
+      "id": "tekton",
+      "class": "tools",
+      "accept": [
+        "Tekton"
+      ],
+      "accept_translit": [
+        "тектон"
+      ]
+    },
+    {
+      "id": "crossplane",
+      "class": "tools",
+      "accept": [
+        "Crossplane"
+      ],
+      "accept_translit": [
+        "кроссплейн"
+      ]
+    },
+    {
+      "id": "velero",
+      "class": "tools",
+      "accept": [
+        "Velero"
+      ],
+      "accept_translit": [
+        "велеро"
+      ]
+    },
+    {
+      "id": "thanos",
+      "class": "tools",
+      "accept": [
+        "Thanos"
+      ],
+      "accept_translit": [
+        "танос"
+      ]
+    },
+    {
+      "id": "mimir",
+      "class": "tools",
+      "accept": [
+        "Mimir"
+      ],
+      "accept_translit": [
+        "мимир"
+      ]
+    },
+    {
+      "id": "pyroscope",
+      "class": "tools",
+      "accept": [
+        "Pyroscope"
+      ],
+      "accept_translit": [
+        "пайроскоп"
+      ]
+    },
+    {
+      "id": "opentelemetry",
+      "class": "tools",
+      "accept": [
+        "OpenTelemetry"
+      ],
+      "accept_translit": [
+        "опентелеметри"
+      ]
+    },
+    {
+      "id": "datadog",
+      "class": "tools",
+      "accept": [
+        "Datadog"
+      ],
+      "accept_translit": [
+        "датадог"
+      ]
+    },
+    {
+      "id": "newrelic",
+      "class": "tools",
+      "accept": [
+        "New Relic"
+      ],
+      "accept_translit": [
+        "ньюрелик"
+      ]
+    },
+    {
+      "id": "splunk",
+      "class": "tools",
+      "accept": [
+        "Splunk"
+      ],
+      "accept_translit": [
+        "спланк"
+      ]
+    },
+    {
+      "id": "cloudwatch",
+      "class": "tools",
+      "accept": [
+        "CloudWatch"
+      ],
+      "accept_translit": [
+        "клаудвотч"
+      ]
+    },
+    {
+      "id": "cloudfront",
+      "class": "tools",
+      "accept": [
+        "CloudFront"
+      ],
+      "accept_translit": [
+        "клаудфронт"
+      ]
+    },
+    {
+      "id": "lambda",
+      "class": "tools",
+      "accept": [
+        "Lambda"
+      ],
+      "accept_translit": [
+        "лямбда"
+      ]
+    },
+    {
+      "id": "ec2",
+      "class": "tools",
+      "accept": [
+        "EC2"
+      ],
+      "accept_translit": [
+        "иси ту"
+      ]
+    },
+    {
+      "id": "eks",
+      "class": "tools",
+      "accept": [
+        "EKS"
+      ],
+      "accept_translit": [
+        "икейэс"
+      ]
+    },
+    {
+      "id": "gke",
+      "class": "tools",
+      "accept": [
+        "GKE"
+      ],
+      "accept_translit": [
+        "джикейи"
+      ]
+    },
+    {
+      "id": "aks",
+      "class": "tools",
+      "accept": [
+        "AKS"
+      ],
+      "accept_translit": [
+        "эйкейэс"
+      ]
+    },
+    {
+      "id": "route53",
+      "class": "tools",
+      "accept": [
+        "Route 53"
+      ],
+      "accept_translit": [
+        "роут пятьдесят три"
+      ]
+    },
+    {
+      "id": "iam",
+      "class": "tools",
+      "accept": [
+        "IAM"
+      ],
+      "accept_translit": [
+        "айэм"
+      ]
+    },
+    {
+      "id": "kms",
+      "class": "tools",
+      "accept": [
+        "KMS"
+      ],
+      "accept_translit": [
+        "кейэмэс"
+      ]
+    },
+    {
+      "id": "cloudflare",
+      "class": "tools",
+      "accept": [
+        "Cloudflare"
+      ],
+      "accept_translit": [
+        "клаудфлер"
+      ]
+    },
+    {
+      "id": "akamai",
+      "class": "tools",
+      "accept": [
+        "Akamai"
+      ],
+      "accept_translit": [
+        "акамай"
+      ]
+    },
+    {
+      "id": "varnish",
+      "class": "tools",
+      "accept": [
+        "Varnish"
+      ],
+      "accept_translit": [
+        "варниш"
+      ]
+    },
+    {
+      "id": "python",
+      "class": "tools",
+      "accept": [
+        "Python"
+      ],
+      "accept_translit": [
+        "пайтон"
+      ]
+    },
+    {
+      "id": "golang",
+      "class": "tools",
+      "accept": [
+        "Go"
+      ],
+      "accept_translit": [
+        "го",
+        "голанг"
+      ]
+    },
+    {
+      "id": "rust",
+      "class": "tools",
+      "accept": [
+        "Rust"
+      ],
+      "accept_translit": [
+        "раст"
+      ]
+    },
+    {
+      "id": "java",
+      "class": "tools",
+      "accept": [
+        "Java"
+      ],
+      "accept_translit": [
+        "джава"
+      ]
+    },
+    {
+      "id": "kotlin",
+      "class": "tools",
+      "accept": [
+        "Kotlin"
+      ],
+      "accept_translit": [
+        "котлин"
+      ]
+    },
+    {
+      "id": "swift",
+      "class": "tools",
+      "accept": [
+        "Swift"
+      ],
+      "accept_translit": [
+        "свифт"
+      ]
+    },
+    {
+      "id": "typescript",
+      "class": "tools",
+      "accept": [
+        "TypeScript"
+      ],
+      "accept_translit": [
+        "тайпскрипт"
+      ]
+    },
+    {
+      "id": "javascript",
+      "class": "tools",
+      "accept": [
+        "JavaScript"
+      ],
+      "accept_translit": [
+        "джаваскрипт"
+      ]
+    },
+    {
+      "id": "nodejs",
+      "class": "tools",
+      "accept": [
+        "Node.js"
+      ],
+      "accept_translit": [
+        "ноуджейэс",
+        "нода"
+      ]
+    },
+    {
+      "id": "npm",
+      "class": "tools",
+      "accept": [
+        "npm"
+      ],
+      "accept_translit": [
+        "энпиэм"
+      ]
+    },
+    {
+      "id": "yarn",
+      "class": "tools",
+      "accept": [
+        "yarn"
+      ],
+      "accept_translit": [
+        "ярн"
+      ]
+    },
+    {
+      "id": "pnpm",
+      "class": "tools",
+      "accept": [
+        "pnpm"
+      ],
+      "accept_translit": [
+        "пиэнпиэм"
+      ]
+    },
+    {
+      "id": "poetry",
+      "class": "tools",
+      "accept": [
+        "poetry"
+      ],
+      "accept_translit": [
+        "поэтри"
+      ]
+    },
+    {
+      "id": "uv",
+      "class": "tools",
+      "accept": [
+        "uv"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "cargo",
+      "class": "tools",
+      "accept": [
+        "cargo"
+      ],
+      "accept_translit": [
+        "карго"
+      ]
+    },
+    {
+      "id": "gradle",
+      "class": "tools",
+      "accept": [
+        "Gradle"
+      ],
+      "accept_translit": [
+        "грейдл"
+      ]
+    },
+    {
+      "id": "maven",
+      "class": "tools",
+      "accept": [
+        "Maven"
+      ],
+      "accept_translit": [
+        "мейвен"
+      ]
+    },
+    {
+      "id": "bazel",
+      "class": "tools",
+      "accept": [
+        "Bazel"
+      ],
+      "accept_translit": [
+        "базел"
+      ]
+    },
+    {
+      "id": "cmake",
+      "class": "tools",
+      "accept": [
+        "CMake"
+      ],
+      "accept_translit": [
+        "симейк"
+      ]
+    },
+    {
+      "id": "ninja",
+      "class": "tools",
+      "accept": [
+        "Ninja"
+      ],
+      "accept_translit": [
+        "ниндзя"
+      ]
+    },
+    {
+      "id": "webpack",
+      "class": "tools",
+      "accept": [
+        "Webpack"
+      ],
+      "accept_translit": [
+        "вебпак"
+      ]
+    },
+    {
+      "id": "vite",
+      "class": "tools",
+      "accept": [
+        "Vite"
+      ],
+      "accept_translit": [
+        "вит"
+      ]
+    },
+    {
+      "id": "esbuild",
+      "class": "tools",
+      "accept": [
+        "esbuild"
+      ],
+      "accept_translit": [
+        "эсбилд"
+      ]
+    },
+    {
+      "id": "babel",
+      "class": "tools",
+      "accept": [
+        "Babel"
+      ],
+      "accept_translit": [
+        "бабел"
+      ]
+    },
+    {
+      "id": "eslint",
+      "class": "tools",
+      "accept": [
+        "ESLint"
+      ],
+      "accept_translit": [
+        "эслинт"
+      ]
+    },
+    {
+      "id": "prettier",
+      "class": "tools",
+      "accept": [
+        "Prettier"
+      ],
+      "accept_translit": [
+        "преттиер"
+      ]
+    },
+    {
+      "id": "ruff",
+      "class": "tools",
+      "accept": [
+        "Ruff"
+      ],
+      "accept_translit": [
+        "раф"
+      ]
+    },
+    {
+      "id": "pytest",
+      "class": "tools",
+      "accept": [
+        "pytest"
+      ],
+      "accept_translit": [
+        "пайтест"
+      ]
+    },
+    {
+      "id": "junit",
+      "class": "tools",
+      "accept": [
+        "JUnit"
+      ],
+      "accept_translit": [
+        "юнит"
+      ]
+    },
+    {
+      "id": "testcontainers",
+      "class": "tools",
+      "accept": [
+        "Testcontainers"
+      ],
+      "accept_translit": [
+        "тестконтейнерс"
+      ]
+    },
+    {
+      "id": "selenium",
+      "class": "tools",
+      "accept": [
+        "Selenium"
+      ],
+      "accept_translit": [
+        "селениум"
+      ]
+    },
+    {
+      "id": "playwright",
+      "class": "tools",
+      "accept": [
+        "Playwright"
+      ],
+      "accept_translit": [
+        "плейрайт"
+      ]
+    },
+    {
+      "id": "cypress",
+      "class": "tools",
+      "accept": [
+        "Cypress"
+      ],
+      "accept_translit": [
+        "сайпресс"
+      ]
+    },
+    {
+      "id": "jmeter",
+      "class": "tools",
+      "accept": [
+        "JMeter"
+      ],
+      "accept_translit": [
+        "джейметр"
+      ]
+    },
+    {
+      "id": "locust",
+      "class": "tools",
+      "accept": [
+        "Locust"
+      ],
+      "accept_translit": [
+        "локуст"
+      ]
+    },
+    {
+      "id": "gatling",
+      "class": "tools",
+      "accept": [
+        "Gatling"
+      ],
+      "accept_translit": [
+        "гатлинг"
+      ]
+    },
+    {
+      "id": "k8s",
+      "class": "abbrev",
+      "accept": [
+        "k8s"
+      ],
+      "accept_translit": [
+        "ка восемь эс",
+        "кубс"
+      ]
+    },
+    {
+      "id": "ci",
+      "class": "abbrev",
+      "accept": [
+        "CI"
+      ],
+      "accept_translit": [
+        "си ай"
+      ]
+    },
+    {
+      "id": "cd",
+      "class": "abbrev",
+      "accept": [
+        "CD"
+      ],
+      "accept_translit": [
+        "си ди"
+      ]
+    },
+    {
+      "id": "cicd",
+      "class": "abbrev",
+      "accept": [
+        "CI/CD"
+      ],
+      "accept_translit": [
+        "си ай си ди"
+      ]
+    },
+    {
+      "id": "sre",
+      "class": "abbrev",
+      "accept": [
+        "SRE"
+      ],
+      "accept_translit": [
+        "эс ар и"
+      ]
+    },
+    {
+      "id": "sla",
+      "class": "abbrev",
+      "accept": [
+        "SLA"
+      ],
+      "accept_translit": [
+        "эс эл эй"
+      ]
+    },
+    {
+      "id": "slo",
+      "class": "abbrev",
+      "accept": [
+        "SLO"
+      ],
+      "accept_translit": [
+        "эс эл о"
+      ]
+    },
+    {
+      "id": "sli",
+      "class": "abbrev",
+      "accept": [
+        "SLI"
+      ],
+      "accept_translit": [
+        "эс эл ай"
+      ]
+    },
+    {
+      "id": "rps",
+      "class": "abbrev",
+      "accept": [
+        "RPS"
+      ],
+      "accept_translit": [
+        "эр пи эс"
+      ]
+    },
+    {
+      "id": "qps",
+      "class": "abbrev",
+      "accept": [
+        "QPS"
+      ],
+      "accept_translit": [
+        "кью пи эс"
+      ]
+    },
+    {
+      "id": "p50",
+      "class": "abbrev",
+      "accept": [
+        "p50"
+      ],
+      "accept_translit": [
+        "пи пятьдесят"
+      ]
+    },
+    {
+      "id": "p95",
+      "class": "abbrev",
+      "accept": [
+        "p95"
+      ],
+      "accept_translit": [
+        "пи девяносто пять"
+      ]
+    },
+    {
+      "id": "p99",
+      "class": "abbrev",
+      "accept": [
+        "p99"
+      ],
+      "accept_translit": [
+        "пи девяносто девять"
+      ]
+    },
+    {
+      "id": "oom",
+      "class": "abbrev",
+      "accept": [
+        "OOM"
+      ],
+      "accept_translit": [
+        "оом",
+        "аут оф мемори"
+      ]
+    },
+    {
+      "id": "pvc",
+      "class": "abbrev",
+      "accept": [
+        "PVC"
+      ],
+      "accept_translit": [
+        "пи ви си"
+      ]
+    },
+    {
+      "id": "pv",
+      "class": "abbrev",
+      "accept": [
+        "PV"
+      ],
+      "accept_translit": [
+        "пи ви"
+      ]
+    },
+    {
+      "id": "crd",
+      "class": "abbrev",
+      "accept": [
+        "CRD"
+      ],
+      "accept_translit": [
+        "си ар ди"
+      ]
+    },
+    {
+      "id": "rbac",
+      "class": "abbrev",
+      "accept": [
+        "RBAC"
+      ],
+      "accept_translit": [
+        "ар бак",
+        "эрбак"
+      ]
+    },
+    {
+      "id": "hpa",
+      "class": "abbrev",
+      "accept": [
+        "HPA"
+      ],
+      "accept_translit": [
+        "эйч пи эй"
+      ]
+    },
+    {
+      "id": "vpa",
+      "class": "abbrev",
+      "accept": [
+        "VPA"
+      ],
+      "accept_translit": [
+        "ви пи эй"
+      ]
+    },
+    {
+      "id": "dns",
+      "class": "abbrev",
+      "accept": [
+        "DNS"
+      ],
+      "accept_translit": [
+        "днс",
+        "дэ эн эс"
+      ]
+    },
+    {
+      "id": "tls",
+      "class": "abbrev",
+      "accept": [
+        "TLS"
+      ],
+      "accept_translit": [
+        "тлс",
+        "ти эл эс"
+      ]
+    },
+    {
+      "id": "ssl",
+      "class": "abbrev",
+      "accept": [
+        "SSL"
+      ],
+      "accept_translit": [
+        "ссл"
+      ]
+    },
+    {
+      "id": "http",
+      "class": "abbrev",
+      "accept": [
+        "HTTP"
+      ],
+      "accept_translit": [
+        "эйчтитипи"
+      ]
+    },
+    {
+      "id": "https",
+      "class": "abbrev",
+      "accept": [
+        "HTTPS"
+      ],
+      "accept_translit": [
+        "эйчтитипис"
+      ]
+    },
+    {
+      "id": "tcp",
+      "class": "abbrev",
+      "accept": [
+        "TCP"
+      ],
+      "accept_translit": [
+        "ти си пи"
+      ]
+    },
+    {
+      "id": "udp",
+      "class": "abbrev",
+      "accept": [
+        "UDP"
+      ],
+      "accept_translit": [
+        "юдипи"
+      ]
+    },
+    {
+      "id": "cidr",
+      "class": "abbrev",
+      "accept": [
+        "CIDR"
+      ],
+      "accept_translit": [
+        "сайдер",
+        "сида"
+      ]
+    },
+    {
+      "id": "vpn",
+      "class": "abbrev",
+      "accept": [
+        "VPN"
+      ],
+      "accept_translit": [
+        "впн",
+        "ви пи эн"
+      ]
+    },
+    {
+      "id": "cpu",
+      "class": "abbrev",
+      "accept": [
+        "CPU"
+      ],
+      "accept_translit": [
+        "цпу",
+        "си пи ю"
+      ]
+    },
+    {
+      "id": "gpu",
+      "class": "abbrev",
+      "accept": [
+        "GPU"
+      ],
+      "accept_translit": [
+        "гпу",
+        "джи пи ю"
+      ]
+    },
+    {
+      "id": "ram",
+      "class": "abbrev",
+      "accept": [
+        "RAM"
+      ],
+      "accept_translit": [
+        "рам"
+      ]
+    },
+    {
+      "id": "ssd",
+      "class": "abbrev",
+      "accept": [
+        "SSD"
+      ],
+      "accept_translit": [
+        "ссд"
+      ]
+    },
+    {
+      "id": "hdd",
+      "class": "abbrev",
+      "accept": [
+        "HDD"
+      ],
+      "accept_translit": [
+        "хдд"
+      ]
+    },
+    {
+      "id": "sdk",
+      "class": "abbrev",
+      "accept": [
+        "SDK"
+      ],
+      "accept_translit": [
+        "эсдикей"
+      ]
+    },
+    {
+      "id": "cli",
+      "class": "abbrev",
+      "accept": [
+        "CLI"
+      ],
+      "accept_translit": [
+        "сиэлай"
+      ]
+    },
+    {
+      "id": "ui",
+      "class": "abbrev",
+      "accept": [
+        "UI"
+      ],
+      "accept_translit": [
+        "юай"
+      ]
+    },
+    {
+      "id": "ux",
+      "class": "abbrev",
+      "accept": [
+        "UX"
+      ],
+      "accept_translit": [
+        "юикс"
+      ]
+    },
+    {
+      "id": "etl",
+      "class": "abbrev",
+      "accept": [
+        "ETL"
+      ],
+      "accept_translit": [
+        "итэл"
+      ]
+    },
+    {
+      "id": "elt",
+      "class": "abbrev",
+      "accept": [
+        "ELT"
+      ],
+      "accept_translit": [
+        "илти"
+      ]
+    },
+    {
+      "id": "dwh",
+      "class": "abbrev",
+      "accept": [
+        "DWH"
+      ],
+      "accept_translit": [
+        "дидаблъюэйч"
+      ]
+    },
+    {
+      "id": "oltp",
+      "class": "abbrev",
+      "accept": [
+        "OLTP"
+      ],
+      "accept_translit": [
+        "оэлтипи"
+      ]
+    },
+    {
+      "id": "olap",
+      "class": "abbrev",
+      "accept": [
+        "OLAP"
+      ],
+      "accept_translit": [
+        "оулап"
+      ]
+    },
+    {
+      "id": "acid",
+      "class": "abbrev",
+      "accept": [
+        "ACID"
+      ],
+      "accept_translit": [
+        "асид"
+      ]
+    },
+    {
+      "id": "cap",
+      "class": "abbrev",
+      "accept": [
+        "CAP"
+      ],
+      "accept_translit": [
+        "кап"
+      ]
+    },
+    {
+      "id": "mttr",
+      "class": "abbrev",
+      "accept": [
+        "MTTR"
+      ],
+      "accept_translit": [
+        "эмтитиар"
+      ]
+    },
+    {
+      "id": "mtbf",
+      "class": "abbrev",
+      "accept": [
+        "MTBF"
+      ],
+      "accept_translit": [
+        "эмтибиэф"
+      ]
+    },
+    {
+      "id": "rto",
+      "class": "abbrev",
+      "accept": [
+        "RTO"
+      ],
+      "accept_translit": [
+        "эртио"
+      ]
+    },
+    {
+      "id": "rpo",
+      "class": "abbrev",
+      "accept": [
+        "RPO"
+      ],
+      "accept_translit": [
+        "эрпио"
+      ]
+    },
+    {
+      "id": "ha",
+      "class": "abbrev",
+      "accept": [
+        "HA"
+      ],
+      "accept_translit": [
+        "эйчэй"
+      ]
+    },
+    {
+      "id": "lb",
+      "class": "abbrev",
+      "accept": [
+        "LB"
+      ],
+      "accept_translit": [
+        "элби"
+      ]
+    },
+    {
+      "id": "cdn",
+      "class": "abbrev",
+      "accept": [
+        "CDN"
+      ],
+      "accept_translit": [
+        "сидиэн"
+      ]
+    },
+    {
+      "id": "waf",
+      "class": "abbrev",
+      "accept": [
+        "WAF"
+      ],
+      "accept_translit": [
+        "ваф"
+      ]
+    },
+    {
+      "id": "ddos",
+      "class": "abbrev",
+      "accept": [
+        "DDoS"
+      ],
+      "accept_translit": [
+        "дидос"
+      ]
+    },
+    {
+      "id": "ids",
+      "class": "abbrev",
+      "accept": [
+        "IDS"
+      ],
+      "accept_translit": [
+        "айдиэс"
+      ]
+    },
+    {
+      "id": "ips",
+      "class": "abbrev",
+      "accept": [
+        "IPS"
+      ],
+      "accept_translit": [
+        "айпиэс"
+      ]
+    },
+    {
+      "id": "siem",
+      "class": "abbrev",
+      "accept": [
+        "SIEM"
+      ],
+      "accept_translit": [
+        "сием"
+      ]
+    },
+    {
+      "id": "soar",
+      "class": "abbrev",
+      "accept": [
+        "SOAR"
+      ],
+      "accept_translit": [
+        "соар"
+      ]
+    },
+    {
+      "id": "sast",
+      "class": "abbrev",
+      "accept": [
+        "SAST"
+      ],
+      "accept_translit": [
+        "саст"
+      ]
+    },
+    {
+      "id": "dast",
+      "class": "abbrev",
+      "accept": [
+        "DAST"
+      ],
+      "accept_translit": [
+        "даст"
+      ]
+    },
+    {
+      "id": "cve",
+      "class": "abbrev",
+      "accept": [
+        "CVE"
+      ],
+      "accept_translit": [
+        "сивии"
+      ]
+    },
+    {
+      "id": "poc",
+      "class": "abbrev",
+      "accept": [
+        "PoC"
+      ],
+      "accept_translit": [
+        "пиоуси"
+      ]
+    },
+    {
+      "id": "mvp",
+      "class": "abbrev",
+      "accept": [
+        "MVP"
+      ],
+      "accept_translit": [
+        "эмвипи"
+      ]
+    },
+    {
+      "id": "rfc",
+      "class": "abbrev",
+      "accept": [
+        "RFC"
+      ],
+      "accept_translit": [
+        "эрэфси"
+      ]
+    },
+    {
+      "id": "adr",
+      "class": "abbrev",
+      "accept": [
+        "ADR"
+      ],
+      "accept_translit": [
+        "эйдиар"
+      ]
+    },
+    {
+      "id": "pr",
+      "class": "abbrev",
+      "accept": [
+        "PR"
+      ],
+      "accept_translit": [
+        "пиар"
+      ]
+    },
+    {
+      "id": "mr",
+      "class": "abbrev",
+      "accept": [
+        "MR"
+      ],
+      "accept_translit": [
+        "эма р"
+      ]
+    },
+    {
+      "id": "lgtm",
+      "class": "abbrev",
+      "accept": [
+        "LGTM"
+      ],
+      "accept_translit": [
+        "элджитим"
+      ]
+    },
+    {
+      "id": "wip",
+      "class": "abbrev",
+      "accept": [
+        "WIP"
+      ],
+      "accept_translit": [
+        "випи"
+      ]
+    },
+    {
+      "id": "ns",
+      "class": "abbrev",
+      "accept": [
+        "NS"
+      ],
+      "accept_translit": [
+        "энэс"
+      ]
+    },
+    {
+      "id": "jvm",
+      "class": "abbrev",
+      "accept": [
+        "JVM"
+      ],
+      "accept_translit": [
+        "жвм",
+        "джей ви эм"
+      ]
+    },
+    {
+      "id": "gc",
+      "class": "abbrev",
+      "accept": [
+        "GC"
+      ],
+      "accept_translit": [
+        "джиси"
+      ]
+    },
+    {
+      "id": "ttl",
+      "class": "abbrev",
+      "accept": [
+        "TTL"
+      ],
+      "accept_translit": [
+        "ттл"
+      ]
+    },
+    {
+      "id": "lru",
+      "class": "abbrev",
+      "accept": [
+        "LRU"
+      ],
+      "accept_translit": [
+        "элэрю"
+      ]
+    },
+    {
+      "id": "crud",
+      "class": "abbrev",
+      "accept": [
+        "CRUD"
+      ],
+      "accept_translit": [
+        "крад"
+      ]
+    },
+    {
+      "id": "soap",
+      "class": "abbrev",
+      "accept": [
+        "SOAP"
+      ],
+      "accept_translit": [
+        "соуп"
+      ]
+    },
+    {
+      "id": "xml",
+      "class": "abbrev",
+      "accept": [
+        "XML"
+      ],
+      "accept_translit": [
+        "иксэмэл"
+      ]
+    },
+    {
+      "id": "toml",
+      "class": "abbrev",
+      "accept": [
+        "TOML"
+      ],
+      "accept_translit": [
+        "томл"
+      ]
+    },
+    {
+      "id": "csv",
+      "class": "abbrev",
+      "accept": [
+        "CSV"
+      ],
+      "accept_translit": [
+        "сиэсви"
+      ]
+    },
+    {
+      "id": "uuid",
+      "class": "abbrev",
+      "accept": [
+        "UUID"
+      ],
+      "accept_translit": [
+        "ююайди"
+      ]
+    },
+    {
+      "id": "sha",
+      "class": "abbrev",
+      "accept": [
+        "SHA"
+      ],
+      "accept_translit": [
+        "ша"
+      ]
+    },
+    {
+      "id": "aes",
+      "class": "abbrev",
+      "accept": [
+        "AES"
+      ],
+      "accept_translit": [
+        "аес"
+      ]
+    },
+    {
+      "id": "rsa",
+      "class": "abbrev",
+      "accept": [
+        "RSA"
+      ],
+      "accept_translit": [
+        "эрэса"
+      ]
+    },
+    {
+      "id": "hmac",
+      "class": "abbrev",
+      "accept": [
+        "HMAC"
+      ],
+      "accept_translit": [
+        "эйчмак"
+      ]
+    },
+    {
+      "id": "csrf",
+      "class": "abbrev",
+      "accept": [
+        "CSRF"
+      ],
+      "accept_translit": [
+        "сиэрэф"
+      ]
+    },
+    {
+      "id": "xss",
+      "class": "abbrev",
+      "accept": [
+        "XSS"
+      ],
+      "accept_translit": [
+        "иксэсэс"
+      ]
+    },
+    {
+      "id": "sqli",
+      "class": "abbrev",
+      "accept": [
+        "SQLi"
+      ],
+      "accept_translit": [
+        "эскьюэлай"
+      ]
+    },
+    {
+      "id": "saml",
+      "class": "abbrev",
+      "accept": [
+        "SAML"
+      ],
+      "accept_translit": [
+        "самл"
+      ]
+    },
+    {
+      "id": "ldap",
+      "class": "abbrev",
+      "accept": [
+        "LDAP"
+      ],
+      "accept_translit": [
+        "элдап"
+      ]
+    },
+    {
+      "id": "sso",
+      "class": "abbrev",
+      "accept": [
+        "SSO"
+      ],
+      "accept_translit": [
+        "эсэсо"
+      ]
+    },
+    {
+      "id": "mfa",
+      "class": "abbrev",
+      "accept": [
+        "MFA"
+      ],
+      "accept_translit": [
+        "эмэфэй"
+      ]
+    },
+    {
+      "id": "2fa",
+      "class": "abbrev",
+      "accept": [
+        "2FA"
+      ],
+      "accept_translit": [
+        "два эф эй"
+      ]
+    },
+    {
+      "id": "totp",
+      "class": "abbrev",
+      "accept": [
+        "TOTP"
+      ],
+      "accept_translit": [
+        "тотп"
+      ]
+    },
+    {
+      "id": "tpm",
+      "class": "abbrev",
+      "accept": [
+        "TPM"
+      ],
+      "accept_translit": [
+        "типиэм"
+      ]
+    },
+    {
+      "id": "hsm",
+      "class": "abbrev",
+      "accept": [
+        "HSM"
+      ],
+      "accept_translit": [
+        "эйчэсэм"
+      ]
+    },
+    {
+      "id": "kubectl_get_pods",
+      "class": "command",
+      "accept": [
+        "kubectl get pods"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_get_pods_n",
+      "class": "command",
+      "accept": [
+        "kubectl get pods -n prod"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_rollout_restart",
+      "class": "command",
+      "accept": [
+        "kubectl rollout restart deployment/api"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_apply",
+      "class": "command",
+      "accept": [
+        "kubectl apply -f"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_logs",
+      "class": "command",
+      "accept": [
+        "kubectl logs -f"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_describe",
+      "class": "command",
+      "accept": [
+        "kubectl describe pod"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_exec",
+      "class": "command",
+      "accept": [
+        "kubectl exec -it"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_port_forward",
+      "class": "command",
+      "accept": [
+        "kubectl port-forward"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_top_nodes",
+      "class": "command",
+      "accept": [
+        "kubectl top nodes"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kubectl_scale",
+      "class": "command",
+      "accept": [
+        "kubectl scale deployment"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "helm_upgrade_install",
+      "class": "command",
+      "accept": [
+        "helm upgrade --install"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "helm_list",
+      "class": "command",
+      "accept": [
+        "helm list"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "helm_rollback",
+      "class": "command",
+      "accept": [
+        "helm rollback"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "docker_compose_up",
+      "class": "command",
+      "accept": [
+        "docker compose up -d"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "docker_build",
+      "class": "command",
+      "accept": [
+        "docker build -t"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "docker_push",
+      "class": "command",
+      "accept": [
+        "docker push"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "docker_ps",
+      "class": "command",
+      "accept": [
+        "docker ps"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "psql_connect",
+      "class": "command",
+      "accept": [
+        "psql -h localhost -U postgres"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "git_rebase_i",
+      "class": "command",
+      "accept": [
+        "git rebase -i HEAD~3"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "git_push_origin",
+      "class": "command",
+      "accept": [
+        "git push origin"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "git_pull_rebase",
+      "class": "command",
+      "accept": [
+        "git pull --rebase"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "git_commit_m",
+      "class": "command",
+      "accept": [
+        "git commit -m"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "git_log_oneline",
+      "class": "command",
+      "accept": [
+        "git log --oneline"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "systemctl_restart",
+      "class": "command",
+      "accept": [
+        "systemctl restart nginx"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "journalctl_u_f",
+      "class": "command",
+      "accept": [
+        "journalctl -u api -f"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "ssh_tunnel",
+      "class": "command",
+      "accept": [
+        "ssh -L 8080:localhost:80"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "curl_post",
+      "class": "command",
+      "accept": [
+        "curl -X POST -H"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "terraform_plan",
+      "class": "command",
+      "accept": [
+        "terraform plan -out=tfplan"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "grep_recursive",
+      "class": "command",
+      "accept": [
+        "grep -r"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "chmod_x",
+      "class": "command",
+      "accept": [
+        "chmod +x"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "tail_f",
+      "class": "command",
+      "accept": [
+        "tail -f"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "du_sh",
+      "class": "command",
+      "accept": [
+        "du -sh"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "df_h",
+      "class": "command",
+      "accept": [
+        "df -h"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "ps_aux",
+      "class": "command",
+      "accept": [
+        "ps aux"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "kill_9",
+      "class": "command",
+      "accept": [
+        "kill -9"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "lsof_i",
+      "class": "command",
+      "accept": [
+        "lsof -i"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "netstat_tulpn",
+      "class": "command",
+      "accept": [
+        "netstat -tulpn"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "nc_zv",
+      "class": "command",
+      "accept": [
+        "nc -zv"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "dig_short",
+      "class": "command",
+      "accept": [
+        "dig +short"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "tcpdump_any",
+      "class": "command",
+      "accept": [
+        "tcpdump -i any"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "make_build",
+      "class": "command",
+      "accept": [
+        "make build"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "npm_run_dev",
+      "class": "command",
+      "accept": [
+        "npm run dev"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "pip_install_r",
+      "class": "command",
+      "accept": [
+        "pip install -r requirements.txt"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "python_venv",
+      "class": "command",
+      "accept": [
+        "python -m venv"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "cargo_build_release",
+      "class": "command",
+      "accept": [
+        "cargo build --release"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "go_test",
+      "class": "command",
+      "accept": [
+        "go test ./..."
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "задеплоить",
+      "class": "wordform",
+      "accept": [
+        "задеплоить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "передеплоить",
+      "class": "wordform",
+      "accept": [
+        "передеплоить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "откатить",
+      "class": "wordform",
+      "accept": [
+        "откатить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "куберовский",
+      "class": "wordform",
+      "accept": [
+        "куберовский"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "в_гитлабе",
+      "class": "wordform",
+      "accept": [
+        "в гитлабе"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "на_проде",
+      "class": "wordform",
+      "accept": [
+        "на проде"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "в_докере",
+      "class": "wordform",
+      "accept": [
+        "в докере"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "постгресовый",
+      "class": "wordform",
+      "accept": [
+        "постгресовый"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "апишка",
+      "class": "wordform",
+      "accept": [
+        "апишка"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "ретрайнуть",
+      "class": "wordform",
+      "accept": [
+        "ретрайнуть"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "скейлить",
+      "class": "wordform",
+      "accept": [
+        "скейлить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "заскейлить",
+      "class": "wordform",
+      "accept": [
+        "заскейлить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "заапрувить",
+      "class": "wordform",
+      "accept": [
+        "заапрувить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "апрувнуть",
+      "class": "wordform",
+      "accept": [
+        "апрувнуть"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "закоммитить",
+      "class": "wordform",
+      "accept": [
+        "закоммитить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "замёржить",
+      "class": "wordform",
+      "accept": [
+        "замёржить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "отревьюить",
+      "class": "wordform",
+      "accept": [
+        "отревьюить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "погрепать",
+      "class": "wordform",
+      "accept": [
+        "погрепать"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "потрейсить",
+      "class": "wordform",
+      "accept": [
+        "потрейсить"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "закешировать",
+      "class": "wordform",
+      "accept": [
+        "закешировать"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "инвалидировать",
+      "class": "wordform",
+      "accept": [
+        "инвалидировать"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "миграции",
+      "class": "wordform",
+      "accept": [
+        "миграции"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "поднять",
+      "class": "wordform",
+      "accept": [
+        "поднять"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "затаймаутиться",
+      "class": "wordform",
+      "accept": [
+        "затаймаутиться"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "оффлайн",
+      "class": "wordform",
+      "accept": [
+        "оффлайн"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "онбординг",
+      "class": "wordform",
+      "accept": [
+        "онбординг"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "прод",
+      "class": "wordform",
+      "accept": [
+        "прод"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "стейдж",
+      "class": "wordform",
+      "accept": [
+        "стейдж"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "фича",
+      "class": "wordform",
+      "accept": [
+        "фича"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "багфикс",
+      "class": "wordform",
+      "accept": [
+        "багфикс"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "v1_29",
+      "class": "number",
+      "accept": [
+        "1.29"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "mem_2_5_gb",
+      "class": "number",
+      "accept": [
+        "2.5 ГБ"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "latency_200_ms",
+      "class": "number",
+      "accept": [
+        "200 мс"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "errors_500",
+      "class": "number",
+      "accept": [
+        "500-е"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "percentile_99",
+      "class": "number",
+      "accept": [
+        "99-й перцентиль"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "port_8080",
+      "class": "number",
+      "accept": [
+        "порт 8080"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "cidr_10_0_0_0_8",
+      "class": "number",
+      "accept": [
+        "CIDR 10.0.0.0/8"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "replicas_3",
+      "class": "number",
+      "accept": [
+        "3 реплики"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "cores_4",
+      "class": "number",
+      "accept": [
+        "4 ядра"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "ram_16_gb",
+      "class": "number",
+      "accept": [
+        "16 ГБ"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "timeout_30_s",
+      "class": "number",
+      "accept": [
+        "30 секунд"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "availability_99_9",
+      "class": "number",
+      "accept": [
+        "99.9 процента"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "tls_1_3",
+      "class": "number",
+      "accept": [
+        "TLS 1.3"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "http_2",
+      "class": "number",
+      "accept": [
+        "HTTP/2"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "python_3_12",
+      "class": "number",
+      "accept": [
+        "Python 3.12"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "postgresql_16",
+      "class": "number",
+      "accept": [
+        "PostgreSQL 16"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "k8s_1_29",
+      "class": "number",
+      "accept": [
+        "Kubernetes 1.29"
+      ],
+      "accept_translit": []
+    },
+    {
+      "id": "sql",
+      "class": "translit",
+      "accept": [
+        "SQL"
+      ],
+      "accept_translit": [
+        "эс кью эль ка",
+        "эс ку эль ка",
+        "сиквел"
+      ]
+    },
+    {
+      "id": "api",
+      "class": "translit",
+      "accept": [
+        "API"
+      ],
+      "accept_translit": [
+        "апи",
+        "эй пи ай"
+      ]
+    },
+    {
+      "id": "ssh",
+      "class": "translit",
+      "accept": [
+        "SSH"
+      ],
+      "accept_translit": [
+        "эс эс эйч",
+        "эс ше"
+      ]
+    },
+    {
+      "id": "yaml",
+      "class": "translit",
+      "accept": [
+        "YAML"
+      ],
+      "accept_translit": [
+        "ямл",
+        "ямел"
+      ]
+    },
+    {
+      "id": "json",
+      "class": "translit",
+      "accept": [
+        "JSON"
+      ],
+      "accept_translit": [
+        "джейсон",
+        "жсон"
+      ]
+    },
+    {
+      "id": "kubectl",
+      "class": "translit",
+      "accept": [
+        "kubectl"
+      ],
+      "accept_translit": [
+        "кубэситиэл",
+        "кубэктиэл",
+        "кубектл"
+      ]
+    },
+    {
+      "id": "psql",
+      "class": "translit",
+      "accept": [
+        "psql"
+      ],
+      "accept_translit": [
+        "пиэскьюэл",
+        "пэсэкуэл"
+      ]
+    },
+    {
+      "id": "grep",
+      "class": "translit",
+      "accept": [
+        "grep"
+      ],
+      "accept_translit": [
+        "греп",
+        "грип"
+      ]
+    },
+    {
+      "id": "sudo",
+      "class": "translit",
+      "accept": [
+        "sudo"
+      ],
+      "accept_translit": [
+        "судо",
+        "сюдо"
+      ]
+    },
+    {
+      "id": "curl",
+      "class": "translit",
+      "accept": [
+        "curl"
+      ],
+      "accept_translit": [
+        "курл"
+      ]
+    },
+    {
+      "id": "jq",
+      "class": "translit",
+      "accept": [
+        "jq"
+      ],
+      "accept_translit": [
+        "джейкью"
+      ]
+    },
+    {
+      "id": "tmux",
+      "class": "translit",
+      "accept": [
+        "tmux"
+      ],
+      "accept_translit": [
+        "тимакс",
+        "тмукс"
+      ]
+    },
+    {
+      "id": "vim",
+      "class": "translit",
+      "accept": [
+        "vim"
+      ],
+      "accept_translit": [
+        "вим"
+      ]
+    },
+    {
+      "id": "bash",
+      "class": "translit",
+      "accept": [
+        "bash"
+      ],
+      "accept_translit": [
+        "баш"
+      ]
+    },
+    {
+      "id": "zsh",
+      "class": "translit",
+      "accept": [
+        "zsh"
+      ],
+      "accept_translit": [
+        "зэш",
+        "зиш"
+      ]
+    },
+    {
+      "id": "cron",
+      "class": "translit",
+      "accept": [
+        "cron"
+      ],
+      "accept_translit": [
+        "крон"
+      ]
+    },
+    {
+      "id": "tar",
+      "class": "translit",
+      "accept": [
+        "tar"
+      ],
+      "accept_translit": [
+        "тар"
+      ]
+    },
+    {
+      "id": "rsync",
+      "class": "translit",
+      "accept": [
+        "rsync"
+      ],
+      "accept_translit": [
+        "эрсинк"
+      ]
+    },
+    {
+      "id": "scp",
+      "class": "translit",
+      "accept": [
+        "scp"
+      ],
+      "accept_translit": [
+        "эс си пи"
+      ]
+    },
+    {
+      "id": "wget",
+      "class": "translit",
+      "accept": [
+        "wget"
+      ],
+      "accept_translit": [
+        "вгет",
+        "даблъюгет"
+      ]
+    },
+    {
+      "id": "awk",
+      "class": "translit",
+      "accept": [
+        "awk"
+      ],
+      "accept_translit": [
+        "ак",
+        "оук"
+      ]
+    },
+    {
+      "id": "sed",
+      "class": "translit",
+      "accept": [
+        "sed"
+      ],
+      "accept_translit": [
+        "сед"
+      ]
+    }
+  ]
+}

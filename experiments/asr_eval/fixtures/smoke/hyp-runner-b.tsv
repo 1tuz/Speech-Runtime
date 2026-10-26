@@ -1,0 +1,5 @@
+u01	задеплоили Helm в прод через Jenkins
+u02	подняли Kubernetes и посмотрели в Grafana
+u03	PostgreSQL отвечает за двести миллисекунд на p95
+u04	откатили релиз в GitLab потому что упал CI/CD
+u05	проверь логи в Loki и метрики в Prometheus
