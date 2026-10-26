@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-title architecture-desc" id="architecture-root">
+<svg width="960" height="600" viewBox="0 0 960 600" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="architecture-title architecture-desc" id="architecture-root">
         <title id="architecture-title">Архитектура Speech Runtime</title>
         <desc id="architecture-desc">Приложения обращаются по HTTP и WebSocket к демону speechd, который держит каталог моделей и запускает три процесса-воркера: ONNX, CoreML и MLX.</desc>
         <defs>

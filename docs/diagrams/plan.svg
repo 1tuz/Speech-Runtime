@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="plan-title plan-desc" id="plan-root">
+<svg width="960" height="520" viewBox="0 0 960 520" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="plan-title plan-desc" id="plan-root">
         <title id="plan-title">План реализации Speech Runtime по зависимостям</title>
         <desc id="plan-desc">Семь этапов: риск-спайки, ядро, затем параллельно стриминг и Apple-движки, затем адаптация со спикерами, эксплуатация и интеграция.</desc>
         <defs>
