@@ -17,6 +17,23 @@
 - Замеры, сделанные агентом, приводить с командой, окружением и сырым результатом.
 - Вторая волна обязана выносить вердикт по каждому проверяемому утверждению: `ПОДТВЕРЖДЕНО` / `ОПРОВЕРГНУТО` / `ЧАСТИЧНО` / `НЕ ПРОВЕРЯЕМО`.
 
+## Навигация по темам
+
+| Вопрос | Куда смотреть |
+|---|---|
+| Какие есть готовые речевые серверы и чего им не хватает | [A1](wave1/A1-sherpa-onnx.md), [A2](wave1/A2-whisperlivekit-speaches.md), [A3](wave1/A3-gotranscribesrv-whisperkit.md), [A4](wave1/A4-discovery.md) |
+| Можно ли взять speech-swift и доработать | [B1](wave1/B1-speech-swift-server.md), [B2](wave1/B2-speech-swift-engines.md), [V1](wave2/V1-speech-swift-verify.md) |
+| Что заимствовать из SpeechRail | [C](wave1/C-speechrail.md), [V2](wave2/V2-speechrail-verify.md) |
+| Какую модель брать для русского | [D1](wave1/D1-russian-asr.md), [D2](wave1/D2-streaming-asr.md), [V6](wave2/V6-model-factcheck.md), [J](wave1/J-community.md) |
+| VAD, конец реплики, диаризация, спикеры | [E1](wave1/E1-vad-turn.md), [E2](wave1/E2-diarization-embeddings.md) |
+| На чём писать: Swift, Rust или гибрид | [F](wave1/F-swift-vs-rust.md), [V5](wave2/V5-arch-compare.md) |
+| Каталог моделей, версии, выгрузка, очереди | [G](wave1/G-model-management.md) |
+| Проектирование API и транспорта | [H](wave1/H-api-contract.md) |
+| Термины вроде `kubectl`, `Istio`, `CI/CD` | [I](wave1/I-ru-it-adaptation.md) |
+| Что ломается в реальности | [J](wave1/J-community.md), [V7](wave2/V7-critique.md) |
+| Что можно распространять | [K](wave1/K-licenses-maintenance.md), [V4](wave2/V4-deps-licenses.md) |
+| Как проверять результат | [V8](wave2/V8-eval-plan.md) |
+
 ## Зафиксированные ревизии
 
 | Репозиторий | SHA (дата среза) |
