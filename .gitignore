@@ -1,0 +1,15 @@
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+.build/
+.swiftpm/
+DerivedData/
+*.xcuserstate
+
+node_modules/
+__pycache__/
+*.pyc
+
+*.log
