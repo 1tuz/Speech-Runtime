@@ -114,29 +114,9 @@
 
 ### 3.1 Процессы
 
-```mermaid
-flowchart TB
-  subgraph Clients
-    S[Swift-приложения / SDK]
-    R[Rust-приложения / SDK]
-    O[OpenAI SDK / curl]
-    SB[Sandbox / MAS-приложения]
-  end
-  S & R & O -->|HTTP + WS, TCP 127.0.0.1, bearer| D
-  SB -->|TCP loopback + network.client| D
-  R -.->|тот же протокол по UDS в Group Container, опционально| D
-  subgraph D[speechd — Swift, LaunchAgent, один экземпляр]
-    GW[API gateway: native /v1 + OpenAI-compat]
-    REG[Model Registry: CAS, manifest list, revisions, prepare]
-    SCH[Scheduler: lease/refcount, TTL, бюджет памяти, классы очередей]
-    SES[Session manager: id, checkpoint, backpressure, отмена]
-    SUP[Worker supervisor: spawn, health, restart, кварантин]
-  end
-  D -->|UDS, length-prefixed header + raw PCM| W1[worker-onnx: sherpa-onnx]
-  D --> W2[worker-coreml: FluidAudio, WhisperKit, speech-swift CoreML]
-  D --> W3[worker-mlx: speech-swift MLX]
-  D -.->|фаза 2| W4[worker-apple: SpeechAnalyzer / DictationTranscriber]
-```
+<img src="diagrams/architecture.svg" alt="Приложения обращаются к демону speechd по HTTP и WebSocket; демон держит каталог моделей и запускает три процесса-воркера: ONNX, CoreML и MLX" width="100%">
+
+*Рис. 1. Control plane и воркеры. Интерактивная версия — [`diagrams/architecture.html`](diagrams/architecture.html).*
 
 Решения и обоснования:
 
@@ -342,20 +322,9 @@ IT-речи и при code-switching **не измерена ни одна мо�
 
 ## 6. План реализации по зависимостям
 
-```mermaid
-flowchart LR
-  S0[0. Риск-спайки: CoreML и sherpa] --> S1[1. speechd + реестр + worker-onnx batch]
-  E[Датасет ru-IT + эксперименты E1–E6] --> S1
-  S1 --> S2[2. Стриминг WS + VAD/EOT]
-  S1 --> S3[3. worker-coreml + worker-mlx]
-  S2 --> S4[4. bias + словари]
-  S3 --> S4
-  S2 --> S5[5. Диаризация, эмбеддинги, speakers]
-  S3 --> S5
-  S4 --> S6[6. Обновления/откат, TTL, recovery, метрики]
-  S5 --> S6
-  S6 --> S7[7. OpenAI-compat, SDK Swift/Rust, установщик]
-```
+<img src="diagrams/plan.svg" alt="Семь этапов: риск-спайки, ядро, затем параллельно стриминг и Apple-движки, затем адаптация и спикеры, эксплуатация, интеграция" width="100%">
+
+*Рис. 2. Порядок этапов. Этапы 2 и 3 независимы и идут параллельно. Интерактивная версия — [`diagrams/plan.html`](diagrams/plan.html).*
 
 | Этап | Содержание | Выход (критерий готовности) |
 |---|---|---|

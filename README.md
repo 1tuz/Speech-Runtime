@@ -28,13 +28,9 @@
 
 Почему TCP, а не только Unix-сокет: приложения из App Store (в sandbox) подключаются к `127.0.0.1` с одним разрешением `network.client`, а к сокету в `Application Support` — нет (`EPERM`). Unix-сокет остаётся оптимизацией для CLI и своих приложений.
 
-```mermaid
-flowchart LR
-  C[Приложения: Swift, Rust, CLI, [OI] SDK] -->|HTTP + WS, loopback, токен| D[speechd<br/>каталог · планировщик · сессии]
-  D --> W1[worker-onnx<br/>sherpa-onnx]
-  D --> W2[worker-coreml<br/>FluidAudio · WhisperKit]
-  D --> W3[worker-mlx<br/>speech-swift]
-```
+<img src="docs/diagrams/architecture.svg" alt="Приложения обращаются к демону speechd по HTTP и WebSocket; демон запускает три процесса-воркера: ONNX, CoreML и MLX" width="100%">
+
+<sub>Схема: [`docs/diagrams/architecture.html`](docs/diagrams/architecture.html)</sub>
 
 ---
 
