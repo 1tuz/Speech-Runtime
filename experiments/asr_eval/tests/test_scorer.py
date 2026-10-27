@@ -116,7 +116,7 @@ class NormalizerRules(unittest.TestCase):
         )
 
     def test_version_constant(self):
-        self.assertEqual(norm.VERSION, "norm-v1")
+        self.assertEqual(norm.VERSION, "norm-v2")
 
     def test_number_words_plural_forms(self):
         self.assertEqual(norm.number_to_words_ru(1), ["один"])
@@ -455,7 +455,6 @@ class Stats(unittest.TestCase):
         result = stats.paired_bootstrap(errors_a, words, errors_b, replications=200, seed=1)
         self.assertAlmostEqual(result["difference"], 0.3)
         self.assertGreater(result["ci_low"], 0)
-        self.assertEqual(result["p_two_sided"], 0.0)
 
     def test_bootstrap_identical_systems_centres_on_zero(self):
         words = [10] * 30

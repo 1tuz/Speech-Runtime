@@ -364,3 +364,35 @@ def load_manifest_map(dataset_dir: str) -> dict[str, str]:
 def vocabulary_for(dataset_dir: str, terms_path: str | None = None) -> terms_mod.Vocabulary:
     path = terms_path or os.path.join(dataset_dir, "terms.json")
     return terms_mod.Vocabulary.from_path(path)
+
+
+def load_scoring_data(dataset_dir: str, split: str | None) -> tuple[dict[str, str], dict[str, dict], str]:
+    """Точное соответствие ID и явный split для смешанного набора."""
+    entries = load_manifest_map(dataset_dir)
+    path = os.path.join(dataset_dir, "metadata.jsonl")
+    if not os.path.exists(path):
+        if split is not None:
+            raise ValueError("для --split нужны metadata.jsonl")
+        return entries, {}, "unknown"
+    errors: list[str] = []
+    rows = _load_metadata(path, errors)
+    if errors:
+        raise ValueError("метаданные невалидны: " + "; ".join(errors[:3]))
+    metadata = {row["segment_id"]: row for row in rows}
+    if set(entries) != set(metadata):
+        raise ValueError("ID манифеста и метаданных не совпадают")
+    for field in ("speaker_id", "recording_id"):
+        assignments: dict[str, set[str]] = {}
+        for row in rows:
+            assignments.setdefault(row[field], set()).add(row["split"])
+        if any(len(values) > 1 for values in assignments.values()):
+            raise ValueError(f"утечка {field} между dev и test")
+    splits = {row["split"] for row in rows}
+    if split is None:
+        if len(splits) > 1:
+            raise ValueError("набор содержит dev и test; укажите --split")
+        split = next(iter(splits), "unknown")
+    if split not in splits:
+        raise ValueError(f"split {split!r} отсутствует или пуст")
+    selected = {key: value for key, value in entries.items() if metadata[key]["split"] == split}
+    return selected, metadata, split

@@ -12,6 +12,8 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
 import json
 import sys
 
@@ -77,12 +79,17 @@ def _pairs_from_report(path: str) -> list[dict]:
             "нужен отчёт с одной системой — иначе WER смешивает движки"
         )
     pairs: list[dict] = []
+    seen: set[str] = set()
     for utt in results[0].get("utteranceResults", []):
         if "reference" not in utt or "hypothesis" not in utt:
             raise SystemExit(f"{path}: utteranceResults без reference/hypothesis")
+        seg_id = utt.get("id")
+        if not isinstance(seg_id, str) or not seg_id.strip() or seg_id in seen:
+            raise SystemExit(f"{path}: пустой или повторный id")
+        seen.add(seg_id)
         pairs.append(
             {
-                "id": str(utt.get("id", "")),
+                "id": seg_id,
                 "reference": utt["reference"],
                 "hypothesis": utt["hypothesis"],
             }
@@ -92,10 +99,51 @@ def _pairs_from_report(path: str) -> list[dict]:
     return pairs
 
 
+SCORER_VERSION = "asr-eval-v2"
+
+
+def _sha(path: str | None) -> str | None:
+    if not path or not os.path.isfile(path):
+        return None
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
+def command_accuracy(pairs: list[dict]) -> dict:
+    """Доля размеченных команд, точно воспроизведённых как непрерывная последовательность токенов."""
+    total = correct = 0
+    for pair in pairs:
+        commands = pair.get("commands", [])
+        if not isinstance(commands, list) or any(not isinstance(c, str) or not c.strip() for c in commands):
+            raise ValueError("commands должно быть списком непустых строк")
+        ref = pair["reference"].split()
+        hyp = pair["hypothesis"].split()
+        ref_used = [False] * len(ref)
+        hyp_used = [False] * len(hyp)
+        for command in commands:
+            tokens = command.split()
+            def claim(source, used):
+                for start in range(len(source) - len(tokens) + 1):
+                    end = start + len(tokens)
+                    if source[start:end] == tokens and not any(used[start:end]):
+                        used[start:end] = [True] * len(tokens)
+                        return True
+                return False
+            if not claim(ref, ref_used):
+                raise ValueError(f"размеченная команда отсутствует в референсе: {command}")
+            total += 1
+            correct += claim(hyp, hyp_used)
+    return {"version": "command-exact-v1", "total": total, "correct": correct,
+            "accuracy": correct / total if total else None}
+
+
 def _score(pairs: list[dict], vocab: terms_mod.Vocabulary | None) -> dict:
     wer_report = wer_mod.corpus(pairs)
     out = {
+        "scorer_version": SCORER_VERSION,
         "norm_version": norm.VERSION,
+        "commands": command_accuracy(pairs),
+        "term_metric_version": "term-v2",
         "vocabulary": vocab.identity() if vocab is not None else None,
         "utterances": wer_report["utterances"],
         "wer": wer_report["wer"],
@@ -130,6 +178,9 @@ def _print_summary(name: str, report: dict) -> None:
             report["insertions"],
         )
     )
+    commands = report["commands"]
+    accuracy = commands["accuracy"]
+    print(f"commands: correct={commands['correct']} total={commands['total']} accuracy={accuracy if accuracy is not None else 'n/a'}")
     terms_report = report.get("terms")
     if terms_report:
         def fmt(value: float | None) -> str:
@@ -159,13 +210,30 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 0 if report["ok"] else 1
 
 
+def _selected_hypotheses(refs, metadata, hypotheses, label):
+    # Допускается полный набор гипотез либо ровно выбранный split; посторонние ID — ошибка.
+    if metadata and set(hypotheses) == set(metadata):
+        hypotheses = {key: hypotheses[key] for key in refs}
+    _check_coverage(refs, hypotheses, label)
+    return hypotheses
+
+
 def cmd_score(args: argparse.Namespace) -> int:
     vocab = terms_mod.Vocabulary.from_path(args.terms) if args.terms else None
     if args.report:
         pairs = _pairs_from_report(args.report)
+        provenance = {"input_sha256": _sha(args.report), "split": "unknown", "dataset_sha256": None}
     else:
-        pairs = _pairs_from_dataset(args.dataset, _read_hypotheses(args.hypotheses))
+        refs, metadata, split = dataset_mod.load_scoring_data(args.dataset, args.split)
+        hypotheses = _selected_hypotheses(refs, metadata, _read_hypotheses(args.hypotheses), "гипотезы")
+        pairs = [{"id": key, "reference": ref, "hypothesis": hypotheses[key],
+                  "commands": metadata.get(key, {}).get("commands", [])} for key, ref in refs.items()]
+        provenance = {"split": split, "dataset_sha256": _sha(os.path.join(args.dataset, "manifest.tsv")),
+                      "metadata_sha256": _sha(os.path.join(args.dataset, "metadata.jsonl")),
+                      "input_sha256": _sha(args.hypotheses)}
+    provenance["parameters"] = {"mode": "score", "split": args.split}
     report = _score(pairs, vocab)
+    report["provenance"] = provenance
     _print_summary(args.report or args.dataset, report)
     if args.json:
         with open(args.json, "w", encoding="utf-8") as fh:
@@ -174,11 +242,11 @@ def cmd_score(args: argparse.Namespace) -> int:
 
 
 def cmd_compare(args: argparse.Namespace) -> int:
-    refs = dataset_mod.load_manifest_map(args.dataset)
+    refs, metadata, split = dataset_mod.load_scoring_data(args.dataset, args.split)
     hyp_a = _read_hypotheses(args.a)
     hyp_b = _read_hypotheses(args.b)
-    _check_coverage(refs, hyp_a, f"система A ({args.a})")
-    _check_coverage(refs, hyp_b, f"система B ({args.b})")
+    hyp_a = _selected_hypotheses(refs, metadata, hyp_a, f"система A ({args.a})")
+    hyp_b = _selected_hypotheses(refs, metadata, hyp_b, f"система B ({args.b})")
     errors_a, errors_b, words = [], [], []
     for seg_id, reference in refs.items():
         row_a = wer_mod.score_pair(reference, hyp_a[seg_id])
@@ -186,11 +254,25 @@ def cmd_compare(args: argparse.Namespace) -> int:
         errors_a.append(row_a["errors"])
         errors_b.append(row_b["errors"])
         words.append(row_a["words"])
+    if args.group_by and not metadata:
+        raise ValueError("для группировки нужны metadata.jsonl")
+    groups = [metadata[key][args.group_by] for key in refs] if args.group_by else None
     result = stats.paired_bootstrap(
-        errors_a, words, errors_b, replications=args.replications, seed=args.seed
+        errors_a, words, errors_b, replications=args.replications, seed=args.seed, groups=groups
     )
+    result["scorer_version"] = SCORER_VERSION
     result["norm_version"] = norm.VERSION
+    result["provenance"] = {
+        "split": split, "dataset_sha256": _sha(os.path.join(args.dataset, "manifest.tsv")),
+        "metadata_sha256": _sha(os.path.join(args.dataset, "metadata.jsonl")),
+        "a_sha256": _sha(args.a), "b_sha256": _sha(args.b),
+        "parameters": {"mode": "compare", "split": args.split, "group_by": args.group_by,
+                       "replications": args.replications, "seed": args.seed},
+    }
     print(json.dumps(result, ensure_ascii=False, indent=2))
+    if args.json:
+        with open(args.json, "w", encoding="utf-8") as fh:
+            json.dump(result, fh, ensure_ascii=False, indent=2)
     return 0
 
 
@@ -209,12 +291,16 @@ def main(argv: list[str] | None = None) -> int:
     score.add_argument("--report", default=None, help="JSON-отчёт asr-bench")
     score.add_argument("--terms", default=None)
     score.add_argument("--json", default=None)
+    score.add_argument("--split", choices=("dev", "test"))
     score.set_defaults(func=cmd_score)
 
     compare = sub.add_parser("compare", help="парный bootstrap разницы WER двух систем")
     compare.add_argument("--dataset", required=True)
     compare.add_argument("--a", required=True)
     compare.add_argument("--b", required=True)
+    compare.add_argument("--split", choices=("dev", "test"))
+    compare.add_argument("--group-by", choices=("speaker_id", "recording_id"))
+    compare.add_argument("--json", default=None)
     compare.add_argument("--replications", type=int, default=1000)
     compare.add_argument("--seed", type=int, default=0)
     compare.set_defaults(func=cmd_compare)
@@ -222,8 +308,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.command == "score" and not args.report and not (args.dataset and args.hypotheses):
         parser.error("score: нужен либо --report, либо --dataset вместе с --hypotheses")
-    if args.command == "score" and args.report and args.dataset:
-        parser.error("score: --report и --dataset взаимоисключающи")
+    if args.command == "score" and args.report and args.split:
+        parser.error("score: --split недоступен для --report")
+    if args.command == "score" and args.report and (args.dataset or args.hypotheses):
+        parser.error("score: --report несовместим с --dataset и --hypotheses")
     try:
         return args.func(args)
     except (ValueError, KeyError) as exc:

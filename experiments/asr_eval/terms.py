@@ -1,10 +1,10 @@
-"""Терминные метрики (V8 §3.2): exact_latin / translit / corrupt / miss.
+"""Терминные метрики: exact_latin / exact_other / translit / corrupt / miss.
 
 Ключевое отличие от подхода FluidAudio (`\\b…\\b` по всему тексту, V8 §3.2 и таблица
 проверки): сопоставление позиционное — окно ±3 слова вокруг выравненной позиции термина
 в референсе. Термин, случайно попавший в другое место гипотезы, не засчитывается.
 
-Термины ищутся в нормализованном потоке токенов (norm-v1), case accuracy — по
+Термины ищутся в нормализованном потоке токенов, case accuracy — по
 параллельному потоку с сохранённым регистром (индексы совпадают по построению).
 """
 
@@ -36,6 +36,7 @@ def _is_latin(token: str) -> bool:
     return bool(token) and all(ch.isascii() and ch.isalnum() for ch in token)
 
 EXACT_LATIN = "exact_latin"
+EXACT_OTHER = "exact_other"
 TRANSLIT = "translit"
 CORRUPT = "corrupt"
 MISS = "miss"
@@ -102,7 +103,7 @@ class Vocabulary:
         self.forms: list[tuple[tuple[str, ...], Term, str]] = []
         for term in terms:
             for form in term.accept_norm:
-                self.forms.append((form, term, EXACT_LATIN))
+                self.forms.append((form, term, EXACT_LATIN if _has_latin(form) else EXACT_OTHER))
             for form in term.translit_norm:
                 self.forms.append((form, term, TRANSLIT))
         self.forms.sort(key=lambda item: len(item[0]), reverse=True)
@@ -242,12 +243,12 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
     hyp_tokens, kept = norm.strip_foreign_fillers(hyp_tokens, ref_tokens)
     hyp_raw = [hyp_raw[i] for i in kept]
 
-    ops, ref_to_hyp = align.align(ref_tokens, hyp_tokens)
-    hyp_to_ref = {h: r for r, h in ref_to_hyp.items()}
+    _, ref_to_hyp = align.align(ref_tokens, hyp_tokens)
     occurrences = vocab.occurrences(ref_tokens)
 
     records: list[dict] = []
-    counts = {EXACT_LATIN: 0, TRANSLIT: 0, CORRUPT: 0, MISS: 0}
+    counts = {EXACT_LATIN: 0, EXACT_OTHER: 0, TRANSLIT: 0, CORRUPT: 0, MISS: 0}
+    latin_translit = 0
     case_hits = case_total = 0
     consumed = [False] * len(hyp_tokens)
     windows: list[tuple[int, int]] = []
@@ -262,8 +263,9 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
         windows.append((lo, hi))
         hit = _find_form(hyp_tokens, lo, hi, term.accept_norm, consumed)
         if hit is not None:
-            verdicts[index] = EXACT_LATIN
-            if term.has_latin:
+            is_latin = _has_latin(hyp_tokens[hit[0]:hit[1]])
+            verdicts[index] = EXACT_LATIN if is_latin else EXACT_OTHER
+            if is_latin:
                 case_ok = _case_matches(hyp_raw[hit[0]:hit[1]], term)
                 case_flags[index] = case_ok
                 case_total += 1
@@ -274,11 +276,12 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
         translit_hit = _find_form(hyp_tokens, lo, hi, term.translit_norm, consumed)
         if translit_hit is not None:
             verdicts[index] = TRANSLIT
+            if term.has_latin:
+                latin_translit += 1
             for idx in range(translit_hit[0], translit_hit[1]):
                 consumed[idx] = True
 
-    # Проход 2: искажения и промахи. `corrupt` не забирает токен: это слабое свидетельство,
-    # и оно не должно отнимать токен у другого термина.
+    # Проход 2: искажение занимает токен, чтобы его не засчитали повторно.
     for index, occ in enumerate(occurrences):
         if verdicts[index] is not None:
             continue
@@ -288,6 +291,7 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
         for idx in range(lo, hi + 1):
             if not consumed[idx] and vocab.corrupt_matches(term, hyp_tokens[idx]):
                 verdicts[index] = CORRUPT
+                consumed[idx] = True
                 break
 
     for index, occ in enumerate(occurrences):
@@ -299,7 +303,7 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
             {
                 "term_id": term.id,
                 "class": term.cls,
-                "spoken_form": "translit" if occ.form_kind == TRANSLIT else "latin",
+                "spoken_form": {TRANSLIT: "translit", EXACT_LATIN: "latin", EXACT_OTHER: "other"}[occ.form_kind],
                 "ref_span": [occ.start, occ.end],
                 "hyp_window": [lo, hi],
                 "verdict": kind,
@@ -307,53 +311,27 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
             }
         )
 
-    # Term precision (V8 §3.2): «терминоподобное» вхождение в гипотезе — TP или FP.
-    # «Терминоподобное» здесь = точная форма из accept; искажения не учитываются, потому
-    # что отнести искажённый токен к термину можно только по референсу (это делает
-    # классификация выше). Одно вхождение референса даёт максимум один TP: повтор
-    # термина в гипотезе без опоры в референсе — FP.
-    ref_occurrence_index: dict[str, list[int]] = {}
-    for index, occ in enumerate(occurrences):
-        ref_occurrence_index.setdefault(occ.term_id, []).append(index)
-    claimed: set[int] = set()
-    tp = fp = 0
-    for hyp_occ in vocab.occurrences(hyp_tokens):
-        mapped = [hyp_to_ref[i] for i in range(hyp_occ.start, hyp_occ.end) if i in hyp_to_ref]
-        ok = False
-        for ref_idx in mapped:
-            for occ_index in ref_occurrence_index.get(hyp_occ.term_id, ()):
-                if occ_index in claimed:
-                    continue
-                occ = occurrences[occ_index]
-                if occ.start - WINDOW <= ref_idx < occ.end + WINDOW:
-                    claimed.add(occ_index)
-                    ok = True
-                    break
-            if ok:
-                break
-        if ok:
-            tp += 1
-        else:
-            fp += 1
-
+    # Один набор сопоставлений задаёт TP, FP и FN для всех трёх метрик.
+    tp = len(occurrences) - counts[MISS]
+    fn = counts[MISS]
+    fp = sum(not any(consumed[occ.start:occ.end]) for occ in vocab.occurrences(hyp_tokens))
     total = len(occurrences)
-    exact = counts[EXACT_LATIN]
-    any_hit = exact + counts[TRANSLIT] + counts[CORRUPT]
-    recall_exact = (exact / total) if total else None
-    recall_any = (any_hit / total) if total else None
-    latin_form_accuracy = (exact / (exact + counts[TRANSLIT])) if (exact + counts[TRANSLIT]) else None
-    precision = (tp / (tp + fp)) if (tp + fp) else None
-    f1 = None
-    if recall_any is not None and precision is not None and (recall_any + precision):
-        f1 = 2 * recall_any * precision / (recall_any + precision)
+    exact = counts[EXACT_LATIN] + counts[EXACT_OTHER]
+    precision = tp / (tp + fp) if tp + fp else None
+    recall = tp / (tp + fn) if tp + fn else None
+    f1 = 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else None
+    latin_form_accuracy = (counts[EXACT_LATIN] / (counts[EXACT_LATIN] + latin_translit)
+                           if counts[EXACT_LATIN] + latin_translit else None)
     return {
         "occurrences": total,
-        "exact_latin": exact,
+        "exact_latin": counts[EXACT_LATIN],
+        "exact_other": counts[EXACT_OTHER],
         "translit": counts[TRANSLIT],
         "corrupt": counts[CORRUPT],
         "miss": counts[MISS],
-        "recall_exact": recall_exact,
-        "recall_any": recall_any,
+        "recall_exact": exact / total if total else None,
+        "recall_any": recall,
+        "term_recall": recall,
         "latin_form_accuracy": latin_form_accuracy,
         "term_precision": precision,
         "term_f1": f1,
@@ -362,44 +340,29 @@ def classify(ref_text: str, hyp_text: str, vocab: Vocabulary) -> dict:
         "case_total": case_total,
         "term_tp": tp,
         "term_fp": fp,
+        "term_fn": fn,
+        "latin_translit": latin_translit,
         "per_term": records,
     }
 
 
 def aggregate(per_utterance: list[dict]) -> dict:
-    """Суммирует классификации по высказываниям (corpus-level recall/precision)."""
-    totals = {EXACT_LATIN: 0, TRANSLIT: 0, CORRUPT: 0, MISS: 0}
-    tp = fp = 0
-    case_hits = case_total = 0
-    for row in per_utterance:
-        for key in totals:
-            totals[key] += row[key]
-        tp += row["term_tp"]
-        fp += row["term_fp"]
-        case_hits += row["case_hits"]
-        case_total += row["case_total"]
-    total = sum(totals.values())
-    exact = totals[EXACT_LATIN]
-    any_hit = exact + totals[TRANSLIT] + totals[CORRUPT]
-    precision = (tp / (tp + fp)) if (tp + fp) else None
-    recall_any = (any_hit / total) if total else None
-    f1 = None
-    if recall_any is not None and precision is not None and (recall_any + precision):
-        f1 = 2 * recall_any * precision / (recall_any + precision)
+    """Микроусреднение: сначала суммируются независимые счётчики."""
+    keys = (EXACT_LATIN, EXACT_OTHER, TRANSLIT, CORRUPT, MISS,
+            "term_tp", "term_fp", "term_fn", "latin_translit", "case_hits", "case_total")
+    counts = {key: sum(row[key] for row in per_utterance) for key in keys}
+    tp, fp, fn = counts["term_tp"], counts["term_fp"], counts["term_fn"]
+    total = tp + fn
+    exact = counts[EXACT_LATIN] + counts[EXACT_OTHER]
+    latin_total = counts[EXACT_LATIN] + counts["latin_translit"]
     return {
         "occurrences": total,
-        "exact_latin": exact,
-        "translit": totals[TRANSLIT],
-        "corrupt": totals[CORRUPT],
-        "miss": totals[MISS],
-        "recall_exact": (exact / total) if total else None,
-        "recall_any": recall_any,
-        "latin_form_accuracy": (exact / (exact + totals[TRANSLIT])) if (exact + totals[TRANSLIT]) else None,
-        "term_precision": precision,
-        "term_f1": f1,
-        "case_accuracy": (case_hits / case_total) if case_total else None,
-        "case_hits": case_hits,
-        "case_total": case_total,
-        "term_tp": tp,
-        "term_fp": fp,
+        **counts,
+        "recall_exact": exact / total if total else None,
+        "recall_any": tp / total if total else None,
+        "term_recall": tp / total if total else None,
+        "latin_form_accuracy": counts[EXACT_LATIN] / latin_total if latin_total else None,
+        "term_precision": tp / (tp + fp) if tp + fp else None,
+        "term_f1": 2 * tp / (2 * tp + fp + fn) if 2 * tp + fp + fn else None,
+        "case_accuracy": counts["case_hits"] / counts["case_total"] if counts["case_total"] else None,
     }
