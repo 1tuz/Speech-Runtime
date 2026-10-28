@@ -1,7 +1,7 @@
 {
   "version": "terms-v1",
   "source": "research/wave2/V8-eval-plan.md §2.3",
-  "note": "class=wordform: 'exact_latin' означает точное совпадение русской словоформы; accept_translit для wordform/command/number не заполняется.",
+  "note": "Для wordform, command и number accept_translit не заполняется; кириллические точные формы считаются как exact_other.",
   "terms": [
     {
       "id": "kubernetes",

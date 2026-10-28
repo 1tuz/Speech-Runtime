@@ -210,6 +210,22 @@ def cmd_validate(args: argparse.Namespace) -> int:
     return 0 if report["ok"] else 1
 
 
+def cmd_preflight(args: argparse.Namespace) -> int:
+    report = dataset_mod.benchmark_preflight(args.dataset)
+    print(json.dumps(report, ensure_ascii=False, indent=2))
+    return 0 if report["ok"] else 1
+
+
+def require_benchmark_ready(args: argparse.Namespace) -> None:
+    if not args.benchmark:
+        return
+    if not args.dataset or not args.split:
+        raise ValueError("--benchmark требует --dataset и явный --split")
+    report = dataset_mod.benchmark_preflight(args.dataset)
+    if not report["ok"]:
+        raise ValueError("preflight не пройден: " + "; ".join(report["errors"][:3]))
+
+
 def _selected_hypotheses(refs, metadata, hypotheses, label):
     # Допускается полный набор гипотез либо ровно выбранный split; посторонние ID — ошибка.
     if metadata and set(hypotheses) == set(metadata):
@@ -219,6 +235,7 @@ def _selected_hypotheses(refs, metadata, hypotheses, label):
 
 
 def cmd_score(args: argparse.Namespace) -> int:
+    require_benchmark_ready(args)
     vocab = terms_mod.Vocabulary.from_path(args.terms) if args.terms else None
     if args.report:
         pairs = _pairs_from_report(args.report)
@@ -231,7 +248,7 @@ def cmd_score(args: argparse.Namespace) -> int:
         provenance = {"split": split, "dataset_sha256": _sha(os.path.join(args.dataset, "manifest.tsv")),
                       "metadata_sha256": _sha(os.path.join(args.dataset, "metadata.jsonl")),
                       "input_sha256": _sha(args.hypotheses)}
-    provenance["parameters"] = {"mode": "score", "split": args.split}
+    provenance["parameters"] = {"mode": "score", "split": args.split, "benchmark": args.benchmark}
     report = _score(pairs, vocab)
     report["provenance"] = provenance
     _print_summary(args.report or args.dataset, report)
@@ -242,6 +259,7 @@ def cmd_score(args: argparse.Namespace) -> int:
 
 
 def cmd_compare(args: argparse.Namespace) -> int:
+    require_benchmark_ready(args)
     refs, metadata, split = dataset_mod.load_scoring_data(args.dataset, args.split)
     hyp_a = _read_hypotheses(args.a)
     hyp_b = _read_hypotheses(args.b)
@@ -267,7 +285,7 @@ def cmd_compare(args: argparse.Namespace) -> int:
         "metadata_sha256": _sha(os.path.join(args.dataset, "metadata.jsonl")),
         "a_sha256": _sha(args.a), "b_sha256": _sha(args.b),
         "parameters": {"mode": "compare", "split": args.split, "group_by": args.group_by,
-                       "replications": args.replications, "seed": args.seed},
+                       "replications": args.replications, "seed": args.seed, "benchmark": args.benchmark},
     }
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if args.json:
@@ -285,6 +303,10 @@ def main(argv: list[str] | None = None) -> int:
     validate.add_argument("--terms", default=None)
     validate.set_defaults(func=cmd_validate)
 
+    preflight = sub.add_parser("preflight", help="проверить допуск корпуса к бенчмарку")
+    preflight.add_argument("--dataset", required=True)
+    preflight.set_defaults(func=cmd_preflight)
+
     score = sub.add_parser("score", help="WER/CER + терминные метрики")
     score.add_argument("--dataset", default=None)
     score.add_argument("--hypotheses", default=None)
@@ -292,6 +314,7 @@ def main(argv: list[str] | None = None) -> int:
     score.add_argument("--terms", default=None)
     score.add_argument("--json", default=None)
     score.add_argument("--split", choices=("dev", "test"))
+    score.add_argument("--benchmark", action="store_true")
     score.set_defaults(func=cmd_score)
 
     compare = sub.add_parser("compare", help="парный bootstrap разницы WER двух систем")
@@ -299,6 +322,7 @@ def main(argv: list[str] | None = None) -> int:
     compare.add_argument("--a", required=True)
     compare.add_argument("--b", required=True)
     compare.add_argument("--split", choices=("dev", "test"))
+    compare.add_argument("--benchmark", action="store_true")
     compare.add_argument("--group-by", choices=("speaker_id", "recording_id"))
     compare.add_argument("--json", default=None)
     compare.add_argument("--replications", type=int, default=1000)

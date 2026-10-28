@@ -13,9 +13,11 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 import os
+import wave
 from collections import Counter
 
 import terms as terms_mod
@@ -396,3 +398,96 @@ def load_scoring_data(dataset_dir: str, split: str | None) -> tuple[dict[str, st
         raise ValueError(f"split {split!r} отсутствует или пуст")
     selected = {key: value for key, value in entries.items() if metadata[key]["split"] == split}
     return selected, metadata, split
+
+
+def benchmark_preflight(dataset_dir: str) -> dict:
+    """Проверка документов и целостности корпуса; не доказывает права и качество разметки."""
+    errors: list[str] = []
+    warnings: list[str] = []
+    root = os.path.realpath(dataset_dir)
+    manifest_path = os.path.join(root, "manifest.tsv")
+    metadata_path = os.path.join(root, "metadata.jsonl")
+    for path in (manifest_path, metadata_path):
+        if not os.path.isfile(path):
+            errors.append(f"нет файла {path}")
+    if errors:
+        return {"ok": False, "errors": errors, "split_counts": {"dev": 0, "test": 0}}
+    refs = _load_manifest(manifest_path, errors, warnings)
+    rows = _load_metadata(metadata_path, errors)
+    metadata = {row["segment_id"]: row for row in rows}
+    if set(refs) != set(metadata):
+        errors.append("ID манифеста и метаданных не совпадают")
+    split_counts = {split: sum(row["split"] == split for row in rows) for split in SPLITS}
+    for split, count in split_counts.items():
+        if not count:
+            errors.append(f"выборка {split} пуста или отсутствует")
+    for key in ("speaker_id", "recording_id"):
+        mapping: dict[str, set[str]] = {}
+        for row in rows:
+            mapping.setdefault(row[key], set()).add(row["split"])
+        if any(len(splits) > 1 for splits in mapping.values()):
+            errors.append(f"утечка {key} между dev и test")
+
+    paths: dict[str, str] = {}
+    with open(manifest_path, encoding="utf-8") as fh:
+        for line in fh:
+            if not line.strip() or line.lstrip().startswith("#"):
+                continue
+            fields = line.rstrip("\n").split("\t")
+            if len(fields) != 2:
+                continue
+            audio = fields[0].strip()
+            seg_id = os.path.splitext(os.path.basename(audio))[0]
+            if seg_id in paths:
+                continue
+            paths[seg_id] = audio
+    audio_splits: dict[str, set[str]] = {}
+    for row in rows:
+        seg_id = row["segment_id"]
+        prefix = f"segment '{seg_id}': "
+        for field in ("source", "license", "rights_evidence", "rights_reviewer", "transcript_reviewer"):
+            value = row.get(field)
+            if not isinstance(value, str) or not value.strip() or value.strip().casefold() in {"unknown", "неизвестно", "n/a", "none"}:
+                errors.append(prefix + f"{field} отсутствует или неизвестен")
+        for field in ("rights_status", "transcript_status"):
+            if row.get(field) != "verified":
+                errors.append(prefix + f"{field} должен быть verified")
+        if seg_id in refs:
+            digest = hashlib.sha256(refs[seg_id].encode("utf-8")).hexdigest()
+            if row.get("transcript_sha256") != digest:
+                errors.append(prefix + "transcript_sha256 не совпадает")
+        audio = paths.get(seg_id)
+        if not audio:
+            continue
+        path = os.path.realpath(os.path.join(root, audio))
+        if os.path.isabs(audio) or os.path.commonpath((root, path)) != root or not os.path.isfile(path):
+            errors.append(prefix + "аудио отсутствует или находится вне каталога корпуса")
+            continue
+        try:
+            sha = hashlib.sha256()
+            with open(path, "rb") as fh:
+                for chunk in iter(lambda: fh.read(1024 * 1024), b""):
+                    sha.update(chunk)
+            actual = sha.hexdigest()
+            if row.get("audio_sha256") != actual:
+                errors.append(prefix + "audio_sha256 не совпадает")
+            audio_splits.setdefault(actual, set()).add(row["split"])
+            with wave.open(path, "rb") as wav:
+                if wav.getnchannels() < 1 or wav.getframerate() < 1 or wav.getnframes() < 1:
+                    errors.append(prefix + "WAV не содержит аудиоданных")
+                if abs(row["duration_s"] - wav.getnframes() / wav.getframerate()) > 0.05:
+                    errors.append(prefix + "duration_s не совпадает с WAV")
+                expected_bytes = wav.getnframes() * wav.getnchannels() * wav.getsampwidth()
+                total_bytes = 0
+                while True:
+                    chunk = wav.readframes(65536)
+                    if not chunk:
+                        break
+                    total_bytes += len(chunk)
+                if total_bytes != expected_bytes:
+                    errors.append(prefix + "WAV обрезан")
+        except (OSError, EOFError, wave.Error) as exc:
+            errors.append(prefix + f"ошибка WAV: {exc}")
+    if any(len(splits) > 1 for splits in audio_splits.values()):
+        errors.append("одинаковое аудио встречается в dev и test")
+    return {"ok": not errors, "errors": errors, "split_counts": split_counts}
