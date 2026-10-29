@@ -151,6 +151,12 @@
       "sha256": "c41af732cc1fb117f6e2546539f4fd6f500e92501da7bfd69b94e0cdcedc06c1"
     },
     {
+      "group": "der",
+      "file": "der/hard-der.json",
+      "source": "experiments/corpus/local/veche-prepared/hard/der.json",
+      "sha256": "9ba2869c95b037a89166fa187798d2e28f34093885a3c564d3f86ef50ea4d616"
+    },
+    {
       "group": "streaming",
       "file": "streaming/runs-stream560-latency.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/stream560-latency.json",

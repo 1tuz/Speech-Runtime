@@ -27,6 +27,7 @@ SOURCES = [
     (SCORES, "scores"),
     (os.path.join(SIMPLE, "der.json"), "der"),
     (os.path.join(MEDIUM, "der.json"), "der"),
+    (os.path.join(HARD, "der.json"), "der"),
     (os.path.join(SIMPLE, "stream560-latency.json"), "streaming"),
     (os.path.join(SIMPLE, "stream1120-latency.json"), "streaming"),
     (os.path.join(SIMPLE, "stream2240-latency.json"), "streaming"),
