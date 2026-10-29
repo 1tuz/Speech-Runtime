@@ -76,7 +76,10 @@ def main(argv: list[str] | None = None) -> int:
             continue
         dst_dir = os.path.join(args.out, group)
         os.makedirs(dst_dir, exist_ok=True)
-        name = os.path.basename(source)
+        # Имена вида runs-parakeet-test.json повторяются у medium и hard, поэтому
+        # к имени добавляется родительский каталог: иначе один файл затирает другой.
+        parent = os.path.basename(os.path.dirname(source))
+        name = f"{parent}-{os.path.basename(source)}"
         shutil.copyfile(source, os.path.join(dst_dir, name))
         manifest.append({"group": group, "file": f"{group}/{name}",
                          "source": source, "sha256": sha256(source)})
