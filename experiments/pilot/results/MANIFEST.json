@@ -26,6 +26,18 @@
     },
     {
       "group": "scores",
+      "file": "scores/nemotron-dev-none.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-none.json",
+      "sha256": "bd23739d409c23c9c9719d604fc6e1ce4f84088762191aa68ca14a19dcfc8935"
+    },
+    {
+      "group": "scores",
+      "file": "scores/nemotron-dev-vocab2.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-vocab2.json",
+      "sha256": "1591ae45af8b23dac30ef56f7f0faf6080305f785806be6dbb2d643e823a1a05"
+    },
+    {
+      "group": "scores",
       "file": "scores/nemotron-hypotheses-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-hypotheses-test.json",
       "sha256": "89fbac7ffdd0952e01d8726396f37f1d80b6b7041c3a39c01703a7545801ef63"
@@ -71,6 +83,24 @@
       "file": "scores/parakeet-v3-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-v3-test.json",
       "sha256": "6ea804ea067b6d4efd1c276a8e2023be2a4e35c5366f336ce62703c0687ec41f"
+    },
+    {
+      "group": "scores",
+      "file": "scores/qwen-dev-distractor.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-distractor.json",
+      "sha256": "82ffd6b0621c3771382505c9d133273671e194e3e666c572f4112703f25649cd"
+    },
+    {
+      "group": "scores",
+      "file": "scores/qwen-dev-empty.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-empty.json",
+      "sha256": "026c667480d63de569d9bbb031d5b170c9a6e9f7efdc35fe722b4a662fe93595"
+    },
+    {
+      "group": "scores",
+      "file": "scores/qwen-dev-relevant.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-relevant.json",
+      "sha256": "02c76d26a59db6b3da259cea9384d0b131f22f233d195d01d50d47dd27c2b9ce"
     },
     {
       "group": "scores",
@@ -161,6 +191,36 @@
       "file": "correction/runs-correction-embed-t0.6.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-embed-t0.6.json",
       "sha256": "b4975474a8c65806f536f973ba3bf9c3959df244b3daf3b7ecaabc46b10a0034"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-empty.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-empty.json",
+      "sha256": "026c667480d63de569d9bbb031d5b170c9a6e9f7efdc35fe722b4a662fe93595"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-relevant.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-relevant.json",
+      "sha256": "02c76d26a59db6b3da259cea9384d0b131f22f233d195d01d50d47dd27c2b9ce"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-distractor.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-distractor.json",
+      "sha256": "82ffd6b0621c3771382505c9d133273671e194e3e666c572f4112703f25649cd"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-nemotron-dev-none.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-none.json",
+      "sha256": "bd23739d409c23c9c9719d604fc6e1ce4f84088762191aa68ca14a19dcfc8935"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-nemotron-dev-vocab2.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-vocab2.json",
+      "sha256": "1591ae45af8b23dac30ef56f7f0faf6080305f785806be6dbb2d643e823a1a05"
     },
     {
       "group": "variants",
