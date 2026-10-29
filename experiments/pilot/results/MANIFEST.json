@@ -148,19 +148,19 @@
       "group": "streaming",
       "file": "streaming/runs-stream560-latency.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/stream560-latency.json",
-      "sha256": "6537abaa276fcb5a68430e6609e0b51c820b26b79ecdee16a658eaa351d243a4"
+      "sha256": "00c536c94b6d852398956d262b41abd8b5a79b9f4e9c89037e22572a14e2dbf3"
     },
     {
       "group": "streaming",
       "file": "streaming/runs-stream1120-latency.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/stream1120-latency.json",
-      "sha256": "707971cd1b3942ce7b6a68595cc327a7e5937705873da79d710c4587182438f7"
+      "sha256": "266b05d8653292b94556d530afe912260ba5eee4445ef2f3ba196d922f499e49"
     },
     {
       "group": "streaming",
       "file": "streaming/runs-stream2240-latency.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/stream2240-latency.json",
-      "sha256": "252e3b91c7d96135c56a6111d8c1e60db3ee7678d951e664ccb1916e6c580376"
+      "sha256": "d6d6d890d2764e25b90a0ee37cedef9bf07277acb14fa65ae4d774245caa5930"
     },
     {
       "group": "correction",

@@ -30,22 +30,47 @@ def percentile(values: list[float], q: float) -> float | None:
     return ordered[index]
 
 
-def token_latencies(segment: dict) -> list[float]:
-    """Последовательное сопоставление: каждый следующий токен ищется после
-    предыдущего. Наивный substring-поиск засчитывал частые слова («и», «в»)
-    по первому partial, где они случайно встретились."""
+def words_from_pieces(segment: dict) -> list[dict]:
+    """Склеивает sentencepiece-куски в слова.
+
+    `token_timings` — куски (`▁Да`, `в`, `айте`), а не слова. Границу слова даёт
+    кусок, начинающийся с `▁`. Отдельный кусок `▁` (маркер пробела без букв)
+    тоже граница: следующий кусок открывает новое слово, иначе «начнем» и
+    «статус» склеиваются в одно.
+    """
+    words: list[dict] = []
+    for piece in segment.get("token_timings", []):
+        text = piece["text"]
+        starts_word = text.startswith("\u2581")
+        cleaned = text.replace("\u2581", "").strip()
+        if starts_word:
+            words.append({"text": cleaned, "start": piece["start"], "end": piece["end"]})
+        elif not words:
+            words.append({"text": cleaned, "start": piece["start"], "end": piece["end"]})
+        else:
+            words[-1]["text"] += cleaned
+            words[-1]["end"] = piece["end"]
+    return [word for word in words if word["text"]]
+
+
+def word_latencies(segment: dict) -> list[float]:
+    """Задержка появления слова: первый partial с этим словом минус конец слова.
+
+    Сопоставление последовательное: следующее слово ищется после предыдущего,
+    чтобы частые слова не засчитывались по случайному раннему совпадению.
+    """
     partials = [(p["at_s"], p["text"].lower()) for p in segment.get("partials", []) if p["text"]]
     out: list[float] = []
-    cursor = {id(text): 0 for _, text in partials}
-    for token in segment.get("token_timings", []):
-        piece = token["text"].strip().lower()
+    cursors = [0] * len(partials)
+    for word in words_from_pieces(segment):
+        piece = word["text"].strip().lower()
         if len(piece) < 2:
             continue
-        for at, text in partials:
-            position = text.find(piece, cursor[id(text)])
+        for index, (at, text) in enumerate(partials):
+            position = text.find(piece, cursors[index])
             if position >= 0:
-                cursor[id(text)] = position + len(piece)
-                out.append(at - token["end"])
+                cursors[index] = position + len(piece)
+                out.append(at - word["end"])
                 break
     return out
 
@@ -59,7 +84,7 @@ def main(argv: list[str] | None = None) -> int:
     rows = []
     all_word = []
     for segment in data["segments"]:
-        latencies = token_latencies(segment)
+        latencies = word_latencies(segment)
         all_word.extend(latencies)
         first = next((p["at_s"] for p in segment.get("partials", []) if p["text"].strip()), None)
         rows.append({

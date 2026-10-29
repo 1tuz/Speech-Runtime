@@ -8,10 +8,10 @@
   "first_partial_p95": 1.1627702713012695,
   "final_tail_p50": 0.048969268798828125,
   "final_tail_p95": 0.10683393478393555,
-  "word_latency_p50": 0.43414697647094735,
-  "word_latency_p95": 0.9997929096221925,
-  "word_latency_mean": 0.44028040072957014,
-  "words_measured": 366,
+  "word_latency_p50": 0.43550391197204563,
+  "word_latency_p95": 1.0683329582214354,
+  "word_latency_mean": 0.4571389652269457,
+  "words_measured": 221,
   "per_segment": [
     {
       "segment_id": "10-it-meeteing-0000",
@@ -21,8 +21,8 @@
       "final_tail_s": 0.048438072204589844,
       "partial_count": 5,
       "word_latency_p50": 0.5184479904174801,
-      "word_latency_p95": 0.9203099250793456,
-      "words_measured": 18
+      "word_latency_p95": 0.8384479904174804,
+      "words_measured": 11
     },
     {
       "segment_id": "10-it-meeteing-0001",
@@ -31,9 +31,9 @@
       "first_partial_s": 1.151944875717163,
       "final_tail_s": 0.02540302276611328,
       "partial_count": 4,
-      "word_latency_p50": 0.5374868583679198,
-      "word_latency_p95": 0.8334789848327635,
-      "words_measured": 11
+      "word_latency_p50": 0.35194487571716315,
+      "word_latency_p95": 1.0660898017883298,
+      "words_measured": 10
     },
     {
       "segment_id": "10-it-meeteing-0002",
@@ -42,9 +42,9 @@
       "first_partial_s": 1.1494970321655273,
       "final_tail_s": 0.04747819900512695,
       "partial_count": 3,
-      "word_latency_p50": 0.5191321277618408,
+      "word_latency_p50": 0.48197002410888645,
       "word_latency_p95": 0.9991321277618408,
-      "words_measured": 11
+      "words_measured": 9
     },
     {
       "segment_id": "10-it-meeteing-0003",
@@ -53,9 +53,9 @@
       "first_partial_s": 1.1567649841308594,
       "final_tail_s": 4.100799560546875e-05,
       "partial_count": 3,
-      "word_latency_p50": 0.5167649841308594,
+      "word_latency_p50": 0.27716588973999023,
       "word_latency_p95": 0.9971658897399902,
-      "words_measured": 16
+      "words_measured": 9
     },
     {
       "segment_id": "10-it-meeteing-0004",
@@ -64,9 +64,9 @@
       "first_partial_s": 1.1375601291656494,
       "final_tail_s": 0.048922061920166016,
       "partial_count": 4,
-      "word_latency_p50": 0.5064721012115478,
-      "word_latency_p95": 0.9997929096221925,
-      "words_measured": 17
+      "word_latency_p50": 0.3464721012115477,
+      "word_latency_p95": 0.9864721012115478,
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0005",
@@ -75,9 +75,9 @@
       "first_partial_s": 1.1410269737243652,
       "final_tail_s": 0.04136180877685547,
       "partial_count": 5,
-      "word_latency_p50": 0.5863587379455564,
-      "word_latency_p95": 0.9063587379455567,
-      "words_measured": 15
+      "word_latency_p50": 0.7603778743743894,
+      "word_latency_p95": 1.0803778743743897,
+      "words_measured": 10
     },
     {
       "segment_id": "10-it-meeteing-0006",
@@ -86,9 +86,9 @@
       "first_partial_s": 1.153439998626709,
       "final_tail_s": 0.05600690841674805,
       "partial_count": 3,
-      "word_latency_p50": 0.35092313766479477,
+      "word_latency_p50": 0.433439998626709,
       "word_latency_p95": 1.0709231376647947,
-      "words_measured": 11
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0007",
@@ -97,9 +97,9 @@
       "first_partial_s": 1.1504318714141846,
       "final_tail_s": 0.030957937240600586,
       "partial_count": 4,
-      "word_latency_p50": 0.48934995651245083,
-      "word_latency_p95": 0.8304318714141845,
-      "words_measured": 15
+      "word_latency_p50": 0.5693499565124509,
+      "word_latency_p95": 0.9085809135437011,
+      "words_measured": 10
     },
     {
       "segment_id": "10-it-meeteing-0008",
@@ -108,9 +108,9 @@
       "first_partial_s": 1.1515960693359375,
       "final_tail_s": 0.03374600410461426,
       "partial_count": 3,
-      "word_latency_p50": 0.35550391197204556,
-      "word_latency_p95": 0.835503911972046,
-      "words_measured": 16
+      "word_latency_p50": 0.43550391197204563,
+      "word_latency_p95": 1.0740268707275389,
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0009",
@@ -119,8 +119,8 @@
       "first_partial_s": 1.1359481811523438,
       "final_tail_s": 0.050147056579589844,
       "partial_count": 3,
-      "word_latency_p50": 0.25594818115234375,
-      "word_latency_p95": 0.5132009887695312,
+      "word_latency_p50": 0.2741469764709472,
+      "word_latency_p95": 0.9132009887695312,
       "words_measured": 9
     },
     {
@@ -130,9 +130,9 @@
       "first_partial_s": 1.1522700786590576,
       "final_tail_s": 0.04286003112792969,
       "partial_count": 4,
-      "word_latency_p50": 0.5122700786590576,
+      "word_latency_p50": 0.35868485450744614,
       "word_latency_p95": 0.9933329582214356,
-      "words_measured": 13
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0011",
@@ -141,9 +141,9 @@
       "first_partial_s": 1.1268808841705322,
       "final_tail_s": 0.045477867126464844,
       "partial_count": 4,
-      "word_latency_p50": 0.24688088417053222,
-      "word_latency_p95": 1.0685601711273192,
-      "words_measured": 15
+      "word_latency_p50": 0.5166038227081295,
+      "word_latency_p95": 1.0766038227081296,
+      "words_measured": 6
     },
     {
       "segment_id": "10-it-meeteing-0012",
@@ -152,9 +152,9 @@
       "first_partial_s": 1.1536190509796143,
       "final_tail_s": 0.048969268798828125,
       "partial_count": 3,
-      "word_latency_p50": 0.40374186515808086,
+      "word_latency_p50": 0.6736380100250243,
       "word_latency_p95": 0.9936380100250244,
-      "words_measured": 10
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0013",
@@ -163,9 +163,9 @@
       "first_partial_s": 2.2683329582214355,
       "final_tail_s": 0.0494999885559082,
       "partial_count": 3,
-      "word_latency_p50": 0.5883329582214354,
+      "word_latency_p50": 0.43482593536376957,
       "word_latency_p95": 1.0748259353637692,
-      "words_measured": 15
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0014",
@@ -174,8 +174,8 @@
       "first_partial_s": 1.1487767696380615,
       "final_tail_s": 0.04425382614135742,
       "partial_count": 4,
-      "word_latency_p50": 0.5080441188812252,
-      "word_latency_p95": 0.8194230175018309,
+      "word_latency_p50": 0.419423017501831,
+      "word_latency_p95": 1.0594230175018309,
       "words_measured": 9
     },
     {
@@ -185,9 +185,9 @@
       "first_partial_s": 1.1576509475708008,
       "final_tail_s": 0.04831886291503906,
       "partial_count": 4,
-      "word_latency_p50": 0.4374138450622558,
-      "word_latency_p95": 0.9174138450622558,
-      "words_measured": 15
+      "word_latency_p50": 0.5974138450622557,
+      "word_latency_p95": 1.0781637954711911,
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0016",
@@ -196,9 +196,9 @@
       "first_partial_s": 1.1533489227294922,
       "final_tail_s": 0.052575111389160156,
       "partial_count": 3,
-      "word_latency_p50": 0.2733489227294922,
-      "word_latency_p95": 1.0048267555236816,
-      "words_measured": 14
+      "word_latency_p50": 0.44482675552368156,
+      "word_latency_p95": 0.9248267555236815,
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0017",
@@ -208,8 +208,8 @@
       "final_tail_s": 0.046469926834106445,
       "partial_count": 3,
       "word_latency_p50": 0.36088688850402817,
-      "word_latency_p95": 0.6808868885040282,
-      "words_measured": 12
+      "word_latency_p95": 1.0808868885040281,
+      "words_measured": 5
     },
     {
       "segment_id": "10-it-meeteing-0018",
@@ -218,9 +218,9 @@
       "first_partial_s": 1.1501030921936035,
       "final_tail_s": 0.1141200065612793,
       "partial_count": 5,
-      "word_latency_p50": 0.4445580577850341,
-      "word_latency_p95": 1.0739789581298829,
-      "words_measured": 14
+      "word_latency_p50": 0.5089641761779782,
+      "word_latency_p95": 1.084558057785034,
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0019",
@@ -230,8 +230,8 @@
       "final_tail_s": 0.053395748138427734,
       "partial_count": 2,
       "word_latency_p50": 0.35240001678466804,
-      "word_latency_p95": 0.512400016784668,
-      "words_measured": 9
+      "word_latency_p95": 0.752400016784668,
+      "words_measured": 5
     },
     {
       "segment_id": "10-it-meeteing-0020",
@@ -240,9 +240,9 @@
       "first_partial_s": 1.153364896774292,
       "final_tail_s": 0.055162906646728516,
       "partial_count": 3,
-      "word_latency_p50": 0.3601460647583008,
-      "word_latency_p95": 0.844252882003784,
-      "words_measured": 15
+      "word_latency_p50": 0.35336489677429206,
+      "word_latency_p95": 1.0042528820037842,
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0021",
@@ -251,9 +251,9 @@
       "first_partial_s": 1.1551060676574707,
       "final_tail_s": 0.0509951114654541,
       "partial_count": 3,
-      "word_latency_p50": 0.44145313262939445,
+      "word_latency_p50": 0.5951060676574708,
       "word_latency_p95": 0.9214531326293944,
-      "words_measured": 11
+      "words_measured": 8
     },
     {
       "segment_id": "10-it-meeteing-0022",
@@ -262,9 +262,9 @@
       "first_partial_s": 1.154926061630249,
       "final_tail_s": 0.05497121810913086,
       "partial_count": 3,
-      "word_latency_p50": 0.3549260616302491,
-      "word_latency_p95": 1.0020990085601806,
-      "words_measured": 11
+      "word_latency_p50": 0.3574941349029541,
+      "word_latency_p95": 0.8420990085601805,
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0023",
@@ -273,9 +273,9 @@
       "first_partial_s": 1.1627702713012695,
       "final_tail_s": 0.04352688789367676,
       "partial_count": 2,
-      "word_latency_p50": 0.44277027130126956,
-      "word_latency_p95": 1.0796320915222166,
-      "words_measured": 9
+      "word_latency_p50": 0.6027702713012696,
+      "word_latency_p95": 0.9996320915222168,
+      "words_measured": 4
     },
     {
       "segment_id": "10-it-meeteing-0024",
@@ -284,9 +284,9 @@
       "first_partial_s": 1.1552560329437256,
       "final_tail_s": 0.05628204345703125,
       "partial_count": 3,
-      "word_latency_p50": 0.35525603294372565,
-      "word_latency_p95": 0.9127370262145995,
-      "words_measured": 7
+      "word_latency_p50": 0.43273702621459953,
+      "word_latency_p95": 0.7308380031585693,
+      "words_measured": 6
     },
     {
       "segment_id": "10-it-meeteing-0025",
@@ -306,9 +306,9 @@
       "first_partial_s": 1.1544570922851562,
       "final_tail_s": 0.061921119689941406,
       "partial_count": 3,
-      "word_latency_p50": 0.5268971443176267,
-      "word_latency_p95": 1.0068971443176267,
-      "words_measured": 13
+      "word_latency_p50": 0.7586183357238769,
+      "word_latency_p95": 1.0786183357238768,
+      "words_measured": 9
     },
     {
       "segment_id": "10-it-meeteing-0027",
@@ -317,9 +317,9 @@
       "first_partial_s": 1.1595919132232666,
       "final_tail_s": 0.0500791072845459,
       "partial_count": 3,
-      "word_latency_p50": 0.35959191322326667,
+      "word_latency_p50": 0.48040995597839364,
       "word_latency_p95": 0.9176288986206054,
-      "words_measured": 15
+      "words_measured": 7
     },
     {
       "segment_id": "10-it-meeteing-0028",
@@ -328,9 +328,9 @@
       "first_partial_s": 1.1516339778900146,
       "final_tail_s": 0.05041384696960449,
       "partial_count": 3,
-      "word_latency_p50": 0.4199151325225827,
-      "word_latency_p95": 0.8311970806121824,
-      "words_measured": 9
+      "word_latency_p50": 0.27163397789001464,
+      "word_latency_p95": 0.7511970806121826,
+      "words_measured": 5
     },
     {
       "segment_id": "10-it-meeteing-0029",
@@ -339,9 +339,9 @@
       "first_partial_s": 1.1540758609771729,
       "final_tail_s": 0.05338287353515625,
       "partial_count": 3,
-      "word_latency_p50": 0.6773999786376952,
-      "word_latency_p95": 0.9205409431457519,
-      "words_measured": 11
+      "word_latency_p50": 0.1940758609771729,
+      "word_latency_p95": 0.7605409431457519,
+      "words_measured": 6
     }
   ]
 }
