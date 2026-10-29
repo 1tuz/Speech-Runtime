@@ -1,0 +1,88 @@
+{
+  "split": "dev",
+  "threshold": 0.3,
+  "margin": 0.1,
+  "min_length": 4,
+  "segments": 321,
+  "words": 2824,
+  "corrections": 14,
+  "fixed_errors": 1,
+  "false_replacements": 8,
+  "wrong_replacements": 5,
+  "false_replacements_per_1000_words": 2.8328611898017,
+  "corrections_per_1000_words": 4.957507082152975,
+  "wer_before": 0.2146615222728867,
+  "wer_after": 0.2171168011224132,
+  "examples": [
+    {
+      "segment_id": "2-one-to-one-0031",
+      "from": "темп",
+      "to": "Tempo"
+    },
+    {
+      "segment_id": "5-it-product-0001",
+      "from": "симфакс",
+      "to": "tmux"
+    },
+    {
+      "segment_id": "5-it-product-0006",
+      "from": "волю",
+      "to": "Vault"
+    },
+    {
+      "segment_id": "5-it-product-0008",
+      "from": "скайфер",
+      "to": "CIDR"
+    },
+    {
+      "segment_id": "5-it-product-0017",
+      "from": "пятьдесят",
+      "to": "p50"
+    },
+    {
+      "segment_id": "5-it-product-0023",
+      "from": "симфакс",
+      "to": "tmux"
+    },
+    {
+      "segment_id": "5-it-product-0075",
+      "from": "симфакс",
+      "to": "tmux"
+    },
+    {
+      "segment_id": "5-it-product-0080",
+      "from": "симфакс",
+      "to": "tmux"
+    },
+    {
+      "segment_id": "5-it-product-0092",
+      "from": "юйкс",
+      "to": "UX"
+    },
+    {
+      "segment_id": "5-it-product-0101",
+      "from": "юнитс",
+      "to": "JUnit"
+    },
+    {
+      "segment_id": "7-bi-platform-0032",
+      "from": "истинно",
+      "to": "Istio"
+    },
+    {
+      "segment_id": "7-bi-platform-0039",
+      "from": "истинно",
+      "to": "Istio"
+    },
+    {
+      "segment_id": "7-bi-platform-0071",
+      "from": "пакет",
+      "to": "Packer"
+    },
+    {
+      "segment_id": "7-bi-platform-0112",
+      "from": "года",
+      "to": "Node.js"
+    }
+  ]
+}

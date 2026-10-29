@@ -150,3 +150,11 @@ DER 33–60 % при недооценке числа говорящих на м�
 - Диаризация: один движок, один порог, без сравнения с LS-EEND/Sortformer.
 - Whisper шёл с `--language ru`, GigaAM — без языковых подсказок (у пакета их нет);
   это разные условия, и по терминам сравнение несимметрично.
+
+## Воспроизводимость
+
+Метрики прогонов лежат в [`results/`](results) (35 файлов, `MANIFEST.json` с
+sha256 и путями исходников). Аудио, веса и полные гипотезы — в
+`experiments/corpus/local/` вне Git; их можно пересобрать командами из
+[`experiments/runners/README.md`](../runners/README.md). Сбор результатов:
+`python3 experiments/runners/collect_results.py`.

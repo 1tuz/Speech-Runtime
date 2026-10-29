@@ -1,0 +1,16 @@
+{
+  "pairs": 94,
+  "tune_pairs": 38,
+  "eval_pairs": 56,
+  "exact_matches_all": 3,
+  "exact_share": 0.031914893617021274,
+  "fuzzy_threshold": 0.5,
+  "fuzzy_tune_accuracy": 0.42105263157894735,
+  "fuzzy_eval_accuracy": 0.44642857142857145,
+  "embedding": {
+    "recall_at_1": 0.25,
+    "recall_at_5": 0.4107142857142857,
+    "recall_at_10": 0.44642857142857145,
+    "mrr": 0.3136586137452227
+  }
+}

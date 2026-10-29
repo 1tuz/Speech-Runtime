@@ -1,0 +1,93 @@
+{
+  "split": "dev",
+  "threshold": 0.4,
+  "margin": 0.1,
+  "min_length": 4,
+  "segments": 321,
+  "words": 2824,
+  "corrections": 128,
+  "fixed_errors": 1,
+  "false_replacements": 106,
+  "wrong_replacements": 21,
+  "false_replacements_per_1000_words": 37.53541076487252,
+  "corrections_per_1000_words": 45.3257790368272,
+  "wer_before": 0.2146615222728867,
+  "wer_after": 0.2514907050157839,
+  "examples": [
+    {
+      "segment_id": "2-one-to-one-0010",
+      "from": "тогда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0014",
+      "from": "тогда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0020",
+      "from": "тогда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0020",
+      "from": "целом",
+      "to": "Helm"
+    },
+    {
+      "segment_id": "2-one-to-one-0022",
+      "from": "иногда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0023",
+      "from": "иногда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0024",
+      "from": "целом",
+      "to": "Helm"
+    },
+    {
+      "segment_id": "2-one-to-one-0024",
+      "from": "иногда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0031",
+      "from": "целом",
+      "to": "Helm"
+    },
+    {
+      "segment_id": "2-one-to-one-0031",
+      "from": "темп",
+      "to": "Tempo"
+    },
+    {
+      "segment_id": "2-one-to-one-0031",
+      "from": "иногда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0038",
+      "from": "тогда",
+      "to": "Node.js"
+    },
+    {
+      "segment_id": "2-one-to-one-0040",
+      "from": "могу",
+      "to": "MongoDB"
+    },
+    {
+      "segment_id": "5-it-product-0001",
+      "from": "симфакс",
+      "to": "tmux"
+    },
+    {
+      "segment_id": "5-it-product-0004",
+      "from": "входа",
+      "to": "Node.js"
+    }
+  ]
+}

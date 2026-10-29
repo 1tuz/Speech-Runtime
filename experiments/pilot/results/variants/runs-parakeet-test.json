@@ -1,0 +1,55 @@
+{
+  "scorer_version": "asr-eval-v2",
+  "norm_version": "norm-v2",
+  "commands": {
+    "version": "command-exact-v1",
+    "total": 0,
+    "correct": 0,
+    "accuracy": null
+  },
+  "term_metric_version": "term-v2",
+  "vocabulary": {
+    "path": "terms.json",
+    "version": "terms-v1",
+    "sha256": "8543fd9aef9b46eb26ed8deb50380d24687c8a277b9f34c25b07d919d650ffb4"
+  },
+  "utterances": 967,
+  "wer": 0.11264482906594192,
+  "cer": 0.04895892681410887,
+  "substitutions": 1128,
+  "deletions": 311,
+  "insertions": 136,
+  "words": 13982,
+  "terms": {
+    "occurrences": 43,
+    "exact_latin": 4,
+    "exact_other": 4,
+    "translit": 13,
+    "corrupt": 1,
+    "miss": 21,
+    "term_tp": 22,
+    "term_fp": 0,
+    "term_fn": 21,
+    "latin_translit": 13,
+    "case_hits": 4,
+    "case_total": 4,
+    "recall_exact": 0.18604651162790697,
+    "recall_any": 0.5116279069767442,
+    "term_recall": 0.5116279069767442,
+    "latin_form_accuracy": 0.23529411764705882,
+    "term_precision": 1.0,
+    "term_f1": 0.676923076923077,
+    "case_accuracy": 1.0
+  },
+  "provenance": {
+    "split": "test",
+    "dataset_sha256": "63a5c269923559923a6d1bbf42b8f78e9e0630c09a3cd2babac2de4d37cffa81",
+    "metadata_sha256": "8f1d7f0df2dd629498773347464b116c8a38352a34487b4d77e150c4c00bc870",
+    "input_sha256": "2014d3dfdd51b0ac4068d3608bd59cee8117292e8482417bcef4ca574eb8da29",
+    "parameters": {
+      "mode": "score",
+      "split": "test",
+      "benchmark": false
+    }
+  }
+}

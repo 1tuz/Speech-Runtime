@@ -1,0 +1,26 @@
+{
+  "train_pairs": 38,
+  "eval_pairs": 56,
+  "steps": 40,
+  "train_loss": 0.8583984375,
+  "before": {
+    "recall_at_1": 0.14285714285714285,
+    "recall_at_5": 0.3392857142857143,
+    "recall_at_10": 0.44642857142857145,
+    "mrr": 0.2239918826488372
+  },
+  "after": {
+    "recall_at_1": 0.44642857142857145,
+    "recall_at_5": 0.5892857142857143,
+    "recall_at_10": 0.7142857142857143,
+    "mrr": 0.5422799035076914
+  },
+  "after_reload": {
+    "recall_at_1": 0.44642857142857145,
+    "recall_at_5": 0.5892857142857143,
+    "recall_at_10": 0.7142857142857143,
+    "mrr": 0.5422799035076914
+  },
+  "adapter": "experiments/corpus/local/embedding/lora/adapter",
+  "adapter_sha256": null
+}

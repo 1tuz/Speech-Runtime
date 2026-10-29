@@ -1,0 +1,200 @@
+{
+  "10-it-meeteing/with_overlap": {
+    "ref_speech_s": 465.22,
+    "miss_s": 34.92,
+    "false_alarm_s": 0.93,
+    "confusion_s": 245.06,
+    "der": 0.6038218477279567,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 10,
+    "speakers_hyp": 4
+  },
+  "10-it-meeteing/no_overlap": {
+    "ref_speech_s": 465.22,
+    "miss_s": 34.92,
+    "false_alarm_s": 0.93,
+    "confusion_s": 245.06,
+    "der": 0.6038218477279567,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 10,
+    "speakers_hyp": 4
+  },
+  "2-one-to-one/with_overlap": {
+    "ref_speech_s": 118.63,
+    "miss_s": 5.1,
+    "false_alarm_s": 0.05,
+    "confusion_s": 37.59,
+    "der": 0.3602798617550367,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 2,
+    "speakers_hyp": 2
+  },
+  "2-one-to-one/no_overlap": {
+    "ref_speech_s": 118.63,
+    "miss_s": 5.1,
+    "false_alarm_s": 0.05,
+    "confusion_s": 37.59,
+    "der": 0.3602798617550367,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 2,
+    "speakers_hyp": 2
+  },
+  "3-auth-incident/with_overlap": {
+    "ref_speech_s": 240.11,
+    "miss_s": 20.33,
+    "false_alarm_s": 0.0,
+    "confusion_s": 59.96,
+    "der": 0.334388405314231,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 3,
+    "speakers_hyp": 3
+  },
+  "3-auth-incident/no_overlap": {
+    "ref_speech_s": 240.11,
+    "miss_s": 20.33,
+    "false_alarm_s": 0.0,
+    "confusion_s": 59.96,
+    "der": 0.334388405314231,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 3,
+    "speakers_hyp": 3
+  },
+  "4-hr-retention/with_overlap": {
+    "ref_speech_s": 1605.83,
+    "miss_s": 107.28,
+    "false_alarm_s": 0.11,
+    "confusion_s": 828.24,
+    "der": 0.5826457346045347,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 4,
+    "speakers_hyp": 3
+  },
+  "4-hr-retention/no_overlap": {
+    "ref_speech_s": 1605.83,
+    "miss_s": 107.28,
+    "false_alarm_s": 0.11,
+    "confusion_s": 828.24,
+    "der": 0.5826457346045347,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 4,
+    "speakers_hyp": 3
+  },
+  "5-it-product/with_overlap": {
+    "ref_speech_s": 302.1,
+    "miss_s": 15.79,
+    "false_alarm_s": 0.01,
+    "confusion_s": 95.24,
+    "der": 0.36756041046011256,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 5,
+    "speakers_hyp": 5
+  },
+  "5-it-product/no_overlap": {
+    "ref_speech_s": 302.1,
+    "miss_s": 15.79,
+    "false_alarm_s": 0.01,
+    "confusion_s": 95.24,
+    "der": 0.36756041046011256,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 5,
+    "speakers_hyp": 5
+  },
+  "6-b2b-saas/with_overlap": {
+    "ref_speech_s": 1005.99,
+    "miss_s": 71.99,
+    "false_alarm_s": 0.78,
+    "confusion_s": 443.73,
+    "der": 0.5134245867255142,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 6,
+    "speakers_hyp": 4
+  },
+  "6-b2b-saas/no_overlap": {
+    "ref_speech_s": 1005.99,
+    "miss_s": 71.99,
+    "false_alarm_s": 0.78,
+    "confusion_s": 443.73,
+    "der": 0.5134245867255142,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 6,
+    "speakers_hyp": 4
+  },
+  "7-bi-platform/with_overlap": {
+    "ref_speech_s": 544.63,
+    "miss_s": 36.08,
+    "false_alarm_s": 0.23,
+    "confusion_s": 240.21,
+    "der": 0.5077208380001101,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 7,
+    "speakers_hyp": 4
+  },
+  "7-bi-platform/no_overlap": {
+    "ref_speech_s": 544.63,
+    "miss_s": 36.08,
+    "false_alarm_s": 0.23,
+    "confusion_s": 240.21,
+    "der": 0.5077208380001101,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 7,
+    "speakers_hyp": 4
+  },
+  "8-sales-meeting/with_overlap": {
+    "ref_speech_s": 1101.13,
+    "miss_s": 62.25,
+    "false_alarm_s": 0.03,
+    "confusion_s": 446.2,
+    "der": 0.4617801712785956,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 8,
+    "speakers_hyp": 5
+  },
+  "8-sales-meeting/no_overlap": {
+    "ref_speech_s": 1101.13,
+    "miss_s": 62.25,
+    "false_alarm_s": 0.03,
+    "confusion_s": 446.2,
+    "der": 0.4617801712785956,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 8,
+    "speakers_hyp": 5
+  },
+  "9-tech-strategy-meeting/with_overlap": {
+    "ref_speech_s": 970.33,
+    "miss_s": 40.44,
+    "false_alarm_s": 0.74,
+    "confusion_s": 510.61,
+    "der": 0.5686622077025342,
+    "collar_s": 0.25,
+    "ignore_overlap": false,
+    "speakers_ref": 9,
+    "speakers_hyp": 4
+  },
+  "9-tech-strategy-meeting/no_overlap": {
+    "ref_speech_s": 970.33,
+    "miss_s": 40.44,
+    "false_alarm_s": 0.74,
+    "confusion_s": 510.61,
+    "der": 0.5686622077025342,
+    "collar_s": 0.25,
+    "ignore_overlap": true,
+    "speakers_ref": 9,
+    "speakers_hyp": 4
+  }
+}

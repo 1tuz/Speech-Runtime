@@ -1,0 +1,42 @@
+{
+  "split": "dev",
+  "threshold": 0.5,
+  "margin": 0.05,
+  "local_similarity": 0.5,
+  "model": "qwen3-embedding-0.6b-4bit-dwq",
+  "segments": 321,
+  "words": 2824,
+  "corrections": 3,
+  "fixed_errors": 0,
+  "false_replacements": 2,
+  "wrong_replacements": 1,
+  "false_replacements_per_1000_words": 0.708215297450425,
+  "wer_before": 0.2146615222728867,
+  "wer_after": 0.21536303051560857,
+  "examples": [
+    {
+      "segment_id": "2-one-to-one-0047",
+      "from": "ревью",
+      "to": "отревьюить",
+      "score": 0.578,
+      "margin": 0.078,
+      "local_similarity": 0.5
+    },
+    {
+      "segment_id": "5-it-product-0011",
+      "from": "впихнуть",
+      "to": "апрувнуть",
+      "score": 0.527,
+      "margin": 0.078,
+      "local_similarity": 0.556
+    },
+    {
+      "segment_id": "7-bi-platform-0069",
+      "from": "rbia",
+      "to": "RBAC",
+      "score": 0.543,
+      "margin": 0.1,
+      "local_similarity": 0.5
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "split": "dev",
+  "threshold": 0.6,
+  "margin": 0.05,
+  "local_similarity": 0.5,
+  "model": "qwen3-embedding-0.6b-4bit-dwq",
+  "segments": 321,
+  "words": 2824,
+  "corrections": 0,
+  "fixed_errors": 0,
+  "false_replacements": 0,
+  "wrong_replacements": 0,
+  "false_replacements_per_1000_words": 0.0,
+  "wer_before": 0.2146615222728867,
+  "wer_after": 0.2146615222728867,
+  "examples": []
+}
