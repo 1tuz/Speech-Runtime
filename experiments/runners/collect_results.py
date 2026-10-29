@@ -29,6 +29,8 @@ SOURCES = [
     (os.path.join(MEDIUM, "der.json"), "der"),
     (os.path.join(HARD, "der.json"), "der"),
     (os.path.join(SIMPLE, "runs", "boost", "parakeet-stream20.json"), "streaming"),
+    (os.path.join(SIMPLE, "runs", "qwen-stream20.json"), "streaming"),
+    (os.path.join(SIMPLE, "runs", "qwen-stream90.json"), "streaming"),
     (os.path.join(SIMPLE, "stream560-latency.json"), "streaming"),
     (os.path.join(SIMPLE, "stream1120-latency.json"), "streaming"),
     (os.path.join(SIMPLE, "stream2240-latency.json"), "streaming"),
