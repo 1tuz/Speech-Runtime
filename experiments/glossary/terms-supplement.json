@@ -1,0 +1,888 @@
+{
+  "version": "terms-supplement-v1",
+  "base_dictionary": {
+    "path": "../asr_eval/terms.json",
+    "version": "terms-v1",
+    "terms": 366
+  },
+  "retrieval_date": "2026-10-28",
+  "sources": [
+    "https://glossary.cncf.io/ru/",
+    "https://kubernetes.io/ru/docs/reference/glossary/"
+  ],
+  "note": "Дополнение к terms-v1: только канонические формы из официальных глоссариев. Не слито с основным словарём, чтобы не менять результаты уже сделанных прогонов.",
+  "terms": [
+    {
+      "id": "abstraction",
+      "class": "tools",
+      "accept": [
+        "Abstraction"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/abstraction/",
+      "source_revision": "content/ru/abstraction.md @ cncf/glossary commit 75dafc807038d68de4efdf248dbd6150983c5d9b (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "agile-software-development",
+      "class": "tools",
+      "accept": [
+        "Agile Software Development"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/agile-software-development/",
+      "source_revision": "content/ru/agile-software-development.md @ cncf/glossary commit 61f69944860da171186931ab2f897bc3b462ac5c (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "api-gateway",
+      "class": "tools",
+      "accept": [
+        "API Gateway"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/api-gateway/",
+      "source_revision": "content/ru/api-gateway.md @ cncf/glossary commit 705cca69f4e042439ec203c7b52983d07fcbfa36 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "application-programming-interface-api",
+      "class": "tools",
+      "accept": [
+        "Application Programming Interface",
+        "API"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/application-programming-interface/",
+      "source_revision": "content/ru/application-programming-interface.md @ cncf/glossary commit b6a3e01f75398d589277ddb06ea917862773740e (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "autoscaling",
+      "class": "tools",
+      "accept": [
+        "Autoscaling"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/auto-scaling/",
+      "source_revision": "content/ru/auto-scaling.md @ cncf/glossary commit 54ebed9684310828260ad956ac1b73d20a565558 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "bare-metal-machine",
+      "class": "tools",
+      "accept": [
+        "Bare Metal Machine"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/bare-metal-machine/",
+      "source_revision": "content/ru/bare-metal-machine.md @ cncf/glossary commit 715db77c868e59aff6f0332bf95e7f8f8fc224c0 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "blue-green-deployment",
+      "class": "tools",
+      "accept": [
+        "Blue Green Deployment"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/blue-green-deployment/",
+      "source_revision": "content/ru/blue-green-deployment.md @ cncf/glossary commit cd798e3f36cca9f19c120e9473c63077afae4880 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "canary-deployment",
+      "class": "tools",
+      "accept": [
+        "Canary Deployment"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/canary-deployment/",
+      "source_revision": "content/ru/canary-deployment.md @ cncf/glossary commit 4b46d1bbc057ef624222f94b8a7808ff4411e674 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "chaos-engineering",
+      "class": "tools",
+      "accept": [
+        "Chaos Engineering"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/chaos-engineering/",
+      "source_revision": "content/ru/chaos-engineering.md @ cncf/glossary commit 4d5b3298f7d9d99f95e406a7c0de432a3ce93364 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "client-server-architecture",
+      "class": "tools",
+      "accept": [
+        "Client-Server Architecture"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/client-server-architecture/",
+      "source_revision": "content/ru/client-server-architecture.md @ cncf/glossary commit b3fe9857bf8e5ab52f613fae37d3059b2121f5e4 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-computing",
+      "class": "tools",
+      "accept": [
+        "Cloud Computing"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/cloud-computing/",
+      "source_revision": "content/ru/cloud-computing.md @ cncf/glossary commit e959a5c59d252b5d834437a064829f0bae7d0742 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-native-apps",
+      "class": "tools",
+      "accept": [
+        "Cloud Native Apps"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/cloud-native-apps/",
+      "source_revision": "content/ru/cloud-native-apps.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-native-security",
+      "class": "tools",
+      "accept": [
+        "Cloud Native Security"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/cloud-native-security/",
+      "source_revision": "content/ru/cloud-native-security.md @ cncf/glossary commit 1ddb3242b4930b675248eeb3abea9382676e5929 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-native-technology",
+      "class": "tools",
+      "accept": [
+        "Cloud Native Technology"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/cloud-native-tech/",
+      "source_revision": "content/ru/cloud-native-tech.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cluster",
+      "class": "tools",
+      "accept": [
+        "Cluster"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/cluster/",
+      "source_revision": "content/ru/cluster.md @ cncf/glossary commit 621ecd11e5e1aa606a14bbadd466ec7099fd2ce2 (2023-10-27); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "containerization",
+      "class": "tools",
+      "accept": [
+        "Containerization"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/containerization/",
+      "source_revision": "content/ru/containerization.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "container-orchestration",
+      "class": "tools",
+      "accept": [
+        "Container Orchestration"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/container-orchestration/",
+      "source_revision": "content/ru/container-orchestration.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "containers",
+      "class": "tools",
+      "accept": [
+        "Containers"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/container/",
+      "source_revision": "content/ru/container.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "continuous-delivery-cd",
+      "class": "tools",
+      "accept": [
+        "Continuous Delivery",
+        "CD"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/continuous-delivery/",
+      "source_revision": "content/ru/continuous-delivery.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "continuous-deployment-cd",
+      "class": "tools",
+      "accept": [
+        "Continuous Deployment",
+        "CD"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/continuous-deployment/",
+      "source_revision": "content/ru/continuous-deployment.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "continuous-integration-ci",
+      "class": "tools",
+      "accept": [
+        "Continuous integration",
+        "CI"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/continuous-integration/",
+      "source_revision": "content/ru/continuous-integration.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "datacenter",
+      "class": "tools",
+      "accept": [
+        "Datacenter"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/data-center/",
+      "source_revision": "content/ru/data-center.md @ cncf/glossary commit 0a28dc0cd50bb6f023922381161fbd6eb9a3e100 (2024-04-21); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "devops",
+      "class": "abbrev",
+      "accept": [
+        "DevOps"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/devops/",
+      "source_revision": "content/ru/devops.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "devsecops",
+      "class": "tools",
+      "accept": [
+        "DevSecOps"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/devsecops/",
+      "source_revision": "content/ru/devsecops.md @ cncf/glossary commit 8c3a26457ac876b9c9ce688c68a7682a5ad7db01 (2023-12-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "digital-certificate",
+      "class": "tools",
+      "accept": [
+        "Digital Certificate"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/digital-certificate/",
+      "source_revision": "content/ru/digital-certificate.md @ cncf/glossary commit 0c9e6cf6553ba1083269479a5d34bff71365b1b3 (2025-05-07); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "distributed-apps",
+      "class": "tools",
+      "accept": [
+        "Distributed Apps"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/distributed-apps/",
+      "source_revision": "content/ru/distributed-apps.md @ cncf/glossary commit 37e55e9630844fa74a6b33e571bc9c8f699e61eb (2024-08-01); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "distributed-system",
+      "class": "tools",
+      "accept": [
+        "Distributed System"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/distributed-systems/",
+      "source_revision": "content/ru/distributed-systems.md @ cncf/glossary commit 91af09ab3e4e4e2888b3ef45a53f560b6599ca2f (2024-10-14); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "ebpf",
+      "class": "abbrev",
+      "accept": [
+        "eBPF"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/ebpf/",
+      "source_revision": "content/ru/ebpf.md @ cncf/glossary commit 85a715f8e445b6621bde2bf1acfb6520487d5d4d (2024-04-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "edge-computing",
+      "class": "tools",
+      "accept": [
+        "Edge Computing"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/edge-computing/",
+      "source_revision": "content/ru/edge-computing.md @ cncf/glossary commit b70cb8098709757edfbcee28da5f30356c1b8a3a (2024-10-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "event-streaming",
+      "class": "tools",
+      "accept": [
+        "Event Streaming"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/event-streaming/",
+      "source_revision": "content/ru/event-streaming.md @ cncf/glossary commit 9fff3577debb5b47bcc5d15bd15539efb244fb3d (2024-05-30); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "function-as-a-service-faas",
+      "class": "tools",
+      "accept": [
+        "Function as a Service",
+        "FaaS"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/function-as-a-service/",
+      "source_revision": "content/ru/function-as-a-service.md @ cncf/glossary commit e8605473b8e34c470ec84f39bf584961ee734105 (2024-10-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "horizontal-scaling",
+      "class": "tools",
+      "accept": [
+        "Horizontal Scaling"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/horizontal-scaling/",
+      "source_revision": "content/ru/horizontal-scaling.md @ cncf/glossary commit 56b9b64687548d8db3711b3c09fd932fa13b547d (2024-10-08); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "idempotence",
+      "class": "tools",
+      "accept": [
+        "Idempotence"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/idempotence/",
+      "source_revision": "content/ru/idempotence.md @ cncf/glossary commit 4c356f0872e9ad28b5ce3cb96367949a44cd020c (2024-07-16); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "immutable-infrastructure",
+      "class": "tools",
+      "accept": [
+        "Immutable Infrastructure"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/immutable-infrastructure/",
+      "source_revision": "content/ru/immutable-infrastructure.md @ cncf/glossary commit 950b2b7b0dcd3457f09758fc8e8c0f72b966329d (2024-10-08); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "infrastructure-as-a-service-iaas",
+      "class": "tools",
+      "accept": [
+        "Infrastructure as a Service",
+        "IaaS"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/infrastructure-as-a-service/",
+      "source_revision": "content/ru/infrastructure-as-a-service.md @ cncf/glossary commit 1c9c9b377ac6b813e52f9583134b8917e19647b5 (2024-10-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "infrastructure-as-code-iac",
+      "class": "tools",
+      "accept": [
+        "Infrastructure as Code",
+        "IaC"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/infrastructure-as-code/",
+      "source_revision": "content/ru/infrastructure-as-code.md @ cncf/glossary commit a7624f52747d8febedc994c6817301d6898bac41 (2024-10-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "ingress",
+      "class": "tools",
+      "accept": [
+        "Ingress"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/ingress/",
+      "source_revision": "content/ru/ingress.md @ cncf/glossary commit b6af1005c5770fb0effef2bcfdbb6ec51a3e9537 (2024-08-18); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "microservices-architecture",
+      "class": "tools",
+      "accept": [
+        "Microservices Architecture"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/microservices-architecture/",
+      "source_revision": "content/ru/microservices-architecture.md @ cncf/glossary commit c6b6e63029648854633958aef6d59ec7837c7b06 (2024-07-31); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "monolithic-apps",
+      "class": "tools",
+      "accept": [
+        "Monolithic Apps"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/monolithic-apps/",
+      "source_revision": "content/ru/monolithic-apps.md @ cncf/glossary commit 396247b5b586f2fda469f4e295fc9546c58eaab5 (2024-07-26); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "multitenancy",
+      "class": "tools",
+      "accept": [
+        "Multitenancy"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/multitenancy/",
+      "source_revision": "content/ru/multitenancy.md @ cncf/glossary commit 1296c38fda021bc43256e073b59527b95a613d02 (2024-08-30); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "mutual-transport-layer-security-mtls",
+      "class": "tools",
+      "accept": [
+        "Mutual Transport Layer Security",
+        "mTLS"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/mutual-transport-layer-security/",
+      "source_revision": "content/ru/mutual-transport-layer-security.md @ cncf/glossary commit e99e08bdfa47d696761f5cc999f20f0c7de02b70 (2024-08-02); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "nodes",
+      "class": "abbrev",
+      "accept": [
+        "Nodes"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/nodes/",
+      "source_revision": "content/ru/nodes.md @ cncf/glossary commit bc9f682367750c2abb765923765292ce9eebf689 (2024-10-08); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "observability",
+      "class": "tools",
+      "accept": [
+        "Observability"
+      ],
+      "accept_translit": [],
+      "source": "https://glossary.cncf.io/ru/observability/",
+      "source_revision": "content/ru/observability.md @ cncf/glossary commit a19a5d6c9a351f7ad4e69aa0fa8489d041f92581 (2024-10-09); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "api-initiated-eviction",
+      "class": "tools",
+      "accept": [
+        "API-initiated eviction"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-api-eviction",
+      "source_revision": "content/ru/docs/reference/glossary/api-eviction.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "api-server",
+      "class": "tools",
+      "accept": [
+        "API server"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-kube-apiserver",
+      "source_revision": "content/ru/docs/reference/glossary/kube-apiserver.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-controller-manager",
+      "class": "tools",
+      "accept": [
+        "Cloud Controller Manager"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-cloud-controller-manager",
+      "source_revision": "content/ru/docs/reference/glossary/cloud-controller-manager.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "cloud-provider",
+      "class": "tools",
+      "accept": [
+        "Cloud Provider"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-cloud-provider",
+      "source_revision": "content/ru/docs/reference/glossary/cloud-provider.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "container-runtime",
+      "class": "tools",
+      "accept": [
+        "Container Runtime"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-container-runtime",
+      "source_revision": "content/ru/docs/reference/glossary/container-runtime.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "container-runtime-interface",
+      "class": "tools",
+      "accept": [
+        "Container Runtime Interface"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-container-runtime-interface",
+      "source_revision": "content/ru/docs/reference/glossary/container-runtime-interface.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "controller",
+      "class": "tools",
+      "accept": [
+        "Controller"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-controller",
+      "source_revision": "content/ru/docs/reference/glossary/controller.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "control-plane",
+      "class": "tools",
+      "accept": [
+        "Control Plane"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-control-plane",
+      "source_revision": "content/ru/docs/reference/glossary/control-plane.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "daemonset",
+      "class": "tools",
+      "accept": [
+        "DaemonSet"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-daemonset",
+      "source_revision": "content/ru/docs/reference/glossary/daemonset.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "deployment",
+      "class": "tools",
+      "accept": [
+        "Deployment"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-deployment",
+      "source_revision": "content/ru/docs/reference/glossary/deployment.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "finalizer",
+      "class": "tools",
+      "accept": [
+        "Finalizer"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-finalizer",
+      "source_revision": "content/ru/docs/reference/glossary/finalizer.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "garbage-collection",
+      "class": "tools",
+      "accept": [
+        "Garbage Collection"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-garbage-collection",
+      "source_revision": "content/ru/docs/reference/glossary/garbage-collection.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "job",
+      "class": "abbrev",
+      "accept": [
+        "Job"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-job",
+      "source_revision": "content/ru/docs/reference/glossary/job.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "kube-controller-manager",
+      "class": "tools",
+      "accept": [
+        "kube-controller-manager"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-kube-controller-manager",
+      "source_revision": "content/ru/docs/reference/glossary/kube-controller-manager.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "kubelet",
+      "class": "tools",
+      "accept": [
+        "Kubelet"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-kubelet",
+      "source_revision": "content/ru/docs/reference/glossary/kubelet.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "kube-proxy",
+      "class": "tools",
+      "accept": [
+        "kube-proxy"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-kube-proxy",
+      "source_revision": "content/ru/docs/reference/glossary/kube-proxy.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "kube-scheduler",
+      "class": "tools",
+      "accept": [
+        "kube-scheduler"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-kube-scheduler",
+      "source_revision": "content/ru/docs/reference/glossary/kube-scheduler.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "label",
+      "class": "abbrev",
+      "accept": [
+        "Label"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-label",
+      "source_revision": "content/ru/docs/reference/glossary/label.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "name",
+      "class": "abbrev",
+      "accept": [
+        "Name"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-name",
+      "source_revision": "content/ru/docs/reference/glossary/name.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "namespace",
+      "class": "tools",
+      "accept": [
+        "Namespace"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-namespace",
+      "source_revision": "content/ru/docs/reference/glossary/namespace.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "object",
+      "class": "abbrev",
+      "accept": [
+        "Object"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-object",
+      "source_revision": "content/ru/docs/reference/glossary/object.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "pod",
+      "class": "abbrev",
+      "accept": [
+        "Pod"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-pod",
+      "source_revision": "content/ru/docs/reference/glossary/pod.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "pod-disruption",
+      "class": "tools",
+      "accept": [
+        "Pod Disruption"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-pod-disruption",
+      "source_revision": "content/ru/docs/reference/glossary/pod-disruption.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "secret",
+      "class": "abbrev",
+      "accept": [
+        "Secret"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-secret",
+      "source_revision": "content/ru/docs/reference/glossary/secret.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "selector",
+      "class": "tools",
+      "accept": [
+        "Selector"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-selector",
+      "source_revision": "content/ru/docs/reference/glossary/selector.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "service",
+      "class": "tools",
+      "accept": [
+        "Service"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-service",
+      "source_revision": "content/ru/docs/reference/glossary/service.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "serviceaccount",
+      "class": "tools",
+      "accept": [
+        "ServiceAccount"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-service-account",
+      "source_revision": "content/ru/docs/reference/glossary/service-account.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "uid",
+      "class": "abbrev",
+      "accept": [
+        "UID"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-uid",
+      "source_revision": "content/ru/docs/reference/glossary/uid.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    },
+    {
+      "id": "workload",
+      "class": "tools",
+      "accept": [
+        "Workload"
+      ],
+      "accept_translit": [],
+      "source": "https://kubernetes.io/ru/docs/reference/glossary/#term-workload",
+      "source_revision": "content/ru/docs/reference/glossary/workload.md @ kubernetes/website commit 73d2cca5ed07cb180b68a794a4f4a77faf907a67 (page ETag bc71310063668def74913f40270f5664-ssl-df); retrieved 2026-10-28",
+      "license": "CC BY 4.0",
+      "note": "определение есть в реестре глоссария; произношения и ошибки ASR не выдуманы"
+    }
+  ]
+}

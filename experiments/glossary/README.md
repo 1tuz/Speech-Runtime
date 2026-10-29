@@ -320,3 +320,29 @@ PY
 | ServiceAccount | ServiceAccount |
 | UID | UID |
 | Workload | Рабочая нагрузка |
+
+## Дополнение к словарю скорера
+
+`terms-supplement.json` — 72 термина из этих же глоссариев, которых нет в
+`experiments/asr_eval/terms.json` (`terms-v1`, 366 терминов). Формат совпадает,
+файл читается тем же `terms.Vocabulary.from_path`, но **не слит** с основным
+словарём: иначе изменились бы метрики уже сделанных прогонов.
+
+| | |
+|---|---|
+| Всего | 72 (62 `tools`, 10 `abbrev`) |
+| Уже были в `terms-v1` | 5 (`kubernetes`, `containerd`, `crio`, `docker`, `etcd`) — исключены |
+| Произношения и ошибки ASR | не заполнялись: в глоссариях их нет |
+| Источник каждого | `source_url` + `source_revision` + `license` в записи |
+
+Покрытие на Veche-bench (`data_simple`, 1288 реплик): дополнение находит 8
+вхождений в 8 сегментах (`application-programming-interface-api`,
+`continuous-integration-ci`, `devops`) против 83 вхождений `terms-v1` в 80
+сегментах. То есть глоссарий расширяет словарь, но не увеличивает объём
+терминных измерений на этом корпусе: встречи говорят «API», «CI», «DevOps», а не
+«Abstraction» или «Multitenancy».
+
+```bash
+python3 -c "import sys;sys.path.insert(0,'experiments/asr_eval');import terms;\
+v=terms.Vocabulary.from_path('experiments/glossary/terms-supplement.json');print(len(v.terms))"
+```
