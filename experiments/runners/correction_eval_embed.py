@@ -140,20 +140,27 @@ def main(argv: list[str] | None = None) -> int:
                                      "local_similarity": round(best_similarity, 3)})
                 corrected[best_index] = form
 
-        changed = {i for i, (a, b) in enumerate(zip(hyp_tokens, corrected)) if a != b}
-        ops, _ = align.align(ref_tokens, corrected)
-        for op, ref_index, hyp_index in ops:
-            if op != align.SUB or hyp_index not in changed:
-                continue
-            original = hyp_tokens[hyp_index]
-            new = corrected[hyp_index]
-            ref_token = ref_tokens[ref_index]
-            if original == ref_token:
-                false_replacements += 1
-            elif new == ref_token:
-                fixed += 1
-            else:
-                wrong_replacements += 1
+        # Оцениваем только фактически изменённые токены и только по исходному
+        # выравниванию: после замены выравнивание может сдвинуться, и индекс
+        # гипотезы перестаёт соответствовать тому же слову.
+        changed = [i for i, (a, b) in enumerate(zip(hyp_tokens, corrected)) if a != b]
+        if changed:
+            _, ref_to_hyp = align.align(ref_tokens, hyp_tokens)
+            hyp_to_ref = {h: r for r, h in ref_to_hyp.items()}
+            for index in changed:
+                ref_index = hyp_to_ref.get(index)
+                if ref_index is None:
+                    wrong_replacements += 1
+                    continue
+                original = hyp_tokens[index]
+                new = corrected[index]
+                ref_token = ref_tokens[ref_index]
+                if original == ref_token:
+                    false_replacements += 1
+                elif new == ref_token:
+                    fixed += 1
+                else:
+                    wrong_replacements += 1
         before_ops, _ = align.align(ref_tokens, hyp_tokens)
         after_ops, _ = align.align(ref_tokens, corrected)
         b_sub, b_del, b_ins = align.edit_counts(before_ops)

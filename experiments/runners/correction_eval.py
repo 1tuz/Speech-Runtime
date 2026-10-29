@@ -86,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
 
     selected = [sid for sid in refs if meta[sid]["split"] == args.split]
     words = 0
-    fixed = false_replacements = corrections = 0
+    fixed = false_replacements = wrong_replacements = corrections = 0
     guessed = 0
     wer_before = wer_after = 0
     ref_units = 0
@@ -113,17 +113,27 @@ def main(argv: list[str] | None = None) -> int:
                     if len(replaced_examples) < 15:
                         replaced_examples.append({"segment_id": seg_id, "from": token, "to": form})
 
-        changed = {i for i, (a, b) in enumerate(zip(hyp_tokens, corrected)) if a != b}
-        ops, _ = align.align(ref_tokens, corrected)
-        for op, ref_index, hyp_index in ops:
-            if op == align.SUB and hyp_index in changed:
-                original = hyp_tokens[hyp_index]
-                new = corrected[hyp_index]
+        # Оцениваем только фактически изменённые токены и только по исходному
+        # выравниванию: после замены выравнивание может сдвинуться, и индекс
+        # гипотезы перестаёт соответствовать тому же слову.
+        changed = [i for i, (a, b) in enumerate(zip(hyp_tokens, corrected)) if a != b]
+        if changed:
+            _, ref_to_hyp = align.align(ref_tokens, hyp_tokens)
+            hyp_to_ref = {h: r for r, h in ref_to_hyp.items()}
+            for index in changed:
+                ref_index = hyp_to_ref.get(index)
+                if ref_index is None:
+                    wrong_replacements += 1
+                    continue
+                original = hyp_tokens[index]
+                new = corrected[index]
                 ref_token = ref_tokens[ref_index]
                 if original == ref_token:
                     false_replacements += 1
                 elif new == ref_token:
                     fixed += 1
+                else:
+                    wrong_replacements += 1
         before, _ = align.align(ref_tokens, hyp_tokens)
         after, _ = align.align(ref_tokens, corrected)
         _, before_del, before_ins = align.edit_counts(before)
