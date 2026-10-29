@@ -262,7 +262,7 @@
       "group": "embedding",
       "file": "embedding/lora-report.json",
       "source": "experiments/corpus/local/embedding/lora/report.json",
-      "sha256": "83e5c84490458b7720539a085f7875fb2cd649d24682749da177972327e055e3"
+      "sha256": "6dca3aafbd7b1f2a37c6d0c177ca732566ad70ce1bc7759c34ba2ae2717101d7"
     },
     {
       "group": "embedding",

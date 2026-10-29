@@ -132,9 +132,10 @@ def main(argv: list[str] | None = None) -> int:
         "after": after,
         "after_reload": reload_after,
         "adapter": os.path.join(args.out, "adapter"),
+        # mlx-tune сохраняет веса в adapters.npz, а не в safetensors.
         "adapter_sha256": hashlib.sha256(
-            open(os.path.join(args.out, "adapter", "adapters.safetensors"), "rb").read()
-        ).hexdigest() if os.path.exists(os.path.join(args.out, "adapter", "adapters.safetensors")) else None,
+            open(os.path.join(args.out, "adapter", "adapters.npz"), "rb").read()
+        ).hexdigest() if os.path.exists(os.path.join(args.out, "adapter", "adapters.npz")) else None,
     }
     text = json.dumps(report, ensure_ascii=False, indent=2)
     print(text)

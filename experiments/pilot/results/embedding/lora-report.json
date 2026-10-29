@@ -2,7 +2,7 @@
   "train_pairs": 38,
   "eval_pairs": 56,
   "steps": 40,
-  "train_loss": 0.8583984375,
+  "train_loss": 0.85830078125,
   "before": {
     "recall_at_1": 0.14285714285714285,
     "recall_at_5": 0.3392857142857143,
@@ -13,14 +13,14 @@
     "recall_at_1": 0.44642857142857145,
     "recall_at_5": 0.5892857142857143,
     "recall_at_10": 0.7142857142857143,
-    "mrr": 0.5422799035076914
+    "mrr": 0.5423957166349359
   },
   "after_reload": {
     "recall_at_1": 0.44642857142857145,
     "recall_at_5": 0.5892857142857143,
     "recall_at_10": 0.7142857142857143,
-    "mrr": 0.5422799035076914
+    "mrr": 0.5423957166349359
   },
   "adapter": "experiments/corpus/local/embedding/lora/adapter",
-  "adapter_sha256": null
+  "adapter_sha256": "8aa8aa997d2ffa9ca508c9a440728e837f0405cf9601e2d240cec81b83cbec22"
 }
