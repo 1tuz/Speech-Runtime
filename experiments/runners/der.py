@@ -42,6 +42,47 @@ def timeline(segments: list[tuple[float, float, str]], step: float) -> list[set[
     return frames
 
 
+
+def jaccard_error(ref_frames: list[set[str]], hyp_frames: list[set[str]]) -> dict:
+    """JER = 1 − средний Jaccard по говорящим эталона (Davidson et al., 2019).
+
+    Для каждого говорящего эталона берётся говорящий гипотезы с максимальным
+    пересечением кадров (жадно, без повторного использования). Jaccard —
+    |пересечение| / |объединение|; при пустом объединении вклад 0.
+    """
+    ref_by: dict[str, set[int]] = defaultdict(set)
+    hyp_by: dict[str, set[int]] = defaultdict(set)
+    for index, (ref_set, hyp_set) in enumerate(zip(ref_frames, hyp_frames)):
+        for speaker in ref_set:
+            ref_by[speaker].add(index)
+        for speaker in hyp_set:
+            hyp_by[speaker].add(index)
+
+    pairs = []
+    for r, r_frames in ref_by.items():
+        for h, h_frames in hyp_by.items():
+            inter = len(r_frames & h_frames)
+            if inter:
+                pairs.append((inter, r, h))
+    pairs.sort(reverse=True)
+    matched: dict[str, str] = {}
+    used: set[str] = set()
+    for _, r, h in pairs:
+        if r in matched or h in used:
+            continue
+        matched[r] = h
+        used.add(h)
+
+    scores = []
+    for speaker, r_frames in ref_by.items():
+        partner = matched.get(speaker)
+        h_frames = hyp_by.get(partner, set()) if partner else set()
+        union = len(r_frames | h_frames)
+        scores.append(len(r_frames & h_frames) / union if union else 0.0)
+    mean = sum(scores) / len(scores) if scores else 0.0
+    return {"jer": 1.0 - mean, "mean_jaccard": mean, "speakers_scored": len(scores)}
+
+
 def score(ref: list[tuple[float, float, str]], hyp: list[tuple[float, float, str]],
           step: float, collar: float, ignore_overlap: bool) -> dict:
     ref_frames = timeline(ref, step)
@@ -90,6 +131,7 @@ def score(ref: list[tuple[float, float, str]], hyp: list[tuple[float, float, str
             miss += 1
 
     total = max(speech, 1)
+    overlap_frames = sum(1 for ref_set in ref_frames if len(ref_set) > 1)
     return {
         "ref_speech_s": round(speech * step, 2),
         "miss_s": round(miss * step, 2),
@@ -100,6 +142,8 @@ def score(ref: list[tuple[float, float, str]], hyp: list[tuple[float, float, str
         "ignore_overlap": ignore_overlap,
         "speakers_ref": len({s for _, _, s in ref}),
         "speakers_hyp": len({s for _, _, s in hyp}),
+        "ref_overlap_s": round(overlap_frames * step, 2),
+        **jaccard_error(ref_frames, hyp_frames),
     }
 
 

@@ -142,7 +142,7 @@
       "group": "der",
       "file": "der/runs-der.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/der.json",
-      "sha256": "20f11e16fca8491ad59baec1e8ab6a23b8145e2a2548d78709669ede1c5213f3"
+      "sha256": "d73bf35b63e5f2f2b42cd50c35e48c8ba502af5d5da677a4c3f07d191a62fc61"
     },
     {
       "group": "streaming",
