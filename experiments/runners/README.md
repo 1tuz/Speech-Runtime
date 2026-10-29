@@ -38,6 +38,7 @@ FluidAudio подключается как локальная зависимос
 | `correction_eval.py` | правила замены по символьному расстоянию: исправления и ложные замены |
 | `correction_eval_embed.py` | то же, но кандидат выбирается эмбеддингом, а токен — строковым сходством |
 | `score_all.py` | приводит JSONL Whisper и TSV остальных к одному виду и зовёт скорер |
+| `asr_lora_smoke.py` | LoRA Qwen3-ASR на dev-парах; сейчас падает в `mlx-audio`, см. [ASR_LORA_BLOCKED](../pilot/ASR_LORA_BLOCKED.md) |
 
 ## Данные
 
