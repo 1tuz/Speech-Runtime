@@ -103,6 +103,7 @@ struct Runner {
         case "stream-nemotron": await runStreamingNemotron(args)
         case "diarize": await runDiarize(args)
         case "parakeet-boost": await runParakeetBoost(args)
+        case "unified": await runUnified(args)
         default: fail("неизвестная команда: \(command)")
         }
     }

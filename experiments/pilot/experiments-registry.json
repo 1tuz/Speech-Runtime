@@ -1,0 +1,434 @@
+{
+  "description": "Реестр выполненных экспериментов: агент сверяет идентичность по модели/весам/движку/параметрам/входу/метрикам и пропускает совпавшие. Идентичность = (model_id, weights_sha256, engine, params, dataset, split, metric_versions). Повтор совпавшего запрещён без новой гипотезы или исправления дефекта измерения.",
+  "metric_versions": {
+    "scorer": "asr-eval-v2",
+    "normalization": "norm-v2",
+    "terms": "term-v2",
+    "term_vocabulary_sha256_prefix": "8543fd9aef9b"
+  },
+  "datasets": {
+    "veche-bench-simple": {
+      "source": "artem-tish/veche-bench@e5102804",
+      "license": "CC BY 4.0",
+      "status": "scenario_text_not_listened: референсы не выверены человеком",
+      "splits": {
+        "test": {
+          "utterances": 967,
+          "words": 13982,
+          "audio_min": 116.8
+        },
+        "dev": {
+          "utterances": 321,
+          "words": 2851
+        }
+      }
+    },
+    "fleurs-ru": {
+      "source": "google/fleurs ru_ru@70bb2e84",
+      "license": "CC BY 4.0",
+      "splits": {
+        "test": {
+          "utterances": 775,
+          "words": 13982
+        }
+      }
+    }
+  },
+  "weight_hashes": {
+    "gigaam_v3_e2e_rnnt": {
+      "file": "~/.cache/gigaam/v3_e2e_rnnt.ckpt",
+      "sha256_16": "f60c62fe45902d96",
+      "mib": 428
+    },
+    "gigaam_multilingual_ctc": {
+      "file": "~/.cache/gigaam/multilingual_ctc.ckpt",
+      "sha256_16": "24aa92be5994fa8b",
+      "mib": 842
+    },
+    "parakeet_ultra_bundle": {
+      "root": "FluidAudio/Models/parakeet-ultra",
+      "bundle_sha256_16": "4a07f79dcae41e6e"
+    },
+    "parakeet_tdt_v3_bundle": {
+      "root": "FluidAudio/Models/parakeet-tdt-0.6b-v3",
+      "bundle_sha256_16": "3439dcf02ba82d3e"
+    },
+    "nemotron_multilingual_2240ms_bundle": {
+      "root": "FluidAudio/Models/nemotron-multilingual/multilingual/2240ms",
+      "bundle_sha256_16": "330da210c648c7d9"
+    },
+    "whisper_large_v3_turbo_ggml": {
+      "sha256_16": "e3dbd37659c7ef51",
+      "mib": 538
+    },
+    "qwen3_asr_0_6b_mlx_8bit": {
+      "file": "model.safetensors",
+      "sha256_16": "b5bfe4abc1b4c6e5",
+      "mib": 959
+    }
+  },
+  "experiments": [
+    {
+      "id": "veche-test/gigaam-v3-e2e-rnnt",
+      "dataset": "veche-bench-simple/test",
+      "model": "gigaam v3_e2e_rnnt",
+      "engine": "gigaam 0.2.0 + torch CPU fp32",
+      "wer": 4.86,
+      "cer": 1.98,
+      "rtf": 0.028,
+      "result": "scores/gigaam-v3-test.json",
+      "hypotheses": "runs/gigaam-v3-hypotheses-test.json"
+    },
+    {
+      "id": "veche-test/whisper-large-v3-turbo",
+      "dataset": "veche-bench-simple/test",
+      "model": "ggml-large-v3-turbo",
+      "engine": "transcribe.cpp 0.4.1 cpu 8t",
+      "wer": 5.11,
+      "cer": 2.12,
+      "result": "scores/whisper-test.json"
+    },
+    {
+      "id": "veche-test/gigaam-ml-ctc",
+      "dataset": "veche-bench-simple/test",
+      "model": "gigaam ctc_multilingual",
+      "engine": "gigaam 0.2.0 + torch CPU fp32",
+      "wer": 5.53,
+      "cer": 1.74,
+      "result": "scores/gigaam-ml-test.json"
+    },
+    {
+      "id": "veche-test/parakeet-ultra-ru",
+      "dataset": "veche-bench-simple/test",
+      "model": "parakeet-ultra (FluidAudio ultra)",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "params": {
+        "language": "ru"
+      },
+      "wer": 5.79,
+      "cer": 2.13,
+      "rtf": 0.009,
+      "result": "scores/parakeet-ultra-test.json"
+    },
+    {
+      "id": "veche-test/parakeet-ultra-nolang",
+      "dataset": "veche-bench-simple/test",
+      "model": "parakeet-ultra",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "params": {
+        "language": null
+      },
+      "wer": 5.89,
+      "cer": 2.18,
+      "result": "scores/parakeet-ultra-nolang-test.json",
+      "note": "эталон качества по порогу"
+    },
+    {
+      "id": "veche-test/parakeet-v3-ru",
+      "dataset": "veche-bench-simple/test",
+      "model": "parakeet-tdt-0.6b-v3",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "params": {
+        "language": "ru"
+      },
+      "wer": 6.2,
+      "cer": 2.08,
+      "result": "scores/parakeet-v3-test.json"
+    },
+    {
+      "id": "veche-test/parakeet-v3-nolang",
+      "dataset": "veche-bench-simple/test",
+      "model": "parakeet-tdt-0.6b-v3",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "params": {
+        "language": null
+      },
+      "wer": 6.18,
+      "cer": 2.08,
+      "result": "scores/parakeet-v3-nolang-test.json",
+      "note": "--language ru обнуляет латиницу"
+    },
+    {
+      "id": "veche-test/nemotron-3.5-0.6b-2240",
+      "dataset": "veche-bench-simple/test",
+      "model": "nvidia nemotron-3.5-asr-streaming-multilingual-0.6b, tier 2240ms",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "params": {
+        "language": "ru-RU",
+        "prompt_id": 11
+      },
+      "wer": 12.24,
+      "cer": 4.1,
+      "rtf": 0.02,
+      "result": "scores/nemotron-test.json",
+      "note": "564 удаления из 13982 слов"
+    },
+    {
+      "id": "veche-test/qwen3-asr-0.6b-8bit",
+      "dataset": "veche-bench-simple/test",
+      "model": "Qwen/Qwen3-ASR-0.6B 8-bit MLX",
+      "engine": "mlx-qwen3-asr",
+      "wer": 12.27,
+      "cer": 4.01,
+      "result": "scores/qwen3-asr-test.json"
+    },
+    {
+      "id": "veche-test/qwen3-asr-0.6b-fp16",
+      "dataset": "veche-bench-simple/test",
+      "model": "Qwen/Qwen3-ASR-0.6B fp16",
+      "engine": "mlx-qwen3-asr",
+      "wer": 12.28,
+      "cer": 4.03,
+      "result": "scores/qwen3-asr-fp16-test.json",
+      "note": "квантование не причина"
+    },
+    {
+      "id": "veche-dev/nemotron-hotwords-none",
+      "dataset": "veche-bench-simple/dev",
+      "model": "nemotron-3.5 0.6b",
+      "engine": "FluidAudio 0.17.7",
+      "params": {
+        "vocab_terms": 0
+      },
+      "wer": 24.9,
+      "result": "scores/nemotron-dev-none.json"
+    },
+    {
+      "id": "veche-dev/nemotron-hotwords-vocab",
+      "dataset": "veche-bench-simple/dev",
+      "model": "nemotron-3.5 0.6b",
+      "engine": "FluidAudio 0.17.7",
+      "params": {
+        "vocab_terms": 12,
+        "setCustomVocabulary": true
+      },
+      "wer": 25.18,
+      "result": "scores/nemotron-dev-vocab2.json",
+      "conclusion": "recall 37.5→40.0, WER хуже, перестрел; не внедрять"
+    },
+    {
+      "id": "veche-dev/parakeet-v3-ctc-boost-plain",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-tdt-0.6b-v3 + parakeet-ctc-110m",
+      "engine": "FluidAudio SlidingWindowAsrManager",
+      "wer": 12.42,
+      "result": "scores/parakeet-boost-plain-dev.json"
+    },
+    {
+      "id": "veche-dev/parakeet-v3-ctc-boost-vocab",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-tdt-0.6b-v3 + parakeet-ctc-110m",
+      "engine": "FluidAudio SlidingWindowAsrManager",
+      "params": {
+        "vocab_terms": 12
+      },
+      "wer": 12.56,
+      "result": "scores/parakeet-boost-vocab-dev.json",
+      "conclusion": "precision 80→57.1, RTF ×3.6; не внедрять"
+    },
+    {
+      "id": "veche-dev/qwen-ctx-empty",
+      "dataset": "veche-bench-simple/dev",
+      "model": "Qwen3-ASR 0.6B 8-bit",
+      "params": {
+        "context": ""
+      },
+      "wer": 21.47,
+      "result": "scores/qwen-dev-empty.json"
+    },
+    {
+      "id": "veche-dev/qwen-ctx-relevant",
+      "dataset": "veche-bench-simple/dev",
+      "model": "Qwen3-ASR 0.6B 8-bit",
+      "params": {
+        "context": "релевантный глоссарий"
+      },
+      "wer": 22.06,
+      "result": "scores/qwen-dev-relevant.json",
+      "conclusion": "recall 25.0→27.5 при WER +0.6 п.п.; не внедрять"
+    },
+    {
+      "id": "veche-dev/qwen-ctx-distractor",
+      "dataset": "veche-bench-simple/dev",
+      "model": "Qwen3-ASR 0.6B 8-bit",
+      "params": {
+        "context": "отвлекающий"
+      },
+      "wer": 22.03,
+      "result": "scores/qwen-dev-distractor.json",
+      "conclusion": "recall падает до 7.5"
+    },
+    {
+      "id": "variants/medium",
+      "dataset": "veche-bench-simple/medium",
+      "models": [
+        "parakeet-ultra: 7.51",
+        "gigaam-v3: 6.89"
+      ],
+      "result": "variants/medium-runs-*-test.json"
+    },
+    {
+      "id": "variants/hard",
+      "dataset": "veche-bench-simple/hard",
+      "models": [
+        "parakeet-ultra: 11.26",
+        "gigaam-v3: 8.91"
+      ],
+      "result": "variants/hard-runs-*-test.json"
+    },
+    {
+      "id": "fleurs/control",
+      "dataset": "fleurs-ru/test",
+      "models": [
+        "parakeet-ultra: 6.18",
+        "gigaam-v3: 4.70"
+      ],
+      "result": "fleurs/fleurs-test-runs-*-test.json",
+      "conclusion": "соотношение моделей совпадает с Veche"
+    },
+    {
+      "id": "streaming/nemotron-tiers",
+      "dataset": "veche-bench-simple/dev realtime",
+      "params": {
+        "tiers_ms": [
+          560,
+          1120,
+          2240
+        ]
+      },
+      "result": "streaming/nemotron-tiers.json",
+      "conclusion": "задержка слова p95: 0.50/1.07/1.81 с; первый partial 1.14/1.15/2.30 с"
+    },
+    {
+      "id": "streaming/nemotron-long-11.9min",
+      "dataset": "veche 10-it-meeteing realtime",
+      "params": {
+        "tier_ms": 560
+      },
+      "result": "streaming/nemotron-long.json",
+      "conclusion": "1200 partial, 0 пересмотров, finish 0.029 с"
+    },
+    {
+      "id": "streaming/parakeet-window",
+      "dataset": "veche dev20 + meet90 realtime",
+      "params": {
+        "window": "11+2+2",
+        "alternatives": [
+          "4+2+2",
+          "2+2+2"
+        ]
+      },
+      "result": "streaming/parakeet-window.json",
+      "conclusion": "первый partial 3.31 с, не зависит от чанка; 7 пересмотров подтверждённого на 90 с"
+    },
+    {
+      "id": "streaming/qwen-windowed",
+      "dataset": "veche dev20 + meet90 realtime",
+      "params": {
+        "chunk_s": 2.0,
+        "max_context_s": 30.0
+      },
+      "result": "streaming/qwen-stream90.json",
+      "conclusion": "первый partial 6.11 с; на репликах <2 с partial нет"
+    },
+    {
+      "id": "diarization/vbx-variants",
+      "dataset": "veche simple/medium/hard",
+      "engine": "offline VBx",
+      "result": "der/der.json",
+      "conclusion": "DER 52.0/42.8/44.4; перекрытия 83.3; JER 69.8/57.2/64.0"
+    },
+    {
+      "id": "correction/rules-embeddings",
+      "dataset": "veche dev",
+      "params": {
+        "char_t": [
+          0.25,
+          0.3,
+          0.4
+        ],
+        "embed_t": [
+          0.5,
+          0.6,
+          0.65
+        ]
+      },
+      "result": "correction/",
+      "conclusion": "1 исправление на 4–106 ложных замен; WER не снижен; закрыто"
+    },
+    {
+      "id": "embedding/qwen3-lora",
+      "dataset": "пары терминов dev",
+      "params": {
+        "base": "qwen3-embedding-0.6b-mxfp8",
+        "adapter_sha": "см. adaptation/embedding-lora.json"
+      },
+      "result": "embedding/",
+      "conclusion": "recall@1 14.3→44.6, MRR 0.224→0.542; воспроизводится после перезагрузки"
+    },
+    {
+      "id": "blocked/asr-lora-mlx-audio",
+      "status": "blocked",
+      "reason": "mlx_audio 0.6.3: np.array(mx.array) внутри mx.grad в Qwen3ASRAudioTower.__call__",
+      "result": "ASR_LORA_BLOCKED.md"
+    },
+    {
+      "id": "veche-dev/nemotron-unified-0.6b-ru-offline",
+      "dataset": "veche-bench-simple/dev",
+      "model": "nvidia/nemotron-labs-unified-asr-0.6b, CoreML fp16, family ru (prompt 11)",
+      "engine": "FluidAudio v0.18.0 UnifiedAsrManager, окно 15 с",
+      "params": {
+        "window": "70_13_13",
+        "latency_ms_theoretical": 2080,
+        "rtf": 0.009
+      },
+      "wer": 12.28,
+      "cer": 4.7,
+      "terms": {
+        "recall_exact": 37.5,
+        "latin_form": 88.2
+      },
+      "result": "scores/unified-dev.json",
+      "hypotheses": "runs/unified-dev/unified-offline-fp16.tsv",
+      "conclusion": "порог не прошёл: 12.28 против Parakeet Ultra 10.42 на том же dev; дальше dev-проверок не идёт, test не запускается"
+    },
+    {
+      "id": "veche-dev/parakeet-ultra-nolang",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-ultra, без language prompt",
+      "engine": "FluidAudio 0.17.7 CoreML",
+      "wer": 10.42,
+      "cer": 3.64,
+      "terms": {
+        "recall_exact": 30.0,
+        "latin_form": 85.7
+      },
+      "result": "scores/parakeet-ultra-nolang-dev.json",
+      "note": "пересчёт из существующих гипотез, без инференса"
+    },
+    {
+      "id": "veche-dev/gigaam-v3",
+      "dataset": "veche-bench-simple/dev",
+      "model": "gigaam v3_e2e_rnnt",
+      "wer": 11.47,
+      "cer": 4.52,
+      "terms": {
+        "recall_exact": 42.5,
+        "latin_form": 100.0
+      },
+      "result": "scores/gigaam-v3-dev.json",
+      "note": "пересчёт из существующих гипотез, без инференса"
+    }
+  ],
+  "screening_decisions": {
+    "parakeet-redux": "исключён по карточке moondream/parakeet-redux: FLEURS ru 7.91 против 5.91 у parakeet-tdt-v3 (из той же таблицы карточки); подтверждённых независимых оснований нет",
+    "phonon-2.5-multilingual": "исключён: подтверждённых ru-результатов лучше parakeet нет",
+    "voxtral-4b": "исключён: тяжёлый, преимущества нет",
+    "gigaam-v3-e2e-ctc": "исключён: RNNT-вариант сильнее CTC по WER на той же архитектуре (e2e-rnnt 14.2 против e2e-ctc 16.0 в карточке), у нас RNNT 4.86 на test; CTC-близнец не даст лучше",
+    "gigaam-multilingual-large": "не существует публично; multilingual только ctc_multilingual 0.2.0",
+    "nemotron-unified-asr-0.6b": "прошёл скрининг (карточка: FLEURS ru offline 4.42, стриминг 1.12s 5.69; OpenMDW 1.1; CoreML-порт с parity), dev-прогон выполнен: 12.28 - порог 10.42 не прошёл, отсеян после dev",
+    "phonon-2-5-multilingual": "исключён: карточка FermionResearch/Phonon-2.5, FLEURS ru 8.67 против 7.21 у parakeet-tdt-v3 на полном test; хуже эталона",
+    "gigaam-multilingual-large-600m": "не запускался: multilingual_large_ctc только SSL+CTC, FLEURS ru 3.0 в карточке - но это общий FLEURS-протокол без цифр латиницы; стоимость ~1.7 ГБ и CTC без RNNT; отложен до появления стриминга у линейки"
+  },
+  "reuse_rule": "Перед любым новым прогоном: найти совпадение по (model, weights_sha, engine, params, dataset+split, metric_versions). Совпадение → использовать сохранённый результат. Изменение формулы метрики → пересчитать из сохранённых hypotheses без инференса."
+}
