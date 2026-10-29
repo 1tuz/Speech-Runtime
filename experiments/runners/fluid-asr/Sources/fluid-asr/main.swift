@@ -6,6 +6,8 @@ import Foundation
 //   fluid-asr asr --model v3|ultra --files list.txt --out-tsv hyp.tsv --out-json run.json
 //   fluid-asr nemotron --model-dir DIR --files list.txt --out-tsv hyp.tsv --out-json run.json [--vocab words.txt]
 //   fluid-asr stream-nemotron --model-dir DIR --files list.txt --out-json stream.json [--realtime]
+//   fluid-asr diarize --files meetings.txt --out-dir DIR
+//   fluid-asr parakeet-boost --files list.txt --out-dir DIR [--vocab words.txt]
 //
 // asr и nemotron читают список путей (по одному в строке) и пишут TSV `<id>\t<text>`.
 // stream-nemotron подаёт тот же файл порциями и по умолчанию гонит их без задержки,
@@ -91,7 +93,7 @@ struct Runner {
     static func main() async {
         var raw = Array(CommandLine.arguments.dropFirst())
         guard let command = raw.first else {
-            fail("нужна команда: asr | nemotron | stream-nemotron | diarize")
+            fail("нужна команда: asr | nemotron | stream-nemotron | diarize | parakeet-boost")
         }
         raw.removeFirst()
         let args = Args(raw)
@@ -100,6 +102,7 @@ struct Runner {
         case "nemotron": await runNemotronBatch(args)
         case "stream-nemotron": await runStreamingNemotron(args)
         case "diarize": await runDiarize(args)
+        case "parakeet-boost": await runParakeetBoost(args)
         default: fail("неизвестная команда: \(command)")
         }
     }

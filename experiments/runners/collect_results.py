@@ -41,6 +41,8 @@ SOURCES = [
     (os.path.join(SIMPLE, "scores", "qwen-dev-distractor.json"), "adaptation"),
     (os.path.join(SIMPLE, "scores", "nemotron-dev-none.json"), "adaptation"),
     (os.path.join(SIMPLE, "scores", "nemotron-dev-vocab2.json"), "adaptation"),
+    (os.path.join(SIMPLE, "scores", "parakeet-boost-plain-dev.json"), "adaptation"),
+    (os.path.join(SIMPLE, "scores", "parakeet-boost-vocab-dev.json"), "adaptation"),
     (os.path.join(MEDIUM, "runs-parakeet-test.json"), "variants"),
     (os.path.join(MEDIUM, "runs-gigaam-test.json"), "variants"),
     (os.path.join(HARD, "runs-parakeet-test.json"), "variants"),

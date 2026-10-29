@@ -50,6 +50,18 @@
     },
     {
       "group": "scores",
+      "file": "scores/parakeet-boost-plain-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-plain-dev.json",
+      "sha256": "cee31beedf79f2ccbdfcc6c5e015042e4f0a6c16d1c8f94e3d2511526b4981ea"
+    },
+    {
+      "group": "scores",
+      "file": "scores/parakeet-boost-vocab-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-vocab-dev.json",
+      "sha256": "a5716e7742c9470a8b951abf58250da143630276754a6e1dcb9628f9af59a33e"
+    },
+    {
+      "group": "scores",
       "file": "scores/parakeet-ultra-hypotheses-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-ultra-hypotheses-test.json",
       "sha256": "01d6142c6409e239c796fac6945b0b41315d5cd47b9805e9ad89e71a0dedb5e6"
@@ -233,6 +245,18 @@
       "file": "adaptation/scores-nemotron-dev-vocab2.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-vocab2.json",
       "sha256": "1591ae45af8b23dac30ef56f7f0faf6080305f785806be6dbb2d643e823a1a05"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-parakeet-boost-plain-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-plain-dev.json",
+      "sha256": "cee31beedf79f2ccbdfcc6c5e015042e4f0a6c16d1c8f94e3d2511526b4981ea"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-parakeet-boost-vocab-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-vocab-dev.json",
+      "sha256": "a5716e7742c9470a8b951abf58250da143630276754a6e1dcb9628f9af59a33e"
     },
     {
       "group": "variants",
