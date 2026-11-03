@@ -3,16 +3,17 @@ import CoreML
 import FluidAudio
 import Foundation
 
-// Unified FastConformer-RNNT (nemotron-labs-unified-asr-0.6b, 25 языков, prompt ru=11):
-// офлайн-батч и стриминг в одном чекпойнте.
+// Unified FastConformer-RNNT (FluidInference/parakeet-unified-en-0.6b-coreml):
+// офлайн-батч и стриминг в одном чекпойнте. В FluidAudio v0.17.7 у чекпойнта
+// нет языковых промптов, модель английская — для русского не применять.
 //
 // fluid-asr unified --files list.txt --out-dir DIR [--int8] [--streaming]
 //     [--left 70 --chunk 13 --right 13]
 //
 // Батч: UnifiedAsrManager, окно 15 с. Стриминг: StreamingUnifiedAsrManager,
 // окно [left | chunk | right] в 80-мс фреймах, задержка = chunk + right.
-// Язык зашит в family (ru); файлы подаются без задержки — это гипотезы, не
-// замер задержки; RTF считается по чистому времени инференса.
+// Файлы подаются без задержки — это гипотезы, не замер задержки; RTF
+// считается по чистому времени инференса.
 
 /// 16 кГц mono Float32 из любого входного аудио.
 func readMono16kSamples(_ url: URL) throws -> (samples: [Float], seconds: Double) {
@@ -64,8 +65,7 @@ func runUnified(_ args: Args) async {
     let config = UnifiedConfig(
         leftFrames: Int(args.value("left") ?? "70") ?? 70,
         chunkFrames: Int(args.value("chunk") ?? "13") ?? 13,
-        rightFrames: Int(args.value("right") ?? "13") ?? 13,
-        family: .nemotronMultilingual(.ru))
+        rightFrames: Int(args.value("right") ?? "13") ?? 13)
     let precision: UnifiedEncoderPrecision = isInt8 ? .int8 : .fp16
     let suffix = "\(streaming ? "stream" : "offline")-\(isInt8 ? "int8" : "fp16")"
 
@@ -143,9 +143,9 @@ func runUnified(_ args: Args) async {
     writeFile("\(outDir)/unified-\(suffix).tsv", rows.joined(separator: "\n") + "\n")
     let meta: [String: Any] = [
         "status": "unverified_hypotheses_not_benchmark",
-        "model": "nemotron-labs-unified-asr-0.6b",
-        "family": "nemotronMultilingual(ru)",
-        "engine": "FluidAudio v0.18.0 CoreML",
+        "model": "parakeet-unified-en-0.6b",
+        "language": "en (языковых промптов в v0.17.7 нет)",
+        "engine": "FluidAudio v0.17.7 CoreML",
         "precision": isInt8 ? "int8" : "fp16",
         "mode": streaming ? "streaming" : "offline-15s",
         "window": "\(config.leftFrames)_\(config.chunkFrames)_\(config.rightFrames)",

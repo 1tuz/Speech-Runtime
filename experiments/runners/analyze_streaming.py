@@ -75,28 +75,97 @@ def word_latencies(segment: dict) -> list[float]:
     return out
 
 
+def revision_stats(segment: dict) -> dict:
+    """Считает пересмотры уже показанного текста и момент подтверждения.
+
+    Пересмотр — partial, где самое длинное общее начало с предыдущим partial
+    стало короче: значит выданные слова были заменены. Это не то же самое, что
+    `stableTokenCount`: здесь считается видимый клиенту текст.
+    """
+    partials = [p for p in segment.get("partials", []) if p["text"].strip()]
+    revisions = 0
+    previous: list[str] = []
+    confirmed_at = None
+    for partial in partials:
+        words = partial["text"].split()
+        common = 0
+        for left, right in zip(previous, words):
+            if left != right:
+                break
+            common += 1
+        if common < len(previous) and previous:
+            revisions += 1
+        previous = words
+        if partial.get("is_confirmed") and confirmed_at is None:
+            confirmed_at = partial["at_s"]
+    return {
+        "revisions": revisions,
+        "updates": len(partials),
+        "first_confirmed_s": confirmed_at,
+    }
+
+
+def is_window_mode(segment: dict) -> bool:
+    """Движок отдаёт текст окном целиком, а не дописывает partial."""
+    return not segment.get("token_timings") and any(
+        partial.get("token_timings") for partial in segment.get("partials", [])
+    )
+
+
+def window_lags(segment: dict) -> list[float]:
+    """Отставание текста от аудио: `at_s` минус конец последнего токена окна.
+
+    Так ведёт себя `SlidingWindowAsrManager`: каждое обновление заменяет окно, а
+    не продолжает предыдущее, поэтому задержку отдельного слова по
+    последовательным partial не измерить — измеряется возраст выданного текста.
+    """
+    lags: list[float] = []
+    for partial in segment.get("partials", []):
+        timings = partial.get("token_timings") or []
+        if not partial["text"].strip() or not timings:
+            continue
+        lags.append(partial["at_s"] - timings[-1]["end"])
+    return lags
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--json", required=True)
     args = parser.parse_args(argv)
 
     data = json.load(open(args.json, encoding="utf-8"))
+    segments = data.get("segments")
+    if not isinstance(segments, list):
+        raise SystemExit(
+            "--json ожидает JSON прогона (`segments` — список сегментов), "
+            "а не сводку этого же анализатора"
+        )
     rows = []
     all_word = []
-    for segment in data["segments"]:
-        latencies = word_latencies(segment)
+    all_lag = []
+    for segment in segments:
+        window = is_window_mode(segment)
+        latencies = [] if window else word_latencies(segment)
         all_word.extend(latencies)
+        lags = window_lags(segment) if window else []
+        all_lag.extend(lags)
         first = next((p["at_s"] for p in segment.get("partials", []) if p["text"].strip()), None)
+        rev = revision_stats(segment)
         rows.append({
             "segment_id": segment["segment_id"],
             "audio_s": segment["audio_s"],
             "rtf": segment["rtf"],
             "first_partial_s": first,
+            "first_confirmed_s": rev["first_confirmed_s"],
+            "revisions": None if window else rev["revisions"],
+            "updates": rev["updates"],
             "final_tail_s": segment["finish_s"],
             "partial_count": segment.get("partial_count", 0),
             "word_latency_p50": percentile(latencies, 0.5),
             "word_latency_p95": percentile(latencies, 0.95),
             "words_measured": len(latencies),
+            "text_lag_p50": percentile(lags, 0.5),
+            "text_lag_p95": percentile(lags, 0.95),
         })
 
     summary = {
@@ -112,6 +181,11 @@ def main(argv: list[str] | None = None) -> int:
         "word_latency_p50": percentile(all_word, 0.5),
         "word_latency_p95": percentile(all_word, 0.95),
         "word_latency_mean": statistics.fmean(all_word) if all_word else None,
+        "text_lag_p50": percentile(all_lag, 0.5),
+        "text_lag_p95": percentile(all_lag, 0.95),
+        "first_confirmed_p50": percentile([r["first_confirmed_s"] for r in rows if r["first_confirmed_s"]], 0.5),
+        "revisions_total": sum(r["revisions"] for r in rows if r["revisions"] is not None),
+        "updates_total": sum(r["updates"] for r in rows),
         "words_measured": len(all_word),
         "per_segment": rows,
     }

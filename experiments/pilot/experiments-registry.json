@@ -8,9 +8,10 @@
   },
   "datasets": {
     "veche-bench-simple": {
-      "source": "artem-tish/veche-bench@e5102804",
+      "source": "artem-tish/veche-bench@a0ab08d6887b64995d076b475a87310953a51138",
       "license": "CC BY 4.0",
       "status": "scenario_text_not_listened: референсы не выверены человеком",
+      "note": "Ревизия — та, с которой скопирован набор (ITERATION2). Ранее в этом поле стояла e5102804 из другого источника; апстрим 2026-11-03 недоступен (404), поэтому ревизию проверить нельзя.",
       "splits": {
         "test": {
           "utterances": 967,
@@ -29,7 +30,7 @@
       "splits": {
         "test": {
           "utterances": 775,
-          "words": 13982
+          "words": 15376
         }
       }
     }
@@ -280,7 +281,7 @@
       "id": "fleurs/control",
       "dataset": "fleurs-ru/test",
       "models": [
-        "parakeet-ultra: 6.18",
+        "parakeet-tdt-v3-nolang: 6.18",
         "gigaam-v3: 4.70"
       ],
       "result": "fleurs/fleurs-test-runs-*-test.json",
