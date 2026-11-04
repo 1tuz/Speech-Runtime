@@ -136,6 +136,53 @@ def _edit_distance(ref: list[str], hyp: list[str]) -> tuple[int, int, int, int]:
     return sub, dele, ins, dp[n][m]
 
 
+def _window_words(partial: dict) -> list[dict]:
+    """Слова из оконного partial: граница слова — ведущий пробел или `▁`.
+
+    Оконный режим отдаёт куски без `▁`, но с ведущим пробелом у нового слова.
+    """
+    words: list[dict] = []
+    for piece in partial.get("token_timings") or []:
+        text = piece["text"].replace("\u2581", " ")
+        if text.startswith(" ") or not words:
+            words.append({"text": text.strip(), "start": piece["start"], "end": piece["end"]})
+        else:
+            words[-1]["text"] += text
+            words[-1]["end"] = piece["end"]
+    return [word for word in words if word["text"]]
+
+
+def timestamp_merge(segment: dict) -> list[str]:
+    """Собирает видимый текст, отбрасывая слова с уже показанным временем.
+
+    Клиент может склеивать окна не подряд, а по таймстампам: слово, конец
+    которого не позже последнего показанного, повторно не добавляется. Это
+    убирает часть дублей перекрытия, но не пере-распознавание тех же секунд.
+    """
+    merged: list[str] = []
+    last_end = -1.0
+    for partial in segment.get("partials", []):
+        for word in _window_words(partial):
+            if word["end"] <= last_end + 1e-3:
+                continue
+            merged.append(word["text"])
+            last_end = max(last_end, word["end"])
+    return merged
+
+
+def stream_merged_vs_final(segment: dict) -> dict | None:
+    """Расхождение сборки по таймстампам с финальным текстом."""
+    if not is_window_mode(segment):
+        return None
+    ref = segment.get("final", "").split()
+    hyp = timestamp_merge(segment)
+    if not ref:
+        return None
+    sub, dele, ins, errors = _edit_distance(ref, hyp)
+    return {"errors": errors, "substitutions": sub, "deletions": dele,
+            "insertions": ins, "words": len(ref), "visible_words": len(hyp)}
+
+
 def stream_vs_final(segment: dict) -> dict | None:
     """Расхождение видимого потока и финального текста (только оконный режим).
 
@@ -179,8 +226,8 @@ def window_lags(segment: dict) -> list[float]:
     return lags
 
 
-def _aggregate_stream_final(rows: list[dict]) -> dict | None:
-    items = [r["stream_vs_final"] for r in rows if r.get("stream_vs_final")]
+def _aggregate_stream_final(rows: list[dict], key: str = "stream_vs_final") -> dict | None:
+    items = [r[key] for r in rows if r.get(key)]
     if not items:
         return None
     errors = sum(i["errors"] for i in items)
@@ -223,6 +270,7 @@ def main(argv: list[str] | None = None) -> int:
         rows.append({
             "segment_id": segment["segment_id"],
             "stream_vs_final": stream_final,
+            "stream_merged_vs_final": stream_merged_vs_final(segment),
             "audio_s": segment["audio_s"],
             "rtf": segment["rtf"],
             "first_partial_s": first,
@@ -257,9 +305,12 @@ def main(argv: list[str] | None = None) -> int:
         "revisions_total": sum(r["revisions"] for r in rows if r["revisions"] is not None),
         "updates_total": sum(r["updates"] for r in rows),
         "words_measured": len(all_word),
-        "stream_vs_final": _aggregate_stream_final(rows),
-        "revisions_note": ("оконный режим не отдаёт пересмотры народу: каждый "
-                           "partial несёт только текст текущего чанка"),
+        "stream_vs_final": _aggregate_stream_final(rows, "stream_vs_final"),
+        "stream_merged_vs_final": _aggregate_stream_final(rows, "stream_merged_vs_final"),
+        "revisions_note": ("оконный режим не отдаёт пересмотры наружу: каждый "
+                           "partial несёт только текст текущего чанка; "
+                           "stream_vs_final — склейка partial подряд, "
+                           "stream_merged_vs_final — склейка по таймстампам"),
         "per_segment": rows,
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))

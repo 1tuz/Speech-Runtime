@@ -130,6 +130,7 @@ def main(argv: list[str] | None = None) -> int:
             "text_lag_p50": timing["text_lag_p50"], "text_lag_p95": timing["text_lag_p95"],
             "updates_total": timing["updates_total"], "revisions_total": timing["revisions_total"],
             "stream_vs_final": timing.get("stream_vs_final"),
+            "stream_merged_vs_final": timing.get("stream_merged_vs_final"),
             "wer": score["wer"], "cer": score["cer"], "substitutions": score["substitutions"],
             "deletions": score["deletions"], "insertions": score["insertions"],
             "words": score["words"], "score": f"{name}-score.json",

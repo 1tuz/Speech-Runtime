@@ -430,7 +430,7 @@
       "group": "streaming",
       "file": "streaming/parakeet-ultra-stream-summary.json",
       "source": "experiments/corpus/local/streaming/ultra/summary.json",
-      "sha256": "a0290cb5ce75906a4b2ba6f4402934a99e14b02e2ae2d8992438cabae1c16779"
+      "sha256": "d8f7734094c91b2acdf3085e0605813a063167645c755eb1a716780945afd8fa"
     },
     {
       "group": "streaming",

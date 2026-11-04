@@ -27,6 +27,15 @@
         "deletions": 0,
         "insertions": 45
       },
+      "stream_merged_vs_final": {
+        "segments": 3,
+        "errors": 58,
+        "words": 183,
+        "wer": 0.31693989071038253,
+        "substitutions": 28,
+        "deletions": 4,
+        "insertions": 26
+      },
       "wer": 0.3503184713375796,
       "cer": 0.2631578947368421,
       "substitutions": 21,
@@ -56,6 +65,15 @@
         "substitutions": 5,
         "deletions": 0,
         "insertions": 28
+      },
+      "stream_merged_vs_final": {
+        "segments": 3,
+        "errors": 34,
+        "words": 166,
+        "wer": 0.20481927710843373,
+        "substitutions": 15,
+        "deletions": 1,
+        "insertions": 18
       },
       "wer": 0.22929936305732485,
       "cer": 0.17794486215538846,
@@ -87,6 +105,15 @@
         "deletions": 0,
         "insertions": 2
       },
+      "stream_merged_vs_final": {
+        "segments": 3,
+        "errors": 2,
+        "words": 159,
+        "wer": 0.012578616352201259,
+        "substitutions": 1,
+        "deletions": 0,
+        "insertions": 1
+      },
       "wer": 0.12738853503184713,
       "cer": 0.10902255639097744,
       "substitutions": 13,
@@ -116,6 +143,15 @@
         "substitutions": 3,
         "deletions": 0,
         "insertions": 17
+      },
+      "stream_merged_vs_final": {
+        "segments": 3,
+        "errors": 22,
+        "words": 161,
+        "wer": 0.13664596273291926,
+        "substitutions": 10,
+        "deletions": 2,
+        "insertions": 10
       },
       "wer": 0.1592356687898089,
       "cer": 0.11779448621553884,
@@ -147,6 +183,15 @@
         "deletions": 0,
         "insertions": 14
       },
+      "stream_merged_vs_final": {
+        "segments": 3,
+        "errors": 17,
+        "words": 162,
+        "wer": 0.10493827160493827,
+        "substitutions": 7,
+        "deletions": 1,
+        "insertions": 9
+      },
       "wer": 0.15286624203821655,
       "cer": 0.12155388471177944,
       "substitutions": 16,
@@ -169,6 +214,15 @@
       "updates_total": 21,
       "revisions_total": 0,
       "stream_vs_final": {
+        "segments": 3,
+        "errors": 6,
+        "words": 157,
+        "wer": 0.03821656050955414,
+        "substitutions": 2,
+        "deletions": 0,
+        "insertions": 4
+      },
+      "stream_merged_vs_final": {
         "segments": 3,
         "errors": 6,
         "words": 157,
