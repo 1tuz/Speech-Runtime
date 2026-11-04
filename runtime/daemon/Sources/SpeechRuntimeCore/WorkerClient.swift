@@ -17,14 +17,20 @@ public actor WorkerClient {
     private var nextID: UInt64 = 1
     /// Ops whose traffic is per-audio-chunk or periodic: logging them buries real events.
     private static let highFrequency: Set<String> = ["session_audio", "stats"]
-    private var opNames: [UInt64: String] = [:]
-    private var sessionBuffers: [String: [SessionEvent]] = [:]
+    private nonisolated let opNames = OpNames()
+    private var sessionBuffers: [String: SessionEventBuffer] = [:]
     private var sessionWaiters: [CheckedContinuation<Void, Never>] = []
     private let workerPath: String
     private let log: @Sendable (String) -> Void
     private var restarts = 0
     private var lastExit: Int32?
     private var startedAt = Date()
+    /// Increments on every start/restart so callers can detect that a session belongs to a dead
+    /// worker generation and must be reopened instead of reused.
+    public private(set) var generation = 0
+    /// True while the daemon itself is shutting the worker down: an intentional stop must never
+    /// trigger the crash-restart path.
+    private var intentionalStop = false
 
     public init(workerPath: String, log: @escaping @Sendable (String) -> Void) {
         self.workerPath = workerPath
@@ -38,6 +44,8 @@ public actor WorkerClient {
 
     public func start() throws {
         guard process == nil else { return }
+        intentionalStop = false
+        generation += 1
         let child = Process()
         child.executableURL = URL(fileURLWithPath: workerPath)
         let inPipe = Pipe()
@@ -89,7 +97,9 @@ public actor WorkerClient {
         }
     }
 
+    /// Intentional shutdown: kills the child without ever arming the crash-restart path.
     public func stop() {
+        intentionalStop = true
         reader?.cancel()
         stderrReader?.cancel()
         if let process, process.isRunning {
@@ -119,14 +129,15 @@ public actor WorkerClient {
 
         let op = payload["op"] as? String ?? "?"
         let verbose = !Self.highFrequency.contains(op)
-        opNames[id] = op
+        opNames.insert(id, op)
         if verbose { log("→ [\(id)] \(op) \(bytes.count) B") }
         return try await withCheckedThrowingContinuation { continuation in
             pending.insert(id, continuation)
             stdinPipe.fileHandleForWriting.write(bytes)
-            Task { [pending] in
+            Task { [pending, opNames] in
                 try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
                 pending.take(id)?.resume(throwing: RuntimeError.message("worker request timed out after \(Int(timeout)) s"))
+                _ = opNames.take(id)
             }
         }
     }
@@ -183,13 +194,49 @@ public actor WorkerClient {
         _ = try await request(["op": "session_cancel", "session": id], timeout: 10)
     }
 
-    /// Returns buffered events after `since`. Waits up to `timeout` for the first one.
-    public func pollEvents(session: String, since: Int, timeout: TimeInterval) async -> (events: [SessionEvent], next: Int) {
+    /// Ends the session and blocks until the worker has emitted `ended` for it (which also means
+    /// every job has produced its engine response). Throws when the wait times out.
+    public func endSessionAndWait(id: String, timeout: TimeInterval = 120) async throws -> [String: Any] {
+        let result = try await endSession(id: id)
+        cleanup()
         let deadline = Date().addingTimeInterval(timeout)
         while true {
-            let buffered = sessionBuffers[session] ?? []
-            if buffered.count > since {
-                return (Array(buffered[since...]), buffered.count)
+            if sessionBuffers[id]?.ended == true {
+                cleanup()
+                return result
+            }
+            let remaining = deadline.timeIntervalSinceNow
+            if remaining <= 0 {
+                throw RuntimeError.message("session \(id) did not end within \(Int(timeout)) s")
+            }
+            _ = await pollEvents(session: id, since: sessionBuffers[id]?.totalCount ?? 0, timeout: min(remaining, 5))
+        }
+    }
+
+    /// Drops a session's buffered events without waiting; used by cancel and error paths.
+    public func forgetSession(_ id: String) {
+        sessionBuffers.removeValue(forKey: id)
+    }
+
+    /// Reaps ended sessions past their retention window. Called from poll/health paths.
+    public func cleanup() {
+        let now = Date()
+        for (session, buffer) in sessionBuffers where buffer.isExpired(now: now) {
+            sessionBuffers.removeValue(forKey: session)
+        }
+    }
+
+    /// Returns buffered events after `since`. Waits up to `timeout` for the first one.
+    public func pollEvents(session: String, since: Int, timeout: TimeInterval) async -> (events: [SessionEvent], next: Int) {
+        cleanup()
+        let deadline = Date().addingTimeInterval(timeout)
+        while true {
+            if let buffer = sessionBuffers[session] {
+                let (events, next) = buffer.slice(since: since)
+                if !events.isEmpty || buffer.ended { return (events, next) }
+            } else if since > 0 {
+                // Forgotten (cancel/crash-reaped) session: report the cursor we have.
+                return ([], since)
             }
             if timeout <= 0 { return ([], since) }
             let remaining = deadline.timeIntervalSinceNow
@@ -227,7 +274,7 @@ public actor WorkerClient {
                 log("worker reply without waiter: \(line.prefix(200))")
                 return
             }
-            if let op = opNames.removeValue(forKey: id), !Self.highFrequency.contains(op) {
+            if let op = opNames.take(id), !Self.highFrequency.contains(op) {
                 log("← [\(id)] \(type)")
             }
             if type == "error" {
@@ -243,23 +290,31 @@ public actor WorkerClient {
             payload.removeValue(forKey: "type")
             payload.removeValue(forKey: "session")
             payload.removeValue(forKey: "event")
-            sessionBuffers[session, default: []].append(SessionEvent(name: name, data: payload))
+            sessionBuffers[session, default: SessionEventBuffer()].append(SessionEvent(name: name, data: payload))
             wakeWaiters()
         default:
             log("worker sent unknown message type: \(type)")
         }
     }
 
+    /// Crash path: fail in-flight requests, tell every live session its stream is dead (error +
+    /// ended), bump the generation and bring a fresh worker up. An intentional `stop()` never
+    /// comes through here.
     private func workerExited() {
+        guard !intentionalStop else {
+            log("worker stopped intentionally (status \(process?.terminationStatus ?? -1))")
+            return
+        }
         let code = process?.terminationStatus ?? -1
         lastExit = code
         process = nil
         stdinPipe = nil
         failPending("worker exited with status \(code)")
-        for session in sessionBuffers.keys {
-            sessionBuffers[session, default: []].append(
-                SessionEvent(name: "error", data: ["message": "worker exited with status \(code)"])
-            )
+        for (session, buffer) in sessionBuffers where !buffer.ended {
+            var dead = buffer
+            dead.append(SessionEvent(name: "error", data: ["message": "worker exited with status \(code)"]))
+            dead.append(SessionEvent(name: "ended", data: ["utterances": 0, "failed": 0]))
+            sessionBuffers[session] = dead
         }
         wakeWaiters()
         log("worker exited with status \(code)")
@@ -271,6 +326,7 @@ public actor WorkerClient {
             log("worker restart failed: \(error)")
         }
     }
+
 
     private func failPending(_ message: String) {
         pending.failAll(message)
@@ -312,5 +368,72 @@ final class PendingReplies: @unchecked Sendable {
         for (_, continuation) in waiting {
             continuation.resume(throwing: RuntimeError.message(message))
         }
+    }
+}
+
+/// Bounded per-session event history: at most `cap` events are retained and an ended session is
+/// reaped after `endedTTL`. Pure bookkeeping, so it is unit-tested directly.
+struct SessionEventBuffer {
+    static let cap = 20_000
+    static let endedTTL: TimeInterval = 300
+
+    private(set) var events: [WorkerClient.SessionEvent] = []
+    private(set) var ended = false
+    private(set) var endedAt: Date?
+
+    /// Events dropped by the cap; `since` cursors below this index can no longer be honored.
+    private(set) var droppedCount = 0
+
+    var totalCount: Int { droppedCount + events.count }
+
+    mutating func append(_ event: WorkerClient.SessionEvent) {
+        events.append(event)
+        if events.count > Self.cap {
+            let overflow = events.count - Self.cap
+            events.removeFirst(overflow)
+            droppedCount += overflow
+        }
+        if event.name == "ended" { markEnded() }
+    }
+
+    mutating func markEnded(at date: Date = Date()) {
+        if !ended {
+            ended = true
+            endedAt = date
+        }
+    }
+
+    /// Events after `since`. A cursor that fell off the cap yields everything still retained.
+    func slice(since: Int) -> (events: [WorkerClient.SessionEvent], next: Int) {
+        if since < droppedCount {
+            return (events, totalCount)
+        }
+        let index = since - droppedCount
+        guard index < events.count else { return ([], totalCount) }
+        return (Array(events[index...]), totalCount)
+    }
+
+    /// True once an ended session has been retained past its TTL and can be forgotten.
+    func isExpired(now: Date = Date(), ttl: TimeInterval = SessionEventBuffer.endedTTL) -> Bool {
+        guard ended, let endedAt else { return false }
+        return now.timeIntervalSince(endedAt) >= ttl
+    }
+}
+
+/// Op names live outside the actor so the request-timeout task can clear them without a hop.
+final class OpNames: @unchecked Sendable {
+    private let lock = NSLock()
+    private var map: [UInt64: String] = [:]
+
+    func insert(_ id: UInt64, _ op: String) {
+        lock.lock()
+        map[id] = op
+        lock.unlock()
+    }
+
+    func take(_ id: UInt64) -> String? {
+        lock.lock()
+        defer { lock.unlock() }
+        return map.removeValue(forKey: id)
     }
 }

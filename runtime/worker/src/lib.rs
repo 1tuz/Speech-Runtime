@@ -4,3 +4,4 @@ pub mod endpoint;
 pub mod engine;
 pub mod pcm;
 pub mod protocol;
+pub mod session;

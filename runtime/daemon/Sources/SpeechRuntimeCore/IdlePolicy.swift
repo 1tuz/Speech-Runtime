@@ -4,7 +4,7 @@ import Foundation
 /// Loading is expensive (ANE compilation), so the daemon unloads lazily and never during a stream.
 public actor IdlePolicy {
     private var lastUse: [String: Date] = [:]
-    private var activeStreams: [String: String] = [:]
+    private var activeStreams: [String: (model: String, generation: Int)] = [:]
 
     public init() {}
 
@@ -12,8 +12,8 @@ public actor IdlePolicy {
         lastUse[model] = Date()
     }
 
-    public func streamOpened(_ id: String, model: String) {
-        activeStreams[id] = model
+    public func streamOpened(_ id: String, model: String, generation: Int) {
+        activeStreams[id] = (model, generation)
         lastUse[model] = Date()
     }
 
@@ -21,8 +21,13 @@ public actor IdlePolicy {
         activeStreams.removeValue(forKey: id)
     }
 
+    /// Streams opened against a dead worker can never close; drop them so they stop blocking unload.
+    public func pruneStreams(before generation: Int) {
+        activeStreams = activeStreams.filter { $0.value.generation >= generation }
+    }
+
     public func modelsToUnload(idle: TimeInterval, probe: @Sendable (String) async -> Bool) async -> [String] {
-        let busy = Set(activeStreams.values)
+        let busy = Set(activeStreams.values.map(\.model))
         var candidates: [String] = []
         for (model, used) in lastUse where Date().timeIntervalSince(used) >= idle {
             if busy.contains(model) { continue }

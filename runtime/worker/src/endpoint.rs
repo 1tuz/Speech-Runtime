@@ -15,6 +15,8 @@ pub enum Event {
         end_ms: u64,
         /// Absolute time of the last speech frame, for endpoint latency.
         last_voice_ms: u64,
+        /// Stream position where the endpointer fired (feed) or flush() cut it.
+        detected_ms: u64,
     },
 }
 
@@ -107,6 +109,7 @@ impl Endpointer {
             start_ms: (self.utt_start / 16) as u64,
             end_ms: ((self.utt_start + keep as i64) / 16) as u64,
             last_voice_ms: (self.last_voice / 16) as u64,
+            detected_ms: (self.total / 16) as u64,
             pcm,
         }
     }
@@ -140,7 +143,7 @@ mod tests {
         assert_eq!(events.len(), 1);
         feed_ms(&mut ep, 1000, 0.0, &mut events); // trailing silence
         match &events[1] {
-            Event::Utterance { pcm, start_ms, end_ms, last_voice_ms } => {
+            Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, .. } => {
                 assert!((700..=720).contains(start_ms), "start {start_ms}");
                 // Pre-roll + speech + post-roll, with no silence tail after the last voice frame.
                 assert_eq!(*end_ms, last_voice_ms + 300);
@@ -161,7 +164,7 @@ mod tests {
         feed_ms(&mut ep, 500, 0.0, &mut events);
         assert_eq!(events.len(), 2, "one start and one utterance");
         match &events[1] {
-            Event::Utterance { pcm, start_ms, end_ms, last_voice_ms } => {
+            Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, .. } => {
                 // Speech started at the stream head, so there is no pre-roll to keep.
                 assert_eq!(*start_ms, 0);
                 assert_eq!(pcm.len() as u64, (end_ms - start_ms) * 16);

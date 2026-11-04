@@ -40,7 +40,7 @@ struct CLI {
           load <model> [--backend auto|gpu|ane]
           unload <model>
           transcribe <file.wav> --model <name> [--language ru] [--window-ms N] [--priority batch|interactive]
-          stream <file.wav> --model <name> [--realtime N] [--language ru] [--json]
+          stream <file.wav> --model <name> [--realtime N] [--language ru] [--config k=v]... [--json]
                                          feed a file as a live stream; prints finals with latencies
         """)
     }
@@ -143,6 +143,7 @@ struct CLI {
         }
         let json = arguments.contains("--json")
         let speed = Double(option("--realtime", in: arguments) ?? "1") ?? 1
+        let overrides = configOverrides(in: arguments)
         let wav = try Data(contentsOf: URL(fileURLWithPath: path))
         let (samples, rate) = try LocalPCM.decodeWAV(wav)
         guard abs(rate - 16_000) < 1 else {
@@ -152,6 +153,7 @@ struct CLI {
         let client = try client()
         var config: [String: Any] = [:]
         if let language = option("--language", in: arguments) { config["language"] = language }
+        for (key, value) in overrides { config[key] = value }
         let opened = try await client.openStream(model: model, config: config)
         guard let stream = opened["stream"] as? String else {
             throw RuntimeError.message("daemon did not return a stream id")
@@ -161,7 +163,7 @@ struct CLI {
         let started = Date()
         var nextCursor = 0
         var finals = 0
-        var markdownLines: [String] = []
+        var jsonLines: [String] = []
         /// Audio position (s) that the client has fed, paired with the wall clock at feed time.
         var fedAudio = 0.0
         var fedClock = Date()
@@ -172,33 +174,47 @@ struct CLI {
             return fedClock.addingTimeInterval(-behind / speed)
         }
 
+        /// Prints one final with its stage-separated latency. Pure arithmetic lives in
+        /// `StreamLatency` so tests can pin it down.
+        func report(_ data: [String: Any]) {
+            finals += 1
+            let lastVoice = Double(data["last_voice_ms"] as? Int ?? 0) / 1000
+            let detected = Double(data["detected_ms"] as? Int ?? 0) / 1000
+            let text = data["text"] as? String ?? ""
+            let receipt = Date()
+            let stages = StreamLatency.stages(
+                fed: wallClock(atAudio: lastVoice),
+                receipt: receipt,
+                silenceAudioMs: max((detected - lastVoice) * 1000, 0),
+                queueMs: data["queue_ms"] as? Int ?? 0,
+                asrMs: data["asr_ms"] as? Int ?? 0,
+                speed: speed
+            )
+            let at = receipt.timeIntervalSince(started)
+            if json {
+                jsonLines.append(
+                    "{\"utterance\":\(data["utterance"] ?? 0),\"at_s\":\(String(format: "%.2f", at)),\"e2e_ms\":\(stages.e2eMs),\"silence_ms\":\(stages.silenceMs),\"queue_ms\":\(stages.queueMs),\"asr_ms\":\(stages.asrMs),\"delivery_ms\":\(stages.deliveryMs),\"delivery_raw_ms\":\(stages.rawDeliveryMs),\"text\":\(jsonString(text))}"
+                )
+            } else {
+                print(String(
+                    format: "#%d e2e %d ms (silence %d, queue %d, asr %d, delivery %d)",
+                    data["utterance"] as? Int ?? finals, stages.e2eMs, stages.silenceMs, stages.queueMs, stages.asrMs, stages.deliveryMs
+                ))
+                print("   \(text)")
+            }
+        }
+
         func drain(wait: Double) async throws {
             let batch = try await client.events(stream: stream, since: nextCursor, wait: wait)
             nextCursor = batch["next"] as? Int ?? nextCursor
             for event in batch["events"] as? [[String: Any]] ?? [] {
                 guard let name = event["event"] as? String else { continue }
                 let data = event["data"] as? [String: Any] ?? [:]
-                if name == "final" || name == "error" {
-                    let at = Date().timeIntervalSince(started)
-                    if name == "final" {
-                        finals += 1
-                        let lastVoice = Double(data["last_voice_ms"] as? Int ?? 0) / 1000
-                        let text = data["text"] as? String ?? ""
-                        let asrMs = data["asr_ms"] as? Int ?? 0
-                        let latency = Date().timeIntervalSince(wallClock(atAudio: lastVoice))
-                        if json {
-                            markdownLines.append(
-                                "{\"utterance\":\(data["utterance"] ?? 0),\"at_s\":\(String(format: "%.2f", at)),\"latency_ms\":\(Int(latency * 1000)),\"asr_ms\":\(asrMs),\"text\":\(jsonString(text))}"
-                            )
-                        } else {
-                            print(String(format: "#%d at %.2f s, endpoint→final %.0f ms, asr %d ms",
-                                         data["utterance"] as? Int ?? finals, at, latency * 1000, asrMs))
-                            print("   \(text)")
-                        }
-                    } else {
-                        let message = data["message"] as? String ?? "error"
-                        FileHandle.standardError.write(Data("stream error: \(message)\n".utf8))
-                    }
+                if name == "final" {
+                    report(data)
+                } else if name == "error" {
+                    let message = data["message"] as? String ?? "error"
+                    FileHandle.standardError.write(Data("stream error: \(message)\n".utf8))
                 }
             }
         }
@@ -219,23 +235,52 @@ struct CLI {
             }
         }
         _ = try await client.endStream(stream)
-        for _ in 0..<200 {
-            try await drain(wait: 0.1)
-            let batch = try await client.events(stream: stream, since: nextCursor, wait: 0.05)
-            nextCursor = batch["next"] as? Int ?? nextCursor
-            if finals > 0, (batch["events"] as? [[String: Any]] ?? []).isEmpty, (batch["ended"] as? Bool) == true {
-                break
-            }
+        // Drain until the daemon reports ended:true (bounded), even with zero mid-stream finals.
+        let drainDeadline = Date().addingTimeInterval(120)
+        while Date() < drainDeadline {
+            try await drain(wait: 0.2)
+            // drain() already advances the cursor; only the ended flag matters here.
+            let status = try await client.events(stream: stream, since: nextCursor, wait: 0)
+            if (status["ended"] as? Bool) == true { break }
         }
-        _ = try await client.cancelStream(stream)
+        // Best-effort cleanup: after a worker restart the daemon rejects the stale stream.
+        _ = try? await client.cancelStream(stream)
         let wall = Date().timeIntervalSince(started)
         if json {
-            print("[" + markdownLines.joined(separator: ",\n") + "]")
+            print("[" + jsonLines.joined(separator: ",\n") + "]")
         }
         FileHandle.standardError.write(Data(String(
             format: "fed %.1f s of audio in %.1f s, %d utterance(s)\n",
             Double(samples.count) / 16_000, wall, finals
         ).utf8))
+    }
+
+    /// Collects repeatable `--config k=v` overrides into a JSON value map.
+    static func configOverrides(in arguments: [String]) -> [String: Any] {
+        var values: [String: Any] = [:]
+        var index = 0
+        while index < arguments.count - 1 {
+            if arguments[index] == "--config" {
+                let pair = arguments[index + 1]
+                if let equals = pair.firstIndex(of: "=") {
+                    let key = String(pair[..<equals])
+                    let raw = String(pair[pair.index(after: equals)...])
+                    values[key] = parseConfigValue(raw)
+                }
+                index += 2
+            } else {
+                index += 1
+            }
+        }
+        return values
+    }
+
+    static func parseConfigValue(_ raw: String) -> Any {
+        if raw == "true" { return true }
+        if raw == "false" { return false }
+        if let int = Int(raw) { return int }
+        if let double = Double(raw) { return double }
+        return raw
     }
 
     static func jsonString(_ text: String) -> String {

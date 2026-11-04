@@ -20,14 +20,22 @@ use crate::protocol::Priority;
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Meta {
     Client(u64),
-    Session { session: String, utterance: u64, last_voice_ms: u64 },
+    Session {
+        session: String,
+        utterance: u64,
+        last_voice_ms: u64,
+        start_ms: u64,
+        end_ms: u64,
+        detected_ms: u64,
+        audio_ms: u64,
+    },
 }
 
 #[derive(Debug)]
 pub enum Response {
     Loaded { model: String, device: String, load_ms: u64 },
     Unloaded { model: String },
-    Text { text: String, asr_ms: u64, tokens: Vec<TokenOut> },
+    Text { text: String, asr_ms: u64, queue_ms: u64, tokens: Vec<TokenOut> },
     Failed { message: String },
     Cancelled,
 }
@@ -49,6 +57,8 @@ pub struct Job {
     pub cancelled: Arc<AtomicBool>,
     pub meta: Meta,
     pub kind: Kind,
+    /// When submit() enqueued this job; queue_ms is measured from here.
+    pub queued_at: Instant,
 }
 
 pub enum Kind {
@@ -60,13 +70,19 @@ pub enum Kind {
 struct Queues {
     interactive: VecDeque<Job>,
     batch: VecDeque<Job>,
+    /// Job the inference thread is running, not yet answered.
+    running: Option<(u64, Instant)>,
     stop: bool,
 }
 
 pub struct ModelHandle {
+    model: String,
     queues: Arc<(Mutex<Queues>, Condvar)>,
     next_id: Arc<AtomicU64>,
     loaded: Arc<AtomicBool>,
+    unloading: Arc<AtomicBool>,
+    /// Jobs handed to the inference thread but not answered yet.
+    inflight: Arc<AtomicU64>,
     device: Arc<Mutex<Option<String>>>,
     done: Arc<AtomicU64>,
     failed: Arc<AtomicU64>,
@@ -76,12 +92,20 @@ pub struct ModelHandle {
 impl ModelHandle {
     /// Starts the inference thread; it loads the model on the first `Load` job.
     pub fn spawn(model: String, results: Sender<EngineMsg>) -> Self {
+        let model_name = model.clone();
         let queues = Arc::new((
-            Mutex::new(Queues { interactive: VecDeque::new(), batch: VecDeque::new(), stop: false }),
+            Mutex::new(Queues {
+                interactive: VecDeque::new(),
+                batch: VecDeque::new(),
+                running: None,
+                stop: false,
+            }),
             Condvar::new(),
         ));
         let next_id = Arc::new(AtomicU64::new(1));
         let loaded = Arc::new(AtomicBool::new(false));
+        let unloading = Arc::new(AtomicBool::new(false));
+        let inflight = Arc::new(AtomicU64::new(0));
         let device: Arc<Mutex<Option<String>>> = Arc::new(Mutex::new(None));
         let done = Arc::new(AtomicU64::new(0));
         let failed = Arc::new(AtomicU64::new(0));
@@ -92,54 +116,118 @@ impl ModelHandle {
             let device = Arc::clone(&device);
             let done = Arc::clone(&done);
             let failed = Arc::clone(&failed);
+            let unloading = Arc::clone(&unloading);
+            let inflight = Arc::clone(&inflight);
             let results = results.clone();
             thread::Builder::new()
                 .name(format!("model-{model}"))
                 .spawn(move || {
                     let mut held: Option<Model> = None;
                     loop {
-                        let job = {
+                        // Pull a job under the lock, park its id in `running` and stamp the
+                        // queue wait; unload sees the lane as busy until the job is answered.
+                        let (job, queue_ms) = {
                             let (lock, cv) = &*queues;
                             let mut q = lock.lock().unwrap();
                             loop {
                                 if q.stop {
                                     return;
                                 }
-                                if let Some(job) = q.interactive.pop_front() {
-                                    break job;
-                                }
-                                if let Some(job) = q.batch.pop_front() {
-                                    break job;
+                                let job = q
+                                    .interactive
+                                    .pop_front()
+                                    .or_else(|| q.batch.pop_front());
+                                if let Some(job) = job {
+                                    let queue_ms = job.queued_at.elapsed().as_millis() as u64;
+                                    q.running = Some((job.id, job.queued_at));
+                                    break (job, queue_ms);
                                 }
                                 q = cv.wait(q).unwrap();
                             }
                         };
+                        inflight.fetch_add(1, Ordering::SeqCst);
                         let response = if job.cancelled.load(Ordering::SeqCst) {
                             Response::Cancelled
                         } else {
-                            run(&model, &job.kind, &mut held, &done, &failed, &loaded, &device)
+                            run(&model_name, &job.kind, &mut held, &done, &failed, &loaded, &device, queue_ms)
                         };
+                        inflight.fetch_sub(1, Ordering::SeqCst);
+                        {
+                            let (lock, _) = &*queues;
+                            let mut q = lock.lock().unwrap();
+                            q.running = None;
+                            if matches!(job.kind, Kind::Unload) {
+                                unloading.store(false, Ordering::SeqCst);
+                            }
+                        }
                         let _ = results.send(EngineMsg { job: job.id, meta: job.meta, response });
                     }
                 })
                 .expect("spawn model thread");
         }
-
-        Self { queues, next_id, loaded, device, done, failed, started: Instant::now() }
+        Self {
+            model,
+            queues,
+            next_id,
+            loaded,
+            unloading,
+            inflight,
+            device,
+            done,
+            failed,
+            started: Instant::now(),
+        }
     }
 
-    pub fn submit(&self, kind: Kind, priority: Priority, meta: Meta) -> (u64, Arc<AtomicBool>) {
+    /// Enqueues a job unless the model is draining for an unload.
+    /// Returns the job id and its cancel flag.
+    pub fn submit(
+        &self,
+        kind: Kind,
+        priority: Priority,
+        meta: Meta,
+    ) -> Result<(u64, Arc<AtomicBool>), String> {
         let cancelled = Arc::new(AtomicBool::new(false));
         let id = self.next_id.fetch_add(1, Ordering::SeqCst);
-        let job = Job { id, cancelled: Arc::clone(&cancelled), meta, kind };
+        let job = Job { id, cancelled: Arc::clone(&cancelled), meta, kind, queued_at: Instant::now() };
         let (lock, cv) = &*self.queues;
         let mut q = lock.lock().unwrap();
+        if self.unloading.load(Ordering::SeqCst) {
+            return Err(format!("model {:?} is unloading", self.model));
+        }
         match priority {
             Priority::Interactive => q.interactive.push_back(job),
             Priority::Batch => q.batch.push_back(job),
         }
         cv.notify_one();
-        (id, cancelled)
+        Ok((id, cancelled))
+    }
+
+    /// Requests an unload: under the queue lock refuses when jobs are queued or
+    /// a job is running, else marks the model unloading and enqueues Unload in front.
+    pub fn request_unload(&self) -> Result<(), String> {
+        let (lock, cv) = &*self.queues;
+        let mut q = lock.lock().unwrap();
+        if !q.interactive.is_empty() || !q.batch.is_empty() || q.running.is_some() {
+            return Err(format!("model {:?} is in use", self.model));
+        }
+        self.unloading.store(true, Ordering::SeqCst);
+        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let job = Job {
+            id,
+            cancelled: Arc::new(AtomicBool::new(false)),
+            meta: Meta::Client(0),
+            kind: Kind::Unload,
+            queued_at: Instant::now(),
+        };
+        q.interactive.push_front(job);
+        cv.notify_one();
+        Ok(())
+    }
+
+    /// Jobs handed to the inference thread but not answered yet.
+    pub fn inflight(&self) -> u64 {
+        self.inflight.load(Ordering::SeqCst)
     }
 
     pub fn is_loaded(&self) -> bool {
@@ -168,6 +256,7 @@ impl ModelHandle {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn run(
     model_name: &str,
     kind: &Kind,
@@ -176,6 +265,7 @@ fn run(
     failed: &AtomicU64,
     loaded: &AtomicBool,
     device: &Mutex<Option<String>>,
+    queue_ms: u64,
 ) -> Response {
     match kind {
         Kind::Load { path, backend } => {
@@ -230,6 +320,7 @@ fn run(
                     Response::Text {
                         text: t.text,
                         asr_ms: started.elapsed().as_millis() as u64,
+                        queue_ms,
                         tokens: t
                             .tokens
                             .iter()

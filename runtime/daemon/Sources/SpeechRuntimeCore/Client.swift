@@ -147,3 +147,40 @@ public enum LocalPCM {
         return (decoded.samples, decoded.sampleRate)
     }
 }
+
+/// Stage-separated latency for one streaming final. Pure arithmetic, unit-tested directly:
+/// `e2e` is wall time from feeding the audio position `last_voice_ms` to receipt of the final;
+/// `silence` is the endpointer's silence window scaled by the feed speed; `delivery` is the
+/// remainder after subtracting queue and ASR, clamped at zero (raw kept alongside).
+public struct StreamLatency: Sendable, Equatable {
+    public var e2eMs: Int
+    public var silenceMs: Int
+    public var queueMs: Int
+    public var asrMs: Int
+    /// `e2e - silence - queue - asr`, clamped to >= 0.
+    public var deliveryMs: Int
+    /// Same as `deliveryMs` without clamping; negative values mean the stages over-explain e2e.
+    public var rawDeliveryMs: Int
+
+    public static func stages(
+        fed: Date,
+        receipt: Date,
+        silenceAudioMs: Double,
+        queueMs: Int,
+        asrMs: Int,
+        speed: Double
+    ) -> StreamLatency {
+        let effectiveSpeed = speed > 0 ? speed : 1
+        let e2e = max(receipt.timeIntervalSince(fed) * 1000, 0)
+        let silence = silenceAudioMs / effectiveSpeed
+        let rawDelivery = e2e - silence - Double(queueMs) - Double(asrMs)
+        return StreamLatency(
+            e2eMs: Int(e2e.rounded()),
+            silenceMs: Int(silence.rounded()),
+            queueMs: queueMs,
+            asrMs: asrMs,
+            deliveryMs: Int(max(rawDelivery, 0).rounded()),
+            rawDeliveryMs: Int(rawDelivery.rounded())
+        )
+    }
+}

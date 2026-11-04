@@ -61,9 +61,12 @@ public struct Router: Sendable {
             let stats = try await worker.stats()
             workerState["models"] = stats["models"] ?? []
             workerState["sessions"] = stats["sessions"] ?? 0
+            workerState["generation"] = await worker.generation
         } catch {
             workerState["error"] = "\(error)"
         }
+        for id in await sessions.sweep(now: Date()) { await idle.streamClosed(id) }
+        await worker.cleanup()
         return .json([
             "ok": true,
             "version": "0.1.0",
@@ -172,31 +175,50 @@ public struct Router: Sendable {
         if let language = body["language"] as? String { config["language"] = language }
         let id = UUID().uuidString
         let result = try await worker.openSession(id: id, model: model, config: config)
-        await sessions.insert(id, model: model, config: config)
-        await idle.streamOpened(id, model: model)
+        let generation = await worker.generation
+        await sessions.insert(id, model: model, config: config, generation: generation)
+        await idle.streamOpened(id, model: model, generation: generation)
         return .json(["stream": id, "model": model, "result": result])
     }
 
     private func streamAudio(_ request: HTTPRequest) async throws -> HTTPResponse {
         let id = try streamID(request)
+        try await guardGeneration(id)
         let audio = try Audio.decode(body: request.body, rawFormat: request.headers["x-sample-format"])
         guard !audio.samples.isEmpty else { throw RuntimeError.message("empty audio") }
         try await worker.sessionAudio(id: id, pcm: audio.samples)
         let total = await sessions.addedSamples(id, count: audio.samples.count)
+        await worker.cleanup()
         return .json(["stream": id, "samples": total, "audio_ms": total * 1000 / 16_000])
     }
 
     private func endStream(_ request: HTTPRequest) async throws -> HTTPResponse {
         let id = try streamID(request)
-        let result = try await worker.endSession(id: id)
-        await sessions.markEnded(id)
-        await idle.streamClosed(id)
-        return .json(["stream": id, "result": result])
+        try await guardGeneration(id)
+        do {
+            let result = try await worker.endSessionAndWait(id: id)
+            await sessions.markEnded(id)
+            await idle.streamClosed(id)
+            await worker.cleanup()
+            return .json(["stream": id, "ended": true, "result": result])
+        } catch {
+            // A failed end must still release the stream slot; otherwise a dead worker keeps
+            // its model "in use" forever and idle unload can never run.
+            await sessions.markEnded(id)
+            await idle.streamClosed(id)
+            throw error
+        }
     }
 
     private func cancelStream(_ request: HTTPRequest) async throws -> HTTPResponse {
         let id = try streamID(request)
-        try await worker.cancelSession(id: id)
+        try await guardGeneration(id)
+        do {
+            try await worker.cancelSession(id: id)
+        } catch {
+            // The worker may have restarted; the session is dead either way.
+        }
+        await worker.forgetSession(id)
         await sessions.remove(id)
         await idle.streamClosed(id)
         return .json(["stream": id, "cancelled": true])
@@ -207,13 +229,27 @@ public struct Router: Sendable {
         let since = Int(request.query["since"] ?? "0") ?? 0
         let timeout = min(Double(request.query["wait"] ?? "0") ?? 0, 25)
         let (events, next) = await worker.pollEvents(session: id, since: since, timeout: timeout)
-        let ended = await sessions.isEnded(id)
+        let ended = await sessions.isEnded(id) || (events.contains { $0.name == "ended" })
+        if ended {
+            await sessions.markEnded(id)
+            await idle.streamClosed(id)
+        }
+        for reaped in await sessions.sweep(now: Date()) { await idle.streamClosed(reaped) }
+        await worker.cleanup()
         return .json([
             "stream": id,
             "next": next,
             "ended": ended,
             "events": events.map { ["event": $0.name, "data": $0.data] },
         ])
+    }
+
+    private func guardGeneration(_ id: String) async throws {
+        let sessionGeneration = await sessions.generation(of: id)
+        let workerGeneration = await worker.generation
+        guard sessionGeneration == workerGeneration else {
+            throw RuntimeError.message("worker restarted; reopen stream")
+        }
     }
 
     private func streamID(_ request: HTTPRequest) throws -> String {
@@ -236,12 +272,22 @@ private actor SessionTable {
         var model: String
         var samples: Int
         var ended: Bool
+        var endedAt: Date?
+        /// Worker generation the session was opened against; mismatch means the worker died.
+        var generation: Int
     }
+
+    /// Ended/cancelled sessions live this much longer so late event polls can still read them.
+    static let endedGrace: TimeInterval = 300
 
     private var entries: [String: Entry] = [:]
 
-    func insert(_ id: String, model: String, config: [String: Any]) {
-        entries[id] = Entry(model: model, samples: 0, ended: false)
+    func insert(_ id: String, model: String, config: [String: Any], generation: Int) {
+        entries[id] = Entry(model: model, samples: 0, ended: false, endedAt: nil, generation: generation)
+    }
+
+    func generation(of id: String) -> Int? {
+        entries[id]?.generation
     }
 
     func addedSamples(_ id: String, count: Int) -> Int {
@@ -249,15 +295,17 @@ private actor SessionTable {
         entry.samples += count
         entries[id] = entry
         return entry.samples
-    }
+   }
 
     func markEnded(_ id: String) {
-        entries[id]?.ended = true
+        guard entries[id] != nil else { return }
+        entries[id]!.ended = true
+        entries[id]!.endedAt = Date()
     }
 
     func isEnded(_ id: String) -> Bool {
         entries[id]?.ended ?? true
-    }
+   }
 
     func remove(_ id: String) {
         entries.removeValue(forKey: id)
@@ -265,5 +313,18 @@ private actor SessionTable {
 
     func count() -> Int {
         entries.count
+    }
+
+    /// Drops ended sessions retained past the grace period so health counts and memory fall.
+    /// Returns the removed ids so the caller can release their idle-policy slots.
+    func sweep(now: Date = Date(), grace: TimeInterval = SessionTable.endedGrace) -> [String] {
+        var removed: [String] = []
+        entries = entries.filter { entry in
+            guard entry.value.ended, let endedAt = entry.value.endedAt else { return true }
+            let keep = now.timeIntervalSince(endedAt) < grace
+            if !keep { removed.append(entry.key) }
+            return keep
+        }
+        return removed
     }
 }

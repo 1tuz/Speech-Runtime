@@ -19,6 +19,7 @@ use sr_worker::endpoint::{Endpointer, Event, FRAME};
 use sr_worker::engine::{EngineMsg, Kind, Meta, ModelHandle, Response};
 use sr_worker::pcm;
 use sr_worker::protocol::{Priority, Reply, Request};
+use sr_worker::session::SessionJobs;
 
 struct Session {
     model: String,
@@ -26,8 +27,9 @@ struct Session {
     detector: Box<Detector>,
     /// Samples that did not fill a 256-sample frame yet.
     carry: Vec<f32>,
+    /// Next utterance index handed to the engine and events.
     utterance: u64,
-    jobs: Vec<Arc<AtomicBool>>,
+    jobs: SessionJobs,
 }
 
 struct Worker {
@@ -48,6 +50,22 @@ impl Worker {
         let _ = out.flush();
     }
 
+    /// Emits `ended` and drops the session once every job answered. Called from
+    /// the router after each session-tagged response.
+    fn retire_if_drained(&mut self, session: &str) {
+        let Some(s) = self.sessions.get(session) else { return };
+        if !s.jobs.should_end() {
+            return;
+        }
+        let (utterances, failed) = (s.jobs.submitted(), s.jobs.failed());
+        self.send(&Reply::Event {
+            session: session.to_string(),
+            event: "ended".into(),
+            data: json!({"utterances": utterances, "failed": failed}),
+        });
+        self.sessions.remove(session);
+    }
+
     fn handle(&mut self, req: Request) {
         match req {
             Request::Ping { id } => self.ok(id, json!({"pong": true})),
@@ -57,20 +75,25 @@ impl Worker {
                     .iter()
                     .map(|(name, m)| {
                         let (done, failed, uptime) = m.counters();
-                        let (hi, lo) = m.depth();
+                        let (hi, _lo) = m.depth();
                         json!({
                             "model": name,
                             "loaded": m.is_loaded(),
                             "device": m.device(),
                             "queued_interactive": hi,
-                            "queued_batch": lo,
+                            "inflight": m.inflight(),
                             "done": done,
                             "failed": failed,
                             "uptime_s": uptime,
                         })
                     })
                     .collect();
-                self.ok(id, json!({"models": models, "sessions": self.sessions.len()}));
+                let ending = self.sessions.values().filter(|s| s.jobs.is_ending()).count();
+                self.ok(id, json!({
+                    "models": models,
+                    "sessions": self.sessions.len(),
+                    "ending_sessions": ending,
+                }));
             }
             Request::Load { id, model, path, backend } => self.load(id, model, path, backend),
             Request::Unload { id, model } => {
@@ -78,7 +101,13 @@ impl Worker {
                     self.err(id, format!("model {model:?} is not loaded"));
                     return;
                 };
-                handle.submit(Kind::Unload, Priority::Batch, Meta::Client(id.unwrap_or(0)));
+                if self.sessions.values().any(|s| s.model == model) {
+                    self.err(id, format!("model {model:?} is in use"));
+                    return;
+                }
+                if let Err(e) = handle.request_unload() {
+                    self.err(id, e);
+                }
             }
             Request::Transcribe { id, model, pcm: data, language, window_ms, priority } => {
                 let Some(handle) = self.models.get(&model) else {
@@ -93,12 +122,16 @@ impl Worker {
                     return self.err(id, "empty audio".to_string());
                 }
                 let request_id = id.unwrap_or_else(|| self.next_job.fetch_add(1, Ordering::SeqCst));
-                let (_, flag) = handle.submit(
+                match handle.submit(
                     Kind::Transcribe { pcm, language, window_ms },
                     Priority::parse(priority.as_deref()),
                     Meta::Client(request_id),
-                );
-                self.client_jobs.insert(request_id, flag);
+                ) {
+                    Ok((_, flag)) => {
+                        self.client_jobs.insert(request_id, flag);
+                    }
+                    Err(e) => self.err(id, e),
+                }
             }
             Request::Cancel { id, job } => {
                 let cancelled = self.client_jobs.remove(&job).map(|flag| {
@@ -119,7 +152,7 @@ impl Worker {
                     detector: Detector::default_boxed(),
                     carry: Vec::new(),
                     utterance: 0,
-                    jobs: Vec::new(),
+                    jobs: SessionJobs::new(),
                 });
                 self.ok(id, json!({"session_open": session}));
             }
@@ -128,24 +161,27 @@ impl Worker {
                     Ok(p) => p,
                     Err(e) => return self.err(id, e),
                 };
-                self.session_audio(&session, &pcm);
-                self.ok(id, json!({"session_audio": session, "samples": pcm.len()}));
+                if self.session_audio(&session, &pcm) {
+                    self.ok(id, json!({"session_audio": session, "samples": pcm.len()}));
+                }
             }
             Request::SessionEnd { id, session } => self.session_end(id, &session),
             Request::SessionCancel { id, session } => {
-                if let Some(s) = self.sessions.remove(&session) {
-                    for flag in s.jobs {
-                        flag.store(true, Ordering::SeqCst);
-                    }
-                    self.send(&Reply::Event {
-                        session: session.clone(),
-                        event: "cancelled".into(),
-                        data: json!({}),
-                    });
-                    self.ok(id, json!({"session_cancel": session}));
-                } else {
-                    self.err(id, format!("no session {session:?}"));
-                }
+                let Some(mut s) = self.sessions.remove(&session) else {
+                    return self.err(id, format!("no session {session:?}"));
+                };
+                s.jobs.cancel_all();
+                self.send(&Reply::Event {
+                    session: session.clone(),
+                    event: "cancelled".into(),
+                    data: json!({}),
+                });
+                self.send(&Reply::Event {
+                    session: session.clone(),
+                    event: "ended".into(),
+                    data: json!({"utterances": s.jobs.submitted(), "failed": s.jobs.failed()}),
+                });
+                self.ok(id, json!({"session_cancel": session}));
             }
         }
     }
@@ -165,21 +201,29 @@ impl Worker {
             .models
             .entry(model.clone())
             .or_insert_with(|| ModelHandle::spawn(model.clone(), self.results.clone()));
-        handle.submit(
+        if let Err(e) = handle.submit(
             Kind::Load { path: PathBuf::from(path), backend },
             Priority::Interactive,
             Meta::Client(id.unwrap_or(0)),
-        );
+        ) {
+            self.err(id, e);
+        }
     }
 
-    fn session_audio(&mut self, id: &str, pcm: &[f32]) {
-        if !self.sessions.contains_key(id) {
-            return self.err(None, format!("no session {id:?}"));
+    /// Returns false when the frame was rejected (no session / ending),
+    /// so the caller answers with an error instead of ok.
+    fn session_audio(&mut self, id: &str, pcm: &[f32]) -> bool {
+        let Some(session) = self.sessions.get_mut(id) else {
+            self.err(None, format!("no session {id:?}"));
+            return false;
+        };
+        if session.jobs.is_ending() {
+            self.err(None, format!("session {id:?} is ending"));
+            return false;
         }
         let mut events = Vec::new();
         let (mut utterance, model, language);
         {
-            let session = self.sessions.get_mut(id).expect("checked above");
             let mut buf = Vec::with_capacity(session.carry.len() + pcm.len());
             buf.extend_from_slice(&session.carry);
             buf.extend_from_slice(pcm);
@@ -204,20 +248,37 @@ impl Worker {
                     event: "speech_start".into(),
                     data: json!({"at_ms": at_ms}),
                 }),
-                Event::Utterance { pcm, start_ms, end_ms, last_voice_ms } => {
-                    let Some(handle) = self.models.get(&model) else {
-                        self.err(None, format!("model {model:?} not loaded"));
-                        continue;
-                    };
+                Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms } => {
                     let audio_ms = pcm.len() as u64 * 1000 / 16_000;
-                    let (_, flag) = handle.submit(
-                        Kind::Transcribe { pcm, language: language.clone(), window_ms: None },
-                        Priority::Interactive,
-                        Meta::Session { session: id.to_string(), utterance, last_voice_ms },
-                    );
-                    if let Some(session) = self.sessions.get_mut(id) {
-                        session.utterance += 1;
-                        session.jobs.push(flag);
+                    let submitted = match self.models.get(&model) {
+                        Some(handle) => handle.submit(
+                            Kind::Transcribe { pcm, language: language.clone(), window_ms: None },
+                            Priority::Interactive,
+                            Meta::Session {
+                                session: id.to_string(),
+                                utterance,
+                                last_voice_ms,
+                                start_ms,
+                                end_ms,
+                                detected_ms,
+                                audio_ms,
+                            },
+                        ),
+                        None => Err(format!("model {model:?} not loaded")),
+                    };
+                    match submitted {
+                        Ok((job, flag)) => {
+                            if let Some(session) = self.sessions.get_mut(id) {
+                                session.jobs.track(job, flag);
+                                session.utterance += 1;
+                            }
+                        }
+                        Err(e) => {
+                            if let Some(session) = self.sessions.get_mut(id) {
+                                session.jobs.track_failed();
+                            }
+                            self.err(None, e);
+                        }
                     }
                     self.send(&Reply::Event {
                         session: id.to_string(),
@@ -227,6 +288,7 @@ impl Worker {
                             "start_ms": start_ms,
                             "end_ms": end_ms,
                             "last_voice_ms": last_voice_ms,
+                            "detected_ms": detected_ms,
                             "audio_ms": audio_ms,
                         }),
                     });
@@ -234,15 +296,98 @@ impl Worker {
                 }
             }
         }
+        true
     }
 
     fn session_end(&mut self, id: Option<u64>, session: &str) {
         let Some(entry) = self.sessions.get_mut(session) else {
             return self.err(id, format!("no session {session:?}"));
         };
-        let pending = entry.jobs.len() as u64;
+        if entry.jobs.is_ending() {
+            // Second end while ending: repeat the ack, no second flush.
+            let pending = entry.jobs.pending();
+            let (utterances, failed) = (entry.jobs.submitted(), entry.jobs.failed());
+            self.ok(id, json!({
+                "session_end": session,
+                "ending": true,
+                "pending": pending,
+                "utterances": utterances,
+                "failed": failed,
+            }));
+            return;
+        }
+        let mut events = Vec::new();
+        if let Some(event) = entry.endpointer.flush() {
+            events.push(event);
+        }
         entry.detector.reset();
-        self.ok(id, json!({"session_end": session, "pending": pending}));
+        entry.jobs.set_ending();
+        let (mut utterance, model, language) = (
+            entry.utterance,
+            entry.model.clone(),
+            entry.endpointer.config().language.clone(),
+        );
+        for event in events {
+            let Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms } = event else {
+                continue; // flush() only produces utterances
+            };
+            let audio_ms = pcm.len() as u64 * 1000 / 16_000;
+            let submitted = match self.models.get(&model) {
+                Some(handle) => handle.submit(
+                    Kind::Transcribe { pcm, language: language.clone(), window_ms: None },
+                    Priority::Interactive,
+                    Meta::Session {
+                        session: session.to_string(),
+                        utterance,
+                        last_voice_ms,
+                        start_ms,
+                        end_ms,
+                        detected_ms,
+                        audio_ms,
+                    },
+                ),
+                None => Err(format!("model {model:?} not loaded")),
+            };
+            match submitted {
+                Ok((job, flag)) => {
+                    if let Some(entry) = self.sessions.get_mut(session) {
+                        entry.jobs.track(job, flag);
+                        entry.utterance = utterance + 1;
+                    }
+                }
+                Err(e) => {
+                    if let Some(entry) = self.sessions.get_mut(session) {
+                        entry.jobs.track_failed();
+                    }
+                    self.err(None, e);
+                }
+            }
+            self.send(&Reply::Event {
+                session: session.to_string(),
+                event: "utterance".into(),
+                data: json!({
+                    "utterance": utterance,
+                    "start_ms": start_ms,
+                    "end_ms": end_ms,
+                    "last_voice_ms": last_voice_ms,
+                    "detected_ms": detected_ms,
+                    "audio_ms": audio_ms,
+                }),
+            });
+            utterance += 1;
+        }
+        let (pending, utterances, failed) = {
+            let entry = self.sessions.get(session).expect("session still present");
+            (entry.jobs.pending(), entry.jobs.submitted(), entry.jobs.failed())
+        };
+        self.ok(id, json!({
+            "session_end": session,
+            "ending": true,
+            "pending": pending,
+            "utterances": utterances,
+            "failed": failed,
+        }));
+        self.retire_if_drained(session);
     }
 
     fn ok(&self, id: Option<u64>, result: serde_json::Value) {
@@ -294,11 +439,12 @@ fn main() {
                     Meta::Client(id) => {
                         w.client_jobs.remove(&id);
                         match msg.response {
-                            Response::Text { text, asr_ms, tokens } => w.send(&Reply::Ok {
+                            Response::Text { text, asr_ms, queue_ms, tokens } => w.send(&Reply::Ok {
                                 id: Some(id),
                                 result: json!({
                                     "text": text,
                                     "asr_ms": asr_ms,
+                                    "queue_ms": queue_ms,
                                     "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
                                 }),
                             }),
@@ -307,35 +453,51 @@ fn main() {
                             other => w.send(&Reply::Error { id: Some(id), message: format!("unexpected: {other:?}") }),
                         }
                     }
-                    Meta::Session { session, utterance, last_voice_ms } => {
+                    Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms } => {
+                        if let Some(s) = w.sessions.get_mut(&session) {
+                            s.jobs.answer(msg.job);
+                        }
                         match msg.response {
-                            Response::Text { text, asr_ms, tokens } => w.send(&Reply::Event {
-                                session,
-                                event: "final".into(),
-                                data: json!({
-                                    "utterance": utterance,
-                                    "text": text,
-                                    "asr_ms": asr_ms,
-                                    "last_voice_ms": last_voice_ms,
-                                    "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
-                                }),
-                            }),
+                            Response::Text { text, asr_ms, queue_ms, tokens } => {
+                                w.send(&Reply::Event {
+                                    session: session.clone(),
+                                    event: "final".into(),
+                                    data: json!({
+                                        "utterance": utterance,
+                                        "text": text,
+                                        "asr_ms": asr_ms,
+                                        "queue_ms": queue_ms,
+                                        "audio_ms": audio_ms,
+                                        "start_ms": start_ms,
+                                        "end_ms": end_ms,
+                                        "last_voice_ms": last_voice_ms,
+                                        "detected_ms": detected_ms,
+                                        "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
+                                    }),
+                                });
+                            }
                             Response::Cancelled => w.send(&Reply::Event {
-                                session,
+                                session: session.clone(),
                                 event: "cancelled".into(),
                                 data: json!({"utterance": utterance}),
                             }),
-                            Response::Failed { message } => w.send(&Reply::Event {
-                                session,
-                                event: "error".into(),
-                                data: json!({"utterance": utterance, "message": message}),
-                            }),
+                            Response::Failed { message } => {
+                                if let Some(s) = w.sessions.get_mut(&session) {
+                                    s.jobs.note_failed();
+                                }
+                                w.send(&Reply::Event {
+                                    session: session.clone(),
+                                    event: "error".into(),
+                                    data: json!({"utterance": utterance, "message": message}),
+                                });
+                            }
                             other => w.send(&Reply::Event {
-                                session,
+                                session: session.clone(),
                                 event: "error".into(),
                                 data: json!({"message": format!("unexpected: {other:?}")}),
                             }),
                         }
+                        w.retire_if_drained(&session);
                     }
                 }
             }
