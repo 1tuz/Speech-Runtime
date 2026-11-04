@@ -72,7 +72,7 @@ public struct Router: Sendable {
             "version": "0.1.0",
             "uptime_s": Int(Date().timeIntervalSince(startedAt)),
             "worker": workerState,
-            "streams": await sessions.count(),
+            "streams": await sessions.activeCount(),
         ])
     }
 
@@ -313,6 +313,10 @@ private actor SessionTable {
 
     func count() -> Int {
         entries.count
+    }
+
+    func activeCount() -> Int {
+        entries.values.filter { !$0.ended }.count
     }
 
     /// Drops ended sessions retained past the grace period so health counts and memory fall.

@@ -105,7 +105,7 @@ impl Worker {
                     self.err(id, format!("model {model:?} is in use"));
                     return;
                 }
-                if let Err(e) = handle.request_unload() {
+                if let Err(e) = handle.request_unload(id) {
                     self.err(id, e);
                 }
             }

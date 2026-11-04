@@ -171,9 +171,9 @@ class GrowthAndStarvationTests(unittest.TestCase):
         self.assertTrue(soak._growth_ok(samples, "worker", "rss_kib", 100))
         self.assertFalse(soak._growth_ok(samples, "worker", "rss_kib", 10))
 
-    def test_growth_unmeasurable_is_not_failure(self):
-        self.assertTrue(soak._growth_ok([], "worker", "rss_kib", 1))
-        self.assertTrue(
+    def test_growth_unmeasurable_fails(self):
+        self.assertFalse(soak._growth_ok([], "worker", "rss_kib", 1))
+        self.assertFalse(
             soak._growth_ok([{"worker": {"rss_kib": None}}], "worker", "rss_kib", 1)
         )
 

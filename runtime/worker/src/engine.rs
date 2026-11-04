@@ -205,18 +205,18 @@ impl ModelHandle {
 
     /// Requests an unload: under the queue lock refuses when jobs are queued or
     /// a job is running, else marks the model unloading and enqueues Unload in front.
-    pub fn request_unload(&self) -> Result<(), String> {
+    pub fn request_unload(&self, caller: Option<u64>) -> Result<(), String> {
         let (lock, cv) = &*self.queues;
         let mut q = lock.lock().unwrap();
         if !q.interactive.is_empty() || !q.batch.is_empty() || q.running.is_some() {
             return Err(format!("model {:?} is in use", self.model));
         }
         self.unloading.store(true, Ordering::SeqCst);
-        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let job_id = self.next_id.fetch_add(1, Ordering::SeqCst);
         let job = Job {
-            id,
+            id: job_id,
             cancelled: Arc::new(AtomicBool::new(false)),
-            meta: Meta::Client(0),
+            meta: Meta::Client(caller.unwrap_or(0)),
             kind: Kind::Unload,
             queued_at: Instant::now(),
         };

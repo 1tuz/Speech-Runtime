@@ -453,6 +453,12 @@ def scenario_long_session(args, client: rc.RuntimeClient, samples, rate: int, ch
         f"worker rss {memory[0]['worker']['rss_kib']} -> {memory[-1]['worker']['rss_kib']} KiB "
         f"(limit {args.rss_growth_limit_mib} MiB)",
     )
+    check(
+        "rss_daemon_growth_mib",
+        _growth_ok(memory, "daemon", "rss_kib", args.rss_growth_limit_mib),
+        f"daemon rss {memory[0]['daemon']['rss_kib']} -> {memory[-1]['daemon']['rss_kib']} KiB "
+        f"(limit {args.rss_growth_limit_mib} MiB)",
+    )
     return {
         "audio_ms": audio_ms,
         "loops": loops,
@@ -489,7 +495,7 @@ def _growth_ok(samples: list[dict], who: str, field: str, limit_mib: float) -> b
     values = [s.get(who, {}).get(field) for s in samples]
     values = [v for v in values if isinstance(v, int)]
     if len(values) < 2:
-        return True  # cannot measure -> not a failure of the daemon
+        return False
     return (max(values) - min(values)) <= limit_mib * 1024
 
 
@@ -975,12 +981,12 @@ def main(argv=None) -> int:
             except subprocess.TimeoutExpired:
                 spawned.kill()
             print(f"[soak] spawned daemon (pid {spawned.pid}) stopped")
-        artifact["exit_code"] = exit_code
-        out = args.json or f"/tmp/soak-{args.scenario}.json"
-        write_artifact(out, artifact)
-        print(f"[{args.scenario}] assertions: "
-              + ", ".join(f"{r['name']}={'PASS' if r['pass'] else 'FAIL'}" for r in check_results_safe(artifact)))
-        print(f"[{args.scenario}] artifact: {out} (exit {exit_code})")
+    artifact["exit_code"] = exit_code
+    out = args.json or f"/tmp/soak-{args.scenario}.json"
+    write_artifact(out, artifact)
+    print(f"[{args.scenario}] assertions: "
+          + ", ".join(f"{r['name']}={'PASS' if r['pass'] else 'FAIL'}" for r in check_results_safe(artifact)))
+    print(f"[{args.scenario}] artifact: {out} (exit {exit_code})")
     return exit_code
 
 
