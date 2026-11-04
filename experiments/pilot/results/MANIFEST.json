@@ -44,6 +44,12 @@
     },
     {
       "group": "correction",
+      "file": "correction/parakeet-lora-apply-latency.json",
+      "source": "experiments/corpus/local/correction/parakeet/apply-latency.json",
+      "sha256": "7fc240dee385a247df461e43c86d82fab75b4154f56bae0b899720fc861cb8d2"
+    },
+    {
+      "group": "correction",
       "file": "correction/parakeet-lora-fold-2-one-to-one.json",
       "source": "experiments/corpus/local/correction/parakeet/fold-2-one-to-one-report.json",
       "sha256": "e9f8fe530a8fb09de23b443d81f037421cd2515e01705910a19d6ba44b032838"
@@ -412,7 +418,7 @@
       "group": "streaming",
       "file": "streaming/parakeet-ultra-stream-summary.json",
       "source": "experiments/corpus/local/streaming/ultra/summary.json",
-      "sha256": "50d079fc84d3d5599e60c80cef6d6de9af2ec00fa77c71e882ddb6c068fcc721"
+      "sha256": "a0290cb5ce75906a4b2ba6f4402934a99e14b02e2ae2d8992438cabae1c16779"
     },
     {
       "group": "streaming",

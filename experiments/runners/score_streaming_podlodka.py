@@ -64,12 +64,32 @@ def build_dataset(refs: dict[str, dict], run: dict, out_dir: str) -> list[str]:
     return [os.path.splitext(item["audio"])[0] for item in selected]
 
 
+def machine_label() -> str:
+    """Возвращает «чип, RAM, macOS» текущей машины."""
+    import subprocess
+
+    def out(cmd: list[str]) -> str:
+        try:
+            return subprocess.run(cmd, capture_output=True, text=True,
+                                  check=True).stdout.strip()
+        except Exception:
+            return "?"
+
+    chip = out(["sysctl", "-n", "machdep.cpu.brand_string"])
+    try:
+        ram = f"{int(out(['sysctl', '-n', 'hw.memsize'])) / 1073741824:.0f} GB"
+    except ValueError:
+        ram = "?"
+    return f"{chip}, {ram}, macOS {out(['sw_vers', '-productVersion'])}"
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-dir", required=True)
     parser.add_argument("--refs", default=REFS)
     parser.add_argument("--out", default=None)
-    parser.add_argument("--machine", default="Apple M4 Pro, 48 GB, macOS 27.0")
+    parser.add_argument("--machine", default=None,
+                        help="метка машины; по умолчанию определяется из системы")
     args = parser.parse_args(argv)
 
     refs = load_refs(args.refs)
@@ -109,6 +129,7 @@ def main(argv: list[str] | None = None) -> int:
             "first_partial_p95": timing["first_partial_p95"],
             "text_lag_p50": timing["text_lag_p50"], "text_lag_p95": timing["text_lag_p95"],
             "updates_total": timing["updates_total"], "revisions_total": timing["revisions_total"],
+            "stream_vs_final": timing.get("stream_vs_final"),
             "wer": score["wer"], "cer": score["cer"], "substitutions": score["substitutions"],
             "deletions": score["deletions"], "insertions": score["insertions"],
             "words": score["words"], "score": f"{name}-score.json",
@@ -118,7 +139,7 @@ def main(argv: list[str] | None = None) -> int:
         "status": "experiment_not_benchmark",
         "note": ("Podlodka-записи из corpus/local/audio; референсы — сценарный текст, а не "
                  "прослушанная речь; гипотеза — накопленный потоковый текст (`final`)."),
-        "machine": args.machine,
+        "machine": args.machine or machine_label(),
         "model": "parakeet-ultra (FluidAudio SlidingWindowAsrManager, ANE)",
         "realtime_feed": True,
         "rows": rows,

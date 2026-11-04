@@ -423,7 +423,7 @@
     {
       "id": "veche-dev/parakeet-ultra-nolang-wavo-ane",
       "dataset": "veche-bench-simple/dev",
-      "model": "parakeet-ultra (wavo 0.11.3, GGUF Q8_0, Neural Engine)",
+      "model": "parakeet-ultra (wavo 0.3.1 (a3b5c3b), GGUF Q8_0, Neural Engine)",
       "wer": 10.87,
       "cer": 3.8,
       "result": "scores/wavo-parakeet-ultra-ane-dev.json",
@@ -432,7 +432,7 @@
     {
       "id": "veche-dev/parakeet-ultra-nolang-wavo-gpu",
       "dataset": "veche-bench-simple/dev",
-      "model": "parakeet-ultra (wavo 0.11.3, GGUF Q8_0, Metal GPU)",
+      "model": "parakeet-ultra (wavo 0.3.1 (a3b5c3b), GGUF Q8_0, Metal GPU)",
       "wer": 10.98,
       "cer": 3.85,
       "result": "scores/wavo-parakeet-ultra-gpu-dev.json",
@@ -450,14 +450,14 @@
       "dataset": "veche-bench-simple/dev",
       "model": "Qwen3-0.6B + LoRA (unsloth MLX, 3 эпохи, rank 16)",
       "result": "correction/parakeet-lora-fold-*.json",
-      "note": "три фолда leave-one-meeting-out на парах гипотез Parakeet Ultra: WER 10.42 → 14.24 % суммарно (2 исправления против 111 новых ошибок) — корректор отклонён"
+      "note": "три фолда leave-one-meeting-out на парах гипотез Parakeet Ultra: WER 10.42 → 14.24 % суммарно (2 исправления против 111 новых ошибок) — корректор отклонён Машина: Apple M4, 16 GB (MLX)."
     },
     {
       "id": "engines/parakeet-ultra-wavo-bench",
       "dataset": "podlodka_test02_ep132 (17.24 с)",
       "model": "parakeet-ultra GGUF Q8_0",
       "result": "engines/wavo-bench-parakeet-ultra.json",
-      "note": "wavo bench: ANE load 0.36 с / warm 0.123 с, GPU load 0.46 с / warm 0.204 с (M4 Pro)"
+      "note": "wavo bench: ANE load 0.36 с / warm 0.123 с, GPU load 0.46 с / warm 0.204 с (Apple M4, 16 GB)"
     },
     {
       "id": "engines/parakeet-ultra-dev-latency",
@@ -465,6 +465,13 @@
       "model": "parakeet-ultra (wavo ANE, отдельный процесс на реплику)",
       "result": "engines/parakeet-dev-latency.json",
       "note": "p50 0.128 с на реплику, RTF без старта процесса 0.0036; ANE-бэкенд быстрее GPU"
+    },
+    {
+      "id": "correction/parakeet-lora-apply-latency",
+      "dataset": "dev, 8 реплик",
+      "model": "Qwen3-0.6B + LoRA (MLX)",
+      "result": "correction/parakeet-lora-apply-latency.json",
+      "note": "0.60 с на реплику (p50 0.575, max 0.843), загрузка 1.53 с, пик MLX 1.45 ГБ, RSS 1.80 ГБ; Apple M4, 16 ГБ"
     }
   ],
   "screening_decisions": {

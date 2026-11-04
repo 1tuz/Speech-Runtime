@@ -105,6 +105,57 @@ def revision_stats(segment: dict) -> dict:
     }
 
 
+def _edit_distance(ref: list[str], hyp: list[str]) -> tuple[int, int, int, int]:
+    """Левенштейн по словам с восстановлением S/D/I."""
+    n, m = len(ref), len(hyp)
+    dp = [[0] * (m + 1) for _ in range(n + 1)]
+    for i in range(n + 1):
+        dp[i][0] = i
+    for j in range(m + 1):
+        dp[0][j] = j
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if ref[i - 1] == hyp[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1]
+            else:
+                dp[i][j] = 1 + min(dp[i - 1][j - 1], dp[i - 1][j], dp[i][j - 1])
+    i, j = n, m
+    sub = dele = ins = 0
+    while i > 0 or j > 0:
+        if i > 0 and j > 0 and ref[i - 1] == hyp[j - 1]:
+            i, j = i - 1, j - 1
+        elif i > 0 and j > 0 and dp[i][j] == dp[i - 1][j - 1] + 1:
+            sub += 1
+            i, j = i - 1, j - 1
+        elif i > 0 and dp[i][j] == dp[i - 1][j] + 1:
+            dele += 1
+            i -= 1
+        else:
+            ins += 1
+            j -= 1
+    return sub, dele, ins, dp[n][m]
+
+
+def stream_vs_final(segment: dict) -> dict | None:
+    """Расхождение видимого потока и финального текста (только оконный режим).
+
+    Видимый текст — конкатенация текстов partial'ов: клиент показывает именно её.
+    Финальный текст движок собирает из подтверждённого состояния, поэтому
+    разница показывает, что теряется или дублируется на стыках окон.
+    """
+    if not is_window_mode(segment):
+        return None
+    visible = " ".join(p["text"].strip() for p in segment.get("partials", [])
+                       if p["text"].strip())
+    ref = segment.get("final", "").split()
+    hyp = visible.split()
+    if not ref:
+        return None
+    sub, dele, ins, errors = _edit_distance(ref, hyp)
+    return {"errors": errors, "substitutions": sub, "deletions": dele,
+            "insertions": ins, "words": len(ref), "visible_words": len(hyp)}
+
+
 def is_window_mode(segment: dict) -> bool:
     """Движок отдаёт текст окном целиком, а не дописывает partial."""
     return not segment.get("token_timings") and any(
@@ -126,6 +177,23 @@ def window_lags(segment: dict) -> list[float]:
             continue
         lags.append(partial["at_s"] - timings[-1]["end"])
     return lags
+
+
+def _aggregate_stream_final(rows: list[dict]) -> dict | None:
+    items = [r["stream_vs_final"] for r in rows if r.get("stream_vs_final")]
+    if not items:
+        return None
+    errors = sum(i["errors"] for i in items)
+    words = sum(i["words"] for i in items)
+    return {
+        "segments": len(items),
+        "errors": errors,
+        "words": words,
+        "wer": errors / words if words else None,
+        "substitutions": sum(i["substitutions"] for i in items),
+        "deletions": sum(i["deletions"] for i in items),
+        "insertions": sum(i["insertions"] for i in items),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -151,8 +219,10 @@ def main(argv: list[str] | None = None) -> int:
         all_lag.extend(lags)
         first = next((p["at_s"] for p in segment.get("partials", []) if p["text"].strip()), None)
         rev = revision_stats(segment)
+        stream_final = stream_vs_final(segment)
         rows.append({
             "segment_id": segment["segment_id"],
+            "stream_vs_final": stream_final,
             "audio_s": segment["audio_s"],
             "rtf": segment["rtf"],
             "first_partial_s": first,
@@ -187,6 +257,9 @@ def main(argv: list[str] | None = None) -> int:
         "revisions_total": sum(r["revisions"] for r in rows if r["revisions"] is not None),
         "updates_total": sum(r["updates"] for r in rows),
         "words_measured": len(all_word),
+        "stream_vs_final": _aggregate_stream_final(rows),
+        "revisions_note": ("оконный режим не отдаёт пересмотры народу: каждый "
+                           "partial несёт только текст текущего чанка"),
         "per_segment": rows,
     }
     print(json.dumps(summary, ensure_ascii=False, indent=2))

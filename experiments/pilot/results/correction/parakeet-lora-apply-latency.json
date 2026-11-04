@@ -1,0 +1,51 @@
+{
+  "status": "experiment_not_benchmark",
+  "model": "Qwen/Qwen3-0.6B",
+  "adapter": "experiments/corpus/local/correction/parakeet/lora-fold-5-it-product/adapter",
+  "segments": 8,
+  "load_s": 1.534,
+  "inference_s": 4.799,
+  "latency_s": {
+    "mean": 0.5999,
+    "p50": 0.5753,
+    "max": 0.8428
+  },
+  "mlx_peak_memory_bytes": 1454639036,
+  "max_rss_bytes": 1803321344,
+  "timings": [
+    {
+      "segment_id": "2-one-to-one-0000",
+      "s": 0.8334
+    },
+    {
+      "segment_id": "2-one-to-one-0001",
+      "s": 0.7341
+    },
+    {
+      "segment_id": "2-one-to-one-0002",
+      "s": 0.45
+    },
+    {
+      "segment_id": "2-one-to-one-0003",
+      "s": 0.8428
+    },
+    {
+      "segment_id": "2-one-to-one-0004",
+      "s": 0.3031
+    },
+    {
+      "segment_id": "2-one-to-one-0005",
+      "s": 0.5753
+    },
+    {
+      "segment_id": "2-one-to-one-0006",
+      "s": 0.5467
+    },
+    {
+      "segment_id": "2-one-to-one-0007",
+      "s": 0.5137
+    }
+  ],
+  "machine": "Apple M4 (Mac mini, 16 GB, macOS 27.2)",
+  "note": "замер на 8 репликах после прогрева; жадная генерация, на реплику — как у клиента"
+}
