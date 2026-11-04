@@ -78,6 +78,9 @@ for _meeting in ("2-one-to-one", "5-it-product", "7-bi-platform"):
         f"experiments/corpus/local/correction/parakeet/lora-fold-{_meeting}/run.json",
         "correction", f"parakeet-lora-train-{_meeting}.json"))
 NAMED_SOURCES.append((
+    "experiments/corpus/local/engines/peak-rss.json",
+    "engines", "peak-rss.json"))
+NAMED_SOURCES.append((
     "experiments/corpus/local/correction/parakeet/apply-latency.json",
     "correction", "parakeet-lora-apply-latency.json"))
 _STREAM = "experiments/corpus/local/streaming/ultra"

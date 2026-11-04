@@ -158,6 +158,12 @@
     },
     {
       "group": "engines",
+      "file": "engines/peak-rss.json",
+      "source": "experiments/corpus/local/engines/peak-rss.json",
+      "sha256": "0fce4c74c53c5e2678f3c66bef6eeeb19b0d6372940af5b4dd621eadebc3d5f4"
+    },
+    {
+      "group": "engines",
       "file": "engines/wavo-bench-parakeet-ultra.json",
       "source": "experiments/corpus/local/correction/runs/wavo-bench-dev.json",
       "sha256": "271a0bd1d91422ed205f98c29ff8ae82376501c75270f35a82fa06bcb3edf3ca"

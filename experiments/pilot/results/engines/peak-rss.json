@@ -1,0 +1,13 @@
+{
+  "status": "experiment_not_benchmark",
+  "machine": "Apple M4 (Mac mini, 16 GB, macOS 27.2)",
+  "method": "/usr/bin/time -l, maximum resident set size, одна запись podlodka_test02_ep132.wav",
+  "warm_s_17_2s_audio": {},
+  "peak_rss_bytes": {
+    "wavo-parakeet-ultra-ane": 57704448,
+    "wavo-parakeet-ultra-gpu": 770506752,
+    "wavo-gigaam-v3-ane": 39534592,
+    "fluidaudio-parakeet-ultra-coreml": 101957632
+  },
+  "note": "RSS включает веса движка; у ANE часть весов может быть вне RSS, это нижняя граница"
+}
