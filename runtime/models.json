@@ -1,0 +1,18 @@
+{
+  "port": 8477,
+  "idleUnloadSeconds": 900,
+  "models": {
+    "gigaam": {
+      "path": "~/.cache/huggingface/hub/models--handy-computer--gigaam-v3-e2e-rnnt-gguf/snapshots/3efd5b39882ceadca5570a8fb9fa1a2c801d6d6d/gigaam-v3-e2e-rnnt-Q8_0.gguf",
+      "backend": "ane",
+      "languages": ["ru"],
+      "notes": "GigaAM v3 E2E RNNT, Q8_0 from handy-computer"
+    },
+    "parakeet-ultra": {
+      "path": "~/.cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots/a1539be1b849ea7463b88343e5277b373d0c4ea9/parakeet-ultra-Q8_0.gguf",
+      "backend": "ane",
+      "languages": ["ru", "en"],
+      "notes": "Parakeet Ultra Q8_0; no language hint, it suppresses latin script"
+    }
+  }
+}

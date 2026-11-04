@@ -1,0 +1,247 @@
+//! One inference thread per model, with a two-lane priority queue in front of each.
+//!
+//! wavo serialises calls inside one `Model` (its GPU arena and the Neural Engine program are
+//! shared), so a model gets exactly one thread. Interactive jobs jump ahead of queued batch jobs;
+//! an inference already running cannot be preempted, since wavo has no cancellation, so a cancel
+//! is honoured before a job starts and discards the result if it arrives later.
+
+use std::collections::VecDeque;
+use std::path::PathBuf;
+use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
+use std::sync::mpsc::Sender;
+use std::sync::{Arc, Condvar, Mutex};
+use std::thread;
+use std::time::Instant;
+
+use wavo::{Backend, Model, Options};
+
+use crate::protocol::Priority;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Meta {
+    Client(u64),
+    Session { session: String, utterance: u64, last_voice_ms: u64 },
+}
+
+#[derive(Debug)]
+pub enum Response {
+    Loaded { model: String, device: String, load_ms: u64 },
+    Unloaded { model: String },
+    Text { text: String, asr_ms: u64, tokens: Vec<TokenOut> },
+    Failed { message: String },
+    Cancelled,
+}
+
+#[derive(Debug, Clone)]
+pub struct TokenOut {
+    pub text: String,
+    pub start_ms: u32,
+}
+
+pub struct EngineMsg {
+    pub job: u64,
+    pub meta: Meta,
+    pub response: Response,
+}
+
+pub struct Job {
+    pub id: u64,
+    pub cancelled: Arc<AtomicBool>,
+    pub meta: Meta,
+    pub kind: Kind,
+}
+
+pub enum Kind {
+    Transcribe { pcm: Vec<f32>, language: Option<String>, window_ms: Option<u32> },
+    Load { path: PathBuf, backend: Option<String> },
+    Unload,
+}
+
+struct Queues {
+    interactive: VecDeque<Job>,
+    batch: VecDeque<Job>,
+    stop: bool,
+}
+
+pub struct ModelHandle {
+    queues: Arc<(Mutex<Queues>, Condvar)>,
+    next_id: Arc<AtomicU64>,
+    loaded: Arc<AtomicBool>,
+    device: Arc<Mutex<Option<String>>>,
+    done: Arc<AtomicU64>,
+    failed: Arc<AtomicU64>,
+    started: Instant,
+}
+
+impl ModelHandle {
+    /// Starts the inference thread; it loads the model on the first `Load` job.
+    pub fn spawn(model: String, results: Sender<EngineMsg>) -> Self {
+        let queues = Arc::new((
+            Mutex::new(Queues { interactive: VecDeque::new(), batch: VecDeque::new(), stop: false }),
+            Condvar::new(),
+        ));
+        let next_id = Arc::new(AtomicU64::new(1));
+        let loaded = Arc::new(AtomicBool::new(false));
+        let device: Arc<Mutex<Option<String>>> = Arc::new(Mutex::new(None));
+        let done = Arc::new(AtomicU64::new(0));
+        let failed = Arc::new(AtomicU64::new(0));
+
+        {
+            let queues = Arc::clone(&queues);
+            let loaded = Arc::clone(&loaded);
+            let device = Arc::clone(&device);
+            let done = Arc::clone(&done);
+            let failed = Arc::clone(&failed);
+            let results = results.clone();
+            thread::Builder::new()
+                .name(format!("model-{model}"))
+                .spawn(move || {
+                    let mut held: Option<Model> = None;
+                    loop {
+                        let job = {
+                            let (lock, cv) = &*queues;
+                            let mut q = lock.lock().unwrap();
+                            loop {
+                                if q.stop {
+                                    return;
+                                }
+                                if let Some(job) = q.interactive.pop_front() {
+                                    break job;
+                                }
+                                if let Some(job) = q.batch.pop_front() {
+                                    break job;
+                                }
+                                q = cv.wait(q).unwrap();
+                            }
+                        };
+                        let response = if job.cancelled.load(Ordering::SeqCst) {
+                            Response::Cancelled
+                        } else {
+                            run(&model, &job.kind, &mut held, &done, &failed, &loaded, &device)
+                        };
+                        let _ = results.send(EngineMsg { job: job.id, meta: job.meta, response });
+                    }
+                })
+                .expect("spawn model thread");
+        }
+
+        Self { queues, next_id, loaded, device, done, failed, started: Instant::now() }
+    }
+
+    pub fn submit(&self, kind: Kind, priority: Priority, meta: Meta) -> (u64, Arc<AtomicBool>) {
+        let cancelled = Arc::new(AtomicBool::new(false));
+        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let job = Job { id, cancelled: Arc::clone(&cancelled), meta, kind };
+        let (lock, cv) = &*self.queues;
+        let mut q = lock.lock().unwrap();
+        match priority {
+            Priority::Interactive => q.interactive.push_back(job),
+            Priority::Batch => q.batch.push_back(job),
+        }
+        cv.notify_one();
+        (id, cancelled)
+    }
+
+    pub fn is_loaded(&self) -> bool {
+        self.loaded.load(Ordering::SeqCst)
+    }
+
+    pub fn device(&self) -> Option<String> {
+        self.device.lock().unwrap().clone()
+    }
+
+    pub fn depth(&self) -> (usize, usize) {
+        let (lock, _) = &*self.queues;
+        let q = lock.lock().unwrap();
+        (q.interactive.len(), q.batch.len())
+    }
+
+    pub fn counters(&self) -> (u64, u64, u64) {
+        (self.done.load(Ordering::SeqCst), self.failed.load(Ordering::SeqCst), self.started.elapsed().as_secs())
+    }
+
+    pub fn shutdown(&self) {
+        let (lock, cv) = &*self.queues;
+        let mut q = lock.lock().unwrap();
+        q.stop = true;
+        cv.notify_all();
+    }
+}
+
+fn run(
+    model_name: &str,
+    kind: &Kind,
+    held: &mut Option<Model>,
+    done: &AtomicU64,
+    failed: &AtomicU64,
+    loaded: &AtomicBool,
+    device: &Mutex<Option<String>>,
+) -> Response {
+    match kind {
+        Kind::Load { path, backend } => {
+            let backend = match backend.as_deref() {
+                Some("gpu") => Backend::Gpu,
+                Some("ane") => Backend::NeuralEngine,
+                _ => Backend::Auto,
+            };
+            let started = Instant::now();
+            match Model::load_with(path, backend) {
+                Ok(m) => {
+                    let dev = m.device().to_string();
+                    *device.lock().unwrap() = Some(dev.clone());
+                    *held = Some(m);
+                    loaded.store(true, Ordering::SeqCst);
+                    Response::Loaded {
+                        model: model_name.to_string(),
+                        device: dev,
+                        load_ms: started.elapsed().as_millis() as u64,
+                    }
+                }
+                Err(e) => {
+                    failed.fetch_add(1, Ordering::SeqCst);
+                    Response::Failed { message: format!("load: {e}") }
+                }
+            }
+        }
+        Kind::Unload => {
+            *held = None;
+            loaded.store(false, Ordering::SeqCst);
+            *device.lock().unwrap() = None;
+            Response::Unloaded { model: model_name.to_string() }
+        }
+        Kind::Transcribe { pcm, language, window_ms } => {
+            let Some(m) = held.as_ref() else {
+                return Response::Failed { message: "model not loaded".into() };
+            };
+            let started = Instant::now();
+            let mut options = Options::default();
+            options.language = language.clone().filter(|_| m.takes_language());
+            let outcome = match window_ms {
+                Some(window) => {
+                    options.window_ms = Some(*window);
+                    m.transcribe_long(pcm, &options, |_| std::ops::ControlFlow::Continue(()))
+                        .map_err(|e| e.to_string())
+                }
+                None => m.transcribe_with(pcm, &options).map_err(|e| e.to_string()),
+            };
+            match outcome {
+                Ok(t) => {
+                    done.fetch_add(1, Ordering::SeqCst);
+                    Response::Text {
+                        text: t.text,
+                        asr_ms: started.elapsed().as_millis() as u64,
+                        tokens: t
+                            .tokens
+                            .iter()
+                            .map(|tok| TokenOut { text: tok.piece.clone(), start_ms: tok.start_ms })
+                            .collect(),
+                    }
+                }
+                Err(message) => {
+                    failed.fetch_add(1, Ordering::SeqCst);
+                    Response::Failed { message: format!("transcribe: {message}") }
+                }
+            }
+        }
+    }
+}
