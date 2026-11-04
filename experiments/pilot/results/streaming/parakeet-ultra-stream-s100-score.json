@@ -1,0 +1,31 @@
+{
+  "scorer_version": "asr-eval-v2",
+  "norm_version": "norm-v2",
+  "commands": {
+    "version": "command-exact-v1",
+    "total": 0,
+    "correct": 0,
+    "accuracy": null
+  },
+  "term_metric_version": "term-v2",
+  "vocabulary": null,
+  "utterances": 3,
+  "wer": 0.22929936305732485,
+  "cer": 0.17794486215538846,
+  "substitutions": 18,
+  "deletions": 4,
+  "insertions": 14,
+  "words": 157,
+  "terms": null,
+  "provenance": {
+    "split": "dev",
+    "dataset_sha256": "f3d990e18f9464cf72c34195a9afee3ef620db27ba97e091076a52a3056548e2",
+    "metadata_sha256": "2c9f6833bfea7cb8ce10272216d7195bb152744095476de1ddb36fd6954b6c34",
+    "input_sha256": "68b9e595d4e47a6b2a68217092bc6abc75d295a0c4fb589bf3f577ec7ab4160d",
+    "parameters": {
+      "mode": "score",
+      "split": "dev",
+      "benchmark": false
+    }
+  }
+}

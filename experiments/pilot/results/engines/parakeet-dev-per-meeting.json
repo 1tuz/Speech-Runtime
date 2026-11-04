@@ -1,0 +1,222 @@
+{
+  "status": "experiment_not_benchmark",
+  "engines": {
+    "gigaam-v3-dev": {
+      "2-one-to-one": {
+        "segments": 50,
+        "words": 392,
+        "wer": 0.068878,
+        "cer": 0.016235,
+        "substitutions": 16,
+        "deletions": 3,
+        "insertions": 8
+      },
+      "5-it-product": {
+        "segments": 110,
+        "words": 934,
+        "wer": 0.077088,
+        "cer": 0.031737,
+        "substitutions": 47,
+        "deletions": 16,
+        "insertions": 9
+      },
+      "7-bi-platform": {
+        "segments": 161,
+        "words": 1525,
+        "wer": 0.149508,
+        "cer": 0.060134,
+        "substitutions": 161,
+        "deletions": 35,
+        "insertions": 32
+      }
+    },
+    "parakeet-ultra-dev": {
+      "2-one-to-one": {
+        "segments": 50,
+        "words": 392,
+        "wer": 0.048469,
+        "cer": 0.013699,
+        "substitutions": 12,
+        "deletions": 5,
+        "insertions": 2
+      },
+      "5-it-product": {
+        "segments": 110,
+        "words": 934,
+        "wer": 0.088865,
+        "cer": 0.032126,
+        "substitutions": 59,
+        "deletions": 18,
+        "insertions": 6
+      },
+      "7-bi-platform": {
+        "segments": 161,
+        "words": 1525,
+        "wer": 0.127869,
+        "cer": 0.044334,
+        "substitutions": 147,
+        "deletions": 21,
+        "insertions": 27
+      }
+    },
+    "wavo-gigaam-v3-ane-dev": {
+      "2-one-to-one": {
+        "segments": 50,
+        "words": 392,
+        "wer": 0.068878,
+        "cer": 0.016235,
+        "substitutions": 16,
+        "deletions": 3,
+        "insertions": 8
+      },
+      "5-it-product": {
+        "segments": 110,
+        "words": 934,
+        "wer": 0.08137,
+        "cer": 0.0331,
+        "substitutions": 48,
+        "deletions": 18,
+        "insertions": 10
+      },
+      "7-bi-platform": {
+        "segments": 161,
+        "words": 1525,
+        "wer": 0.151475,
+        "cer": 0.061785,
+        "substitutions": 161,
+        "deletions": 35,
+        "insertions": 35
+      }
+    },
+    "wavo-gigaam-v3-gpu-dev": {
+      "2-one-to-one": {
+        "segments": 50,
+        "words": 392,
+        "wer": 0.068878,
+        "cer": 0.016235,
+        "substitutions": 16,
+        "deletions": 3,
+        "insertions": 8
+      },
+      "5-it-product": {
+        "segments": 110,
+        "words": 934,
+        "wer": 0.078158,
+        "cer": 0.031737,
+        "substitutions": 47,
+        "deletions": 16,
+        "insertions": 10
+      },
+      "7-bi-platform": {
+        "segments": 161,
+        "words": 1525,
+        "wer": 0.148197,
+        "cer": 0.060252,
+        "substitutions": 160,
+        "deletions": 33,
+        "insertions": 33
+      }
+    },
+    "wavo-parakeet-ultra-ane-dev": {
+      "2-one-to-one": {
+        "segments": 50,
+        "words": 392,
+        "wer": 0.053571,
+        "cer": 0.014713,
+        "substitutions": 14,
+        "deletions": 4,
+        "insertions": 3
+      },
+      "5-it-product": {
+        "segments": 110,
+        "words": 934,
+        "wer": 0.087794,
+        "cer": 0.032516,
+        "substitutions": 58,
+        "deletions": 17,
+        "insertions": 7
+      },
+      "7-bi-platform": {
+        "segments": 161,
+        "words": 1525,
+        "wer": 0.135738,
+        "cer": 0.046811,
+        "substitutions": 161,
+        "deletions": 24,
+        "insertions": 22
+      }
+    }
+  },
+  "delta_vs_baseline": {
+    "gigaam-v3-dev": {
+      "2-one-to-one": {
+        "wer_minus_gigaam_torch": 0.0,
+        "wer_minus_parakeet_fluidaudio": 0.020409
+      },
+      "5-it-product": {
+        "wer_minus_gigaam_torch": 0.0,
+        "wer_minus_parakeet_fluidaudio": -0.011777
+      },
+      "7-bi-platform": {
+        "wer_minus_gigaam_torch": 0.0,
+        "wer_minus_parakeet_fluidaudio": 0.021639
+      }
+    },
+    "parakeet-ultra-dev": {
+      "2-one-to-one": {
+        "wer_minus_gigaam_torch": -0.020409,
+        "wer_minus_parakeet_fluidaudio": 0.0
+      },
+      "5-it-product": {
+        "wer_minus_gigaam_torch": 0.011777,
+        "wer_minus_parakeet_fluidaudio": 0.0
+      },
+      "7-bi-platform": {
+        "wer_minus_gigaam_torch": -0.021639,
+        "wer_minus_parakeet_fluidaudio": 0.0
+      }
+    },
+    "wavo-gigaam-v3-ane-dev": {
+      "2-one-to-one": {
+        "wer_minus_gigaam_torch": 0.0,
+        "wer_minus_parakeet_fluidaudio": 0.020409
+      },
+      "5-it-product": {
+        "wer_minus_gigaam_torch": 0.004282,
+        "wer_minus_parakeet_fluidaudio": -0.007495
+      },
+      "7-bi-platform": {
+        "wer_minus_gigaam_torch": 0.001967,
+        "wer_minus_parakeet_fluidaudio": 0.023606
+      }
+    },
+    "wavo-gigaam-v3-gpu-dev": {
+      "2-one-to-one": {
+        "wer_minus_gigaam_torch": 0.0,
+        "wer_minus_parakeet_fluidaudio": 0.020409
+      },
+      "5-it-product": {
+        "wer_minus_gigaam_torch": 0.00107,
+        "wer_minus_parakeet_fluidaudio": -0.010707
+      },
+      "7-bi-platform": {
+        "wer_minus_gigaam_torch": -0.001311,
+        "wer_minus_parakeet_fluidaudio": 0.020328
+      }
+    },
+    "wavo-parakeet-ultra-ane-dev": {
+      "2-one-to-one": {
+        "wer_minus_gigaam_torch": -0.015307,
+        "wer_minus_parakeet_fluidaudio": 0.005102
+      },
+      "5-it-product": {
+        "wer_minus_gigaam_torch": 0.010706,
+        "wer_minus_parakeet_fluidaudio": -0.001071
+      },
+      "7-bi-platform": {
+        "wer_minus_gigaam_torch": -0.01377,
+        "wer_minus_parakeet_fluidaudio": 0.007869
+      }
+    }
+  }
+}

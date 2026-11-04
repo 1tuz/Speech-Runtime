@@ -1,0 +1,36 @@
+{
+  "status": "experiment_not_benchmark",
+  "note": "each wavo call is a separate process; timings include spawn overhead; process_start_overhead_s estimated as the minimum per-call time across the run, rtf_excl_process_start = (wall_s - calls*process_start_overhead_s)/audio_s",
+  "engines": {
+    "gigaam-v3-ane": {
+      "calls": 321,
+      "audio_s": 1128.9575,
+      "p50_s": 0.085426,
+      "p90_s": 0.089724,
+      "p95_s": 0.090904,
+      "rtf_wall": 0.024455,
+      "process_start_overhead_s": 0.080672,
+      "rtf_excl_process_start": 0.001517
+    },
+    "gigaam-v3-gpu": {
+      "calls": 321,
+      "audio_s": 1128.9575,
+      "p50_s": 0.078627,
+      "p90_s": 0.085106,
+      "p95_s": 0.089035,
+      "rtf_wall": 0.022539,
+      "process_start_overhead_s": 0.065254,
+      "rtf_excl_process_start": 0.003985
+    },
+    "parakeet-ultra-ane": {
+      "calls": 321,
+      "audio_s": 1128.9575,
+      "p50_s": 0.12775,
+      "p90_s": 0.133269,
+      "p95_s": 0.134738,
+      "rtf_wall": 0.036235,
+      "process_start_overhead_s": 0.114689,
+      "rtf_excl_process_start": 0.003625
+    }
+  }
+}

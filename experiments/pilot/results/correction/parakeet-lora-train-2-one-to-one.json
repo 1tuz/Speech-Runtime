@@ -1,0 +1,19 @@
+{
+  "status": "experiment_not_benchmark",
+  "engine": "unsloth",
+  "model": "Qwen/Qwen3-0.6B",
+  "holdout_meeting": "2-one-to-one",
+  "pairs_train": 271,
+  "pairs_valid": 50,
+  "epochs": 3,
+  "rank": 16,
+  "alpha": 16,
+  "lr": "5e-5",
+  "batch_size": 2,
+  "grad_accum": 4,
+  "max_seq_length": 1024,
+  "steps_per_epoch": 33,
+  "instruction": "Исправь текст, распознанный с русской речи. Верни только исправленный текст без пояснений. Сохрани смысл и порядок слов; латинские названия технологий, команды и аббревиатуры пиши латиницей.",
+  "adapter": "experiments/corpus/local/correction/parakeet/lora-fold-2-one-to-one/adapter",
+  "train_exit": 0
+}

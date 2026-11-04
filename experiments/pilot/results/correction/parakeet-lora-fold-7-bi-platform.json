@@ -1,0 +1,87 @@
+{
+  "status": "experiment_not_benchmark",
+  "split": "dev",
+  "segments": 161,
+  "before": {
+    "wer": 0.12786885245901639,
+    "cer": 0.04433439452894706,
+    "errors": 195,
+    "words": 1525,
+    "substitutions": 147,
+    "deletions": 21,
+    "insertions": 27
+  },
+  "after": {
+    "wer": 0.18491803278688523,
+    "cer": 0.08855087843414691,
+    "errors": 282,
+    "words": 1525,
+    "substitutions": 192,
+    "deletions": 40,
+    "insertions": 50
+  },
+  "wer_delta": 0.05704918032786885,
+  "changed_segments": 44,
+  "unchanged_segments": 117,
+  "error_positions_fixed": 1,
+  "error_positions_added": 88,
+  "extra_insertions": 25,
+  "extra_deletions": 21,
+  "worst_segments": [
+    {
+      "segment_id": "7-bi-platform-0104",
+      "errors_before": 1,
+      "errors_after": 0
+    },
+    {
+      "segment_id": "7-bi-platform-0004",
+      "errors_before": 3,
+      "errors_after": 3
+    },
+    {
+      "segment_id": "7-bi-platform-0072",
+      "errors_before": 4,
+      "errors_after": 4
+    },
+    {
+      "segment_id": "7-bi-platform-0140",
+      "errors_before": 2,
+      "errors_after": 2
+    },
+    {
+      "segment_id": "7-bi-platform-0155",
+      "errors_before": 1,
+      "errors_after": 1
+    }
+  ],
+  "best_segments": [
+    {
+      "segment_id": "7-bi-platform-0123",
+      "errors_before": 0,
+      "errors_after": 3
+    },
+    {
+      "segment_id": "7-bi-platform-0112",
+      "errors_before": 0,
+      "errors_after": 4
+    },
+    {
+      "segment_id": "7-bi-platform-0122",
+      "errors_before": 0,
+      "errors_after": 9
+    },
+    {
+      "segment_id": "7-bi-platform-0141",
+      "errors_before": 2,
+      "errors_after": 12
+    },
+    {
+      "segment_id": "7-bi-platform-0030",
+      "errors_before": 2,
+      "errors_after": 15
+    }
+  ],
+  "meeting": "7-bi-platform",
+  "system": "parakeet",
+  "adapter": "experiments/corpus/local/correction/parakeet/lora-fold-7-bi-platform/adapter"
+}

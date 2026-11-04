@@ -1,0 +1,5123 @@
+{
+  "config": {
+    "chunk_s": 0.5,
+    "hypothesis_s": 0.5,
+    "left_s": 0.5,
+    "min_context_s": 0.5,
+    "right_s": 0.3,
+    "threshold": 0.5
+  },
+  "engine": "FluidAudio SlidingWindowAsrManager",
+  "language": "auto",
+  "load_s": 0.3697230815887451,
+  "model": "ultra",
+  "model_dir": "ultra",
+  "realtime": true,
+  "segments": [
+    {
+      "audio_s": 17.2436875,
+      "final": "Человек не недавно ставшим тем лидером. лидом и который с сказал, знаешь, заходит чат. в чате и говорит, ребята, меня... вчера сделали. тем лидом. С чего мне начать? ему там дают ссылку что в первыйе 90 дней это ты должен и дальше, там по порядку. One-on-one. on one, 360. Performance review. с ревью, там пятое, десятки очень легко натащить. этого всего.",
+      "finish_s": 0.10067486763000488,
+      "partial_count": 35,
+      "partials": [
+        {
+          "at_s": 0.891577959060669,
+          "confidence": 0.9461669921875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Человек не дал.",
+          "token_timings": [
+            {
+              "end": 0.08,
+              "start": 0,
+              "text": " Ч"
+            },
+            {
+              "end": 0.08,
+              "start": 0,
+              "text": "е"
+            },
+            {
+              "end": 0.16,
+              "start": 0.08,
+              "text": "лове"
+            },
+            {
+              "end": 0.32,
+              "start": 0.16,
+              "text": "к"
+            },
+            {
+              "end": 0.4,
+              "start": 0.32,
+              "text": " не"
+            },
+            {
+              "end": 0.48000000000000004,
+              "start": 0.4,
+              "text": " да"
+            },
+            {
+              "end": 0.56,
+              "start": 0.48,
+              "text": "л"
+            },
+            {
+              "end": 0.64,
+              "start": 0.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Ч",
+            "е",
+            "лове",
+            "к",
+            " не",
+            " да",
+            "л",
+            "."
+          ]
+        },
+        {
+          "at_s": 1.3490469455718994,
+          "confidence": 0.9257115125656128,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "недавно ставший.",
+          "token_timings": [
+            {
+              "end": 0.48,
+              "start": 0.32,
+              "text": " не"
+            },
+            {
+              "end": 0.56,
+              "start": 0.48,
+              "text": "да"
+            },
+            {
+              "end": 0.72,
+              "start": 0.56,
+              "text": "вно"
+            },
+            {
+              "end": 0.8,
+              "start": 0.72,
+              "text": " ста"
+            },
+            {
+              "end": 0.96,
+              "start": 0.8,
+              "text": "в"
+            },
+            {
+              "end": 1.12,
+              "start": 0.96,
+              "text": "ший"
+            },
+            {
+              "end": 1.2000000000000002,
+              "start": 1.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " не",
+            "да",
+            "вно",
+            " ста",
+            "в",
+            "ший",
+            "."
+          ]
+        },
+        {
+          "at_s": 1.8523151874542236,
+          "confidence": 0.765625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ставшим тем лидером.",
+          "token_timings": [
+            {
+              "end": 0.96,
+              "start": 0.88,
+              "text": " ста"
+            },
+            {
+              "end": 1.12,
+              "start": 0.96,
+              "text": "в"
+            },
+            {
+              "end": 1.28,
+              "start": 1.12,
+              "text": "шим"
+            },
+            {
+              "end": 1.44,
+              "start": 1.28,
+              "text": " тем"
+            },
+            {
+              "end": 1.52,
+              "start": 1.44,
+              "text": " ли"
+            },
+            {
+              "end": 1.6,
+              "start": 1.52,
+              "text": "де"
+            },
+            {
+              "end": 1.6800000000000002,
+              "start": 1.6,
+              "text": "ром"
+            },
+            {
+              "end": 1.6800000000000002,
+              "start": 1.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ста",
+            "в",
+            "шим",
+            " тем",
+            " ли",
+            "де",
+            "ром",
+            "."
+          ]
+        },
+        {
+          "at_s": 2.351666212081909,
+          "confidence": 0.8768554925918579,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "лидом и который с",
+          "token_timings": [
+            {
+              "end": 1.6,
+              "start": 1.44,
+              "text": " ли"
+            },
+            {
+              "end": 1.76,
+              "start": 1.6,
+              "text": "дом"
+            },
+            {
+              "end": 1.84,
+              "start": 1.76,
+              "text": " и"
+            },
+            {
+              "end": 2,
+              "start": 1.84,
+              "text": " который"
+            },
+            {
+              "end": 2.08,
+              "start": 2,
+              "text": " с"
+            }
+          ],
+          "tokens": [
+            " ли",
+            "дом",
+            " и",
+            " который",
+            " с"
+          ]
+        },
+        {
+          "at_s": 2.845762014389038,
+          "confidence": 0.954345703125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "сказал",
+          "token_timings": [
+            {
+              "end": 2.24,
+              "start": 2.16,
+              "text": " сказа"
+            },
+            {
+              "end": 2.3200000000000003,
+              "start": 2.24,
+              "text": "л"
+            }
+          ],
+          "tokens": [
+            " сказа",
+            "л"
+          ]
+        },
+        {
+          "at_s": 3.3531229496002197,
+          "confidence": 0.9313299059867859,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ", знаешь, заходит чат.",
+          "token_timings": [
+            {
+              "end": 2.48,
+              "start": 2.4,
+              "text": ","
+            },
+            {
+              "end": 2.56,
+              "start": 2.48,
+              "text": " зна"
+            },
+            {
+              "end": 2.64,
+              "start": 2.56,
+              "text": "е"
+            },
+            {
+              "end": 2.72,
+              "start": 2.64,
+              "text": "шь"
+            },
+            {
+              "end": 2.8000000000000003,
+              "start": 2.64,
+              "text": ","
+            },
+            {
+              "end": 2.8800000000000003,
+              "start": 2.8000000000000003,
+              "text": " за"
+            },
+            {
+              "end": 2.96,
+              "start": 2.88,
+              "text": "ходи"
+            },
+            {
+              "end": 3.04,
+              "start": 2.96,
+              "text": "т"
+            },
+            {
+              "end": 3.12,
+              "start": 3.04,
+              "text": " ча"
+            },
+            {
+              "end": 3.2,
+              "start": 3.12,
+              "text": "т"
+            },
+            {
+              "end": 3.2,
+              "start": 3.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            ",",
+            " зна",
+            "е",
+            "шь",
+            ",",
+            " за",
+            "ходи",
+            "т",
+            " ча",
+            "т",
+            "."
+          ]
+        },
+        {
+          "at_s": 3.8498170375823975,
+          "confidence": 0.95703125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "в чате и говорит",
+          "token_timings": [
+            {
+              "end": 3.12,
+              "start": 3.04,
+              "text": " в"
+            },
+            {
+              "end": 3.2,
+              "start": 3.12,
+              "text": " ча"
+            },
+            {
+              "end": 3.2800000000000002,
+              "start": 3.2,
+              "text": "те"
+            },
+            {
+              "end": 3.3600000000000003,
+              "start": 3.2800000000000002,
+              "text": " и"
+            },
+            {
+              "end": 3.44,
+              "start": 3.36,
+              "text": " говори"
+            },
+            {
+              "end": 3.52,
+              "start": 3.44,
+              "text": "т"
+            }
+          ],
+          "tokens": [
+            " в",
+            " ча",
+            "те",
+            " и",
+            " говори",
+            "т"
+          ]
+        },
+        {
+          "at_s": 4.336366891860962,
+          "confidence": 0.8925238847732544,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ", ребята, меня...",
+          "token_timings": [
+            {
+              "end": 3.6,
+              "start": 3.52,
+              "text": ","
+            },
+            {
+              "end": 3.68,
+              "start": 3.6,
+              "text": " ре"
+            },
+            {
+              "end": 3.7600000000000002,
+              "start": 3.68,
+              "text": "б"
+            },
+            {
+              "end": 3.8400000000000003,
+              "start": 3.7600000000000002,
+              "text": "ята"
+            },
+            {
+              "end": 3.92,
+              "start": 3.84,
+              "text": ","
+            },
+            {
+              "end": 4,
+              "start": 3.92,
+              "text": " меня"
+            },
+            {
+              "end": 4.08,
+              "start": 4,
+              "text": "."
+            },
+            {
+              "end": 4.16,
+              "start": 4.08,
+              "text": "."
+            },
+            {
+              "end": 4.24,
+              "start": 4.16,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            ",",
+            " ре",
+            "б",
+            "ята",
+            ",",
+            " меня",
+            ".",
+            ".",
+            "."
+          ]
+        },
+        {
+          "at_s": 4.8523759841918945,
+          "confidence": 0.9847005009651184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "вчера сделали.",
+          "token_timings": [
+            {
+              "end": 4.16,
+              "start": 4.08,
+              "text": " в"
+            },
+            {
+              "end": 4.24,
+              "start": 4.16,
+              "text": "че"
+            },
+            {
+              "end": 4.32,
+              "start": 4.24,
+              "text": "ра"
+            },
+            {
+              "end": 4.48,
+              "start": 4.32,
+              "text": " сдела"
+            },
+            {
+              "end": 4.5600000000000005,
+              "start": 4.48,
+              "text": "ли"
+            },
+            {
+              "end": 4.640000000000001,
+              "start": 4.5600000000000005,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " в",
+            "че",
+            "ра",
+            " сдела",
+            "ли",
+            "."
+          ]
+        },
+        {
+          "at_s": 5.3506920337677,
+          "confidence": 0.8594970703125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "тем лидом.",
+          "token_timings": [
+            {
+              "end": 4.96,
+              "start": 4.8,
+              "text": " тем"
+            },
+            {
+              "end": 5.04,
+              "start": 4.96,
+              "text": " ли"
+            },
+            {
+              "end": 5.12,
+              "start": 5.04,
+              "text": "дом"
+            },
+            {
+              "end": 5.2,
+              "start": 5.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " тем",
+            " ли",
+            "дом",
+            "."
+          ]
+        },
+        {
+          "at_s": 5.850298166275024,
+          "confidence": 0.7715541124343872,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "С чего мне начать?",
+          "token_timings": [
+            {
+              "end": 5.28,
+              "start": 5.2,
+              "text": " С"
+            },
+            {
+              "end": 5.36,
+              "start": 5.28,
+              "text": " че"
+            },
+            {
+              "end": 5.44,
+              "start": 5.36,
+              "text": "го"
+            },
+            {
+              "end": 5.5200000000000005,
+              "start": 5.44,
+              "text": " мне"
+            },
+            {
+              "end": 5.6000000000000005,
+              "start": 5.5200000000000005,
+              "text": " нача"
+            },
+            {
+              "end": 5.680000000000001,
+              "start": 5.6000000000000005,
+              "text": "ть"
+            },
+            {
+              "end": 5.680000000000001,
+              "start": 5.6000000000000005,
+              "text": "?"
+            }
+          ],
+          "tokens": [
+            " С",
+            " че",
+            "го",
+            " мне",
+            " нача",
+            "ть",
+            "?"
+          ]
+        },
+        {
+          "at_s": 6.346954107284546,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 6.840631008148193,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 7.343443155288696,
+          "confidence": 0.8946288824081421,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ему там дают",
+          "token_timings": [
+            {
+              "end": 6.5600000000000005,
+              "start": 6.48,
+              "text": " е"
+            },
+            {
+              "end": 6.72,
+              "start": 6.5600000000000005,
+              "text": "му"
+            },
+            {
+              "end": 6.88,
+              "start": 6.72,
+              "text": " там"
+            },
+            {
+              "end": 7.04,
+              "start": 6.88,
+              "text": " да"
+            },
+            {
+              "end": 7.12,
+              "start": 7.04,
+              "text": "ют"
+            }
+          ],
+          "tokens": [
+            " е",
+            "му",
+            " там",
+            " да",
+            "ют"
+          ]
+        },
+        {
+          "at_s": 7.8536999225616455,
+          "confidence": 0.8348912000656128,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ссылку что.",
+          "token_timings": [
+            {
+              "end": 7.28,
+              "start": 7.2,
+              "text": " с"
+            },
+            {
+              "end": 7.36,
+              "start": 7.28,
+              "text": "с"
+            },
+            {
+              "end": 7.36,
+              "start": 7.28,
+              "text": "ы"
+            },
+            {
+              "end": 7.44,
+              "start": 7.36,
+              "text": "л"
+            },
+            {
+              "end": 7.44,
+              "start": 7.36,
+              "text": "ку"
+            },
+            {
+              "end": 7.5200000000000005,
+              "start": 7.44,
+              "text": " что"
+            },
+            {
+              "end": 7.6000000000000005,
+              "start": 7.5200000000000005,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " с",
+            "с",
+            "ы",
+            "л",
+            "ку",
+            " что",
+            "."
+          ]
+        },
+        {
+          "at_s": 8.355236053466797,
+          "confidence": 0.966796875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "что в первый день",
+          "token_timings": [
+            {
+              "end": 7.68,
+              "start": 7.5200000000000005,
+              "text": " что"
+            },
+            {
+              "end": 7.76,
+              "start": 7.68,
+              "text": " в"
+            },
+            {
+              "end": 7.84,
+              "start": 7.76,
+              "text": " пер"
+            },
+            {
+              "end": 7.92,
+              "start": 7.84,
+              "text": "вы"
+            },
+            {
+              "end": 8,
+              "start": 7.92,
+              "text": "й"
+            },
+            {
+              "end": 8.08,
+              "start": 8,
+              "text": " день"
+            }
+          ],
+          "tokens": [
+            " что",
+            " в",
+            " пер",
+            "вы",
+            "й",
+            " день"
+          ]
+        },
+        {
+          "at_s": 8.848980188369751,
+          "confidence": 0.9996512532234192,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "е 90 дней",
+          "token_timings": [
+            {
+              "end": 8.08,
+              "start": 8,
+              "text": "е"
+            },
+            {
+              "end": 8.16,
+              "start": 8.08,
+              "text": " "
+            },
+            {
+              "end": 8.24,
+              "start": 8.16,
+              "text": "9"
+            },
+            {
+              "end": 8.4,
+              "start": 8.24,
+              "text": "0"
+            },
+            {
+              "end": 8.48,
+              "start": 8.4,
+              "text": " д"
+            },
+            {
+              "end": 8.56,
+              "start": 8.48,
+              "text": "не"
+            },
+            {
+              "end": 8.56,
+              "start": 8.48,
+              "text": "й"
+            }
+          ],
+          "tokens": [
+            "е",
+            " ",
+            "9",
+            "0",
+            " д",
+            "не",
+            "й"
+          ]
+        },
+        {
+          "at_s": 9.354754209518433,
+          "confidence": 0.894775390625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "это должен.",
+          "token_timings": [
+            {
+              "end": 8.96,
+              "start": 8.8,
+              "text": " это"
+            },
+            {
+              "end": 9.040000000000001,
+              "start": 8.96,
+              "text": " дол"
+            },
+            {
+              "end": 9.120000000000001,
+              "start": 9.040000000000001,
+              "text": "жен"
+            },
+            {
+              "end": 9.200000000000001,
+              "start": 9.120000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " это",
+            " дол",
+            "жен",
+            "."
+          ]
+        },
+        {
+          "at_s": 9.853929996490479,
+          "confidence": 0.9986746907234192,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ты должен и дальше",
+          "token_timings": [
+            {
+              "end": 9.040000000000001,
+              "start": 8.88,
+              "text": " ты"
+            },
+            {
+              "end": 9.120000000000001,
+              "start": 9.040000000000001,
+              "text": " дол"
+            },
+            {
+              "end": 9.36,
+              "start": 9.120000000000001,
+              "text": "жен"
+            },
+            {
+              "end": 9.44,
+              "start": 9.36,
+              "text": " и"
+            },
+            {
+              "end": 9.52,
+              "start": 9.44,
+              "text": " да"
+            },
+            {
+              "end": 9.6,
+              "start": 9.52,
+              "text": "ль"
+            },
+            {
+              "end": 9.68,
+              "start": 9.6,
+              "text": "ше"
+            }
+          ],
+          "tokens": [
+            " ты",
+            " дол",
+            "жен",
+            " и",
+            " да",
+            "ль",
+            "ше"
+          ]
+        },
+        {
+          "at_s": 10.3265221118927,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 10.848675012588501,
+          "confidence": 0.9320068359375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ", там по порядку.",
+          "token_timings": [
+            {
+              "end": 9.92,
+              "start": 9.84,
+              "text": ","
+            },
+            {
+              "end": 10.08,
+              "start": 9.92,
+              "text": " там"
+            },
+            {
+              "end": 10.24,
+              "start": 10.08,
+              "text": " по"
+            },
+            {
+              "end": 10.32,
+              "start": 10.24,
+              "text": " по"
+            },
+            {
+              "end": 10.4,
+              "start": 10.32,
+              "text": "ря"
+            },
+            {
+              "end": 10.48,
+              "start": 10.4,
+              "text": "д"
+            },
+            {
+              "end": 10.56,
+              "start": 10.48,
+              "text": "ку"
+            },
+            {
+              "end": 10.64,
+              "start": 10.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            ",",
+            " там",
+            " по",
+            " по",
+            "ря",
+            "д",
+            "ку",
+            "."
+          ]
+        },
+        {
+          "at_s": 11.343895196914673,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 11.849112033843994,
+          "confidence": 0.9276646375656128,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "One-on-one.",
+          "token_timings": [
+            {
+              "end": 11.120000000000001,
+              "start": 11.040000000000001,
+              "text": " O"
+            },
+            {
+              "end": 11.200000000000001,
+              "start": 11.120000000000001,
+              "text": "ne"
+            },
+            {
+              "end": 11.280000000000001,
+              "start": 11.200000000000001,
+              "text": "-"
+            },
+            {
+              "end": 11.36,
+              "start": 11.28,
+              "text": "on"
+            },
+            {
+              "end": 11.44,
+              "start": 11.36,
+              "text": "-"
+            },
+            {
+              "end": 11.6,
+              "start": 11.44,
+              "text": "one"
+            },
+            {
+              "end": 11.68,
+              "start": 11.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " O",
+            "ne",
+            "-",
+            "on",
+            "-",
+            "one",
+            "."
+          ]
+        },
+        {
+          "at_s": 12.348798036575317,
+          "confidence": 0.85345458984375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "on one, 300.",
+          "token_timings": [
+            {
+              "end": 11.44,
+              "start": 11.200000000000001,
+              "text": " on"
+            },
+            {
+              "end": 11.6,
+              "start": 11.44,
+              "text": " one"
+            },
+            {
+              "end": 11.68,
+              "start": 11.6,
+              "text": ","
+            },
+            {
+              "end": 11.76,
+              "start": 11.68,
+              "text": " "
+            },
+            {
+              "end": 11.84,
+              "start": 11.76,
+              "text": "3"
+            },
+            {
+              "end": 11.92,
+              "start": 11.84,
+              "text": "0"
+            },
+            {
+              "end": 12,
+              "start": 11.92,
+              "text": "0"
+            },
+            {
+              "end": 12.08,
+              "start": 12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " on",
+            " one",
+            ",",
+            " ",
+            "3",
+            "0",
+            "0",
+            "."
+          ]
+        },
+        {
+          "at_s": 12.842948198318481,
+          "confidence": 0.9359375238418579,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "360.",
+          "token_timings": [
+            {
+              "end": 12,
+              "start": 11.92,
+              "text": " "
+            },
+            {
+              "end": 12.16,
+              "start": 12,
+              "text": "3"
+            },
+            {
+              "end": 12.4,
+              "start": 12.16,
+              "text": "6"
+            },
+            {
+              "end": 12.56,
+              "start": 12.4,
+              "text": "0"
+            },
+            {
+              "end": 12.64,
+              "start": 12.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ",
+            "3",
+            "6",
+            "0",
+            "."
+          ]
+        },
+        {
+          "at_s": 13.349575996398926,
+          "confidence": 0.6792968511581421,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "перфом.",
+          "token_timings": [
+            {
+              "end": 12.96,
+              "start": 12.8,
+              "text": " пер"
+            },
+            {
+              "end": 13.040000000000001,
+              "start": 12.96,
+              "text": "ф"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "о"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "м"
+            },
+            {
+              "end": 13.200000000000001,
+              "start": 13.120000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " пер",
+            "ф",
+            "о",
+            "м",
+            "."
+          ]
+        },
+        {
+          "at_s": 13.847523927688599,
+          "confidence": 0.8360595703125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Performance review.",
+          "token_timings": [
+            {
+              "end": 13.040000000000001,
+              "start": 12.96,
+              "text": " Per"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "for"
+            },
+            {
+              "end": 13.200000000000001,
+              "start": 13.120000000000001,
+              "text": "man"
+            },
+            {
+              "end": 13.36,
+              "start": 13.200000000000001,
+              "text": "ce"
+            },
+            {
+              "end": 13.52,
+              "start": 13.36,
+              "text": " re"
+            },
+            {
+              "end": 13.6,
+              "start": 13.52,
+              "text": "vie"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "w"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Per",
+            "for",
+            "man",
+            "ce",
+            " re",
+            "vie",
+            "w",
+            "."
+          ]
+        },
+        {
+          "at_s": 14.324698209762573,
+          "confidence": 0.72998046875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "там",
+          "token_timings": [
+            {
+              "end": 13.92,
+              "start": 13.84,
+              "text": " там"
+            }
+          ],
+          "tokens": [
+            " там"
+          ]
+        },
+        {
+          "at_s": 14.854376077651978,
+          "confidence": 0.7587367296218872,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "с ревью, там пятое, десятки",
+          "token_timings": [
+            {
+              "end": 13.6,
+              "start": 13.44,
+              "text": " с"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": " ре"
+            },
+            {
+              "end": 13.76,
+              "start": 13.68,
+              "text": "в"
+            },
+            {
+              "end": 13.84,
+              "start": 13.76,
+              "text": "ью"
+            },
+            {
+              "end": 13.92,
+              "start": 13.84,
+              "text": ","
+            },
+            {
+              "end": 14.08,
+              "start": 13.92,
+              "text": " там"
+            },
+            {
+              "end": 14.16,
+              "start": 14.08,
+              "text": " п"
+            },
+            {
+              "end": 14.24,
+              "start": 14.16,
+              "text": "ято"
+            },
+            {
+              "end": 14.32,
+              "start": 14.24,
+              "text": "е"
+            },
+            {
+              "end": 14.4,
+              "start": 14.32,
+              "text": ","
+            },
+            {
+              "end": 14.48,
+              "start": 14.4,
+              "text": " де"
+            },
+            {
+              "end": 14.56,
+              "start": 14.48,
+              "text": "ся"
+            },
+            {
+              "end": 14.64,
+              "start": 14.56,
+              "text": "т"
+            },
+            {
+              "end": 14.64,
+              "start": 14.56,
+              "text": "ки"
+            }
+          ],
+          "tokens": [
+            " с",
+            " ре",
+            "в",
+            "ью",
+            ",",
+            " там",
+            " п",
+            "ято",
+            "е",
+            ",",
+            " де",
+            "ся",
+            "т",
+            "ки"
+          ]
+        },
+        {
+          "at_s": 15.348849058151245,
+          "confidence": 0.9818115234375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "десятое",
+          "token_timings": [
+            {
+              "end": 14.64,
+              "start": 14.56,
+              "text": " де"
+            },
+            {
+              "end": 14.8,
+              "start": 14.64,
+              "text": "ся"
+            },
+            {
+              "end": 14.88,
+              "start": 14.8,
+              "text": "то"
+            },
+            {
+              "end": 14.96,
+              "start": 14.88,
+              "text": "е"
+            }
+          ],
+          "tokens": [
+            " де",
+            "ся",
+            "то",
+            "е"
+          ]
+        },
+        {
+          "at_s": 15.837581872940063,
+          "confidence": 0.9061279296875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "очень легко",
+          "token_timings": [
+            {
+              "end": 15.200000000000001,
+              "start": 15.040000000000001,
+              "text": " очень"
+            },
+            {
+              "end": 15.280000000000001,
+              "start": 15.200000000000001,
+              "text": " ле"
+            },
+            {
+              "end": 15.360000000000001,
+              "start": 15.280000000000001,
+              "text": "г"
+            },
+            {
+              "end": 15.44,
+              "start": 15.36,
+              "text": "ко"
+            }
+          ],
+          "tokens": [
+            " очень",
+            " ле",
+            "г",
+            "ко"
+          ]
+        },
+        {
+          "at_s": 16.350061178207397,
+          "confidence": 0.900195300579071,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "натащить.",
+          "token_timings": [
+            {
+              "end": 15.68,
+              "start": 15.6,
+              "text": " на"
+            },
+            {
+              "end": 15.84,
+              "start": 15.68,
+              "text": "та"
+            },
+            {
+              "end": 16,
+              "start": 15.84,
+              "text": "щи"
+            },
+            {
+              "end": 16.080000000000002,
+              "start": 16,
+              "text": "ть"
+            },
+            {
+              "end": 16.16,
+              "start": 16.080000000000002,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " на",
+            "та",
+            "щи",
+            "ть",
+            "."
+          ]
+        },
+        {
+          "at_s": 16.85105800628662,
+          "confidence": 0.995361328125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "этого всего.",
+          "token_timings": [
+            {
+              "end": 16.4,
+              "start": 16.16,
+              "text": " этого"
+            },
+            {
+              "end": 16.48,
+              "start": 16.4,
+              "text": " все"
+            },
+            {
+              "end": 16.56,
+              "start": 16.48,
+              "text": "го"
+            },
+            {
+              "end": 16.639999999999997,
+              "start": 16.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " этого",
+            " все",
+            "го",
+            "."
+          ]
+        },
+        {
+          "at_s": 17.298187017440796,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 17.345355987548828,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        }
+      ],
+      "rtf": 1.0059019006636882,
+      "segment_id": "podlodka_test02_ep132",
+      "wall_s": 17.345458030700684
+    },
+    {
+      "audio_s": 24.6023125,
+      "final": "Мой любимый фокус обзор верите мы Видите, мы понимаем, когда... системе станет плохо. Groga Грубо говоря, в два часа. ночи. ваша система упадет Тема с отказом по Будьте готовы. к этому, пожалуйста. вот Это и... есть обирание. обсервабилити. обсерваберите это один ее аспект. авто. второй аспект. который для меня на самом деле самый важный. Обычно мы не знаем. что. нам нужно. знать о системе. в тот момент, когда мы ее разрабатываем.",
+      "finish_s": 0.11403918266296387,
+      "partial_count": 50,
+      "partials": [
+        {
+          "at_s": 0.8406438827514648,
+          "confidence": 0.8184814453125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Мой любимый",
+          "token_timings": [
+            {
+              "end": 0.24,
+              "start": 0.08,
+              "text": " Мо"
+            },
+            {
+              "end": 0.32,
+              "start": 0.24,
+              "text": "й"
+            },
+            {
+              "end": 0.4,
+              "start": 0.32,
+              "text": " лю"
+            },
+            {
+              "end": 0.48000000000000004,
+              "start": 0.4,
+              "text": "би"
+            },
+            {
+              "end": 0.56,
+              "start": 0.48,
+              "text": "мы"
+            },
+            {
+              "end": 0.64,
+              "start": 0.56,
+              "text": "й"
+            }
+          ],
+          "tokens": [
+            " Мо",
+            "й",
+            " лю",
+            "би",
+            "мы",
+            "й"
+          ]
+        },
+        {
+          "at_s": 1.3372578620910645,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 1.8448867797851562,
+          "confidence": 0.999267578125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "фокус",
+          "token_timings": [
+            {
+              "end": 1.2000000000000002,
+              "start": 1.12,
+              "text": " ф"
+            },
+            {
+              "end": 1.28,
+              "start": 1.2,
+              "text": "о"
+            },
+            {
+              "end": 1.36,
+              "start": 1.28,
+              "text": "ку"
+            },
+            {
+              "end": 1.4400000000000002,
+              "start": 1.36,
+              "text": "с"
+            }
+          ],
+          "tokens": [
+            " ф",
+            "о",
+            "ку",
+            "с"
+          ]
+        },
+        {
+          "at_s": 2.347745895385742,
+          "confidence": 0.7333984375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "обзор",
+          "token_timings": [
+            {
+              "end": 1.76,
+              "start": 1.6,
+              "text": " об"
+            },
+            {
+              "end": 1.84,
+              "start": 1.76,
+              "text": "зо"
+            },
+            {
+              "end": 1.9200000000000002,
+              "start": 1.84,
+              "text": "р"
+            }
+          ],
+          "tokens": [
+            " об",
+            "зо",
+            "р"
+          ]
+        },
+        {
+          "at_s": 2.8594470024108887,
+          "confidence": 0.6572962999343872,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "верите мы понимаем.",
+          "token_timings": [
+            {
+              "end": 2.08,
+              "start": 2,
+              "text": " ве"
+            },
+            {
+              "end": 2.24,
+              "start": 2.08,
+              "text": "рите"
+            },
+            {
+              "end": 2.4,
+              "start": 2.24,
+              "text": " мы"
+            },
+            {
+              "end": 2.48,
+              "start": 2.4,
+              "text": " по"
+            },
+            {
+              "end": 2.56,
+              "start": 2.48,
+              "text": "нима"
+            },
+            {
+              "end": 2.64,
+              "start": 2.56,
+              "text": "ем"
+            },
+            {
+              "end": 2.64,
+              "start": 2.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ве",
+            "рите",
+            " мы",
+            " по",
+            "нима",
+            "ем",
+            "."
+          ]
+        },
+        {
+          "at_s": 3.3517279624938965,
+          "confidence": 0.86676025390625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Видите, мы понимаем, когда...",
+          "token_timings": [
+            {
+              "end": 2.24,
+              "start": 2.16,
+              "text": " Ви"
+            },
+            {
+              "end": 2.3200000000000003,
+              "start": 2.24,
+              "text": "дите"
+            },
+            {
+              "end": 2.48,
+              "start": 2.32,
+              "text": ","
+            },
+            {
+              "end": 2.64,
+              "start": 2.48,
+              "text": " мы"
+            },
+            {
+              "end": 2.72,
+              "start": 2.64,
+              "text": " по"
+            },
+            {
+              "end": 2.8000000000000003,
+              "start": 2.72,
+              "text": "нима"
+            },
+            {
+              "end": 2.8800000000000003,
+              "start": 2.8000000000000003,
+              "text": "ем"
+            },
+            {
+              "end": 2.96,
+              "start": 2.88,
+              "text": ","
+            },
+            {
+              "end": 3.04,
+              "start": 2.96,
+              "text": " когда"
+            },
+            {
+              "end": 3.12,
+              "start": 3.04,
+              "text": "."
+            },
+            {
+              "end": 3.2,
+              "start": 3.12,
+              "text": "."
+            },
+            {
+              "end": 3.2800000000000002,
+              "start": 3.2,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Ви",
+            "дите",
+            ",",
+            " мы",
+            " по",
+            "нима",
+            "ем",
+            ",",
+            " когда",
+            ".",
+            ".",
+            "."
+          ]
+        },
+        {
+          "at_s": 3.8472039699554443,
+          "confidence": 0.72314453125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "системе",
+          "token_timings": [
+            {
+              "end": 3.36,
+              "start": 3.2,
+              "text": " систе"
+            },
+            {
+              "end": 3.44,
+              "start": 3.36,
+              "text": "ме"
+            }
+          ],
+          "tokens": [
+            " систе",
+            "ме"
+          ]
+        },
+        {
+          "at_s": 4.34660005569458,
+          "confidence": 0.8736397624015808,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "станет плод.",
+          "token_timings": [
+            {
+              "end": 3.7600000000000002,
+              "start": 3.68,
+              "text": " ста"
+            },
+            {
+              "end": 3.8400000000000003,
+              "start": 3.7600000000000002,
+              "text": "не"
+            },
+            {
+              "end": 3.92,
+              "start": 3.84,
+              "text": "т"
+            },
+            {
+              "end": 4,
+              "start": 3.92,
+              "text": " п"
+            },
+            {
+              "end": 4.08,
+              "start": 4,
+              "text": "ло"
+            },
+            {
+              "end": 4.08,
+              "start": 4,
+              "text": "д"
+            },
+            {
+              "end": 4.16,
+              "start": 4.08,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ста",
+            "не",
+            "т",
+            " п",
+            "ло",
+            "д",
+            "."
+          ]
+        },
+        {
+          "at_s": 4.848876953125,
+          "confidence": 0.99951171875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "плохо.",
+          "token_timings": [
+            {
+              "end": 4.24,
+              "start": 4.16,
+              "text": " п"
+            },
+            {
+              "end": 4.32,
+              "start": 4.24,
+              "text": "ло"
+            },
+            {
+              "end": 4.5600000000000005,
+              "start": 4.32,
+              "text": "хо"
+            },
+            {
+              "end": 4.640000000000001,
+              "start": 4.5600000000000005,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " п",
+            "ло",
+            "хо",
+            "."
+          ]
+        },
+        {
+          "at_s": 5.34317684173584,
+          "confidence": 0.76416015625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "грубо",
+          "token_timings": [
+            {
+              "end": 4.88,
+              "start": 4.64,
+              "text": " гру"
+            },
+            {
+              "end": 4.96,
+              "start": 4.88,
+              "text": "бо"
+            }
+          ],
+          "tokens": [
+            " гру",
+            "бо"
+          ]
+        },
+        {
+          "at_s": 5.844599962234497,
+          "confidence": 0.6103515625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Groga efterv.",
+          "token_timings": [
+            {
+              "end": 4.8,
+              "start": 4.72,
+              "text": " G"
+            },
+            {
+              "end": 5.04,
+              "start": 4.8,
+              "text": "ro"
+            },
+            {
+              "end": 5.28,
+              "start": 5.04,
+              "text": "ga"
+            },
+            {
+              "end": 5.36,
+              "start": 5.28,
+              "text": " efter"
+            },
+            {
+              "end": 5.44,
+              "start": 5.36,
+              "text": "v"
+            },
+            {
+              "end": 5.5200000000000005,
+              "start": 5.44,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " G",
+            "ro",
+            "ga",
+            " efter",
+            "v",
+            "."
+          ]
+        },
+        {
+          "at_s": 6.353327751159668,
+          "confidence": 0.8207194209098816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Грубо говоря, в два часа.",
+          "token_timings": [
+            {
+              "end": 5.04,
+              "start": 4.96,
+              "text": " Г"
+            },
+            {
+              "end": 5.12,
+              "start": 5.04,
+              "text": "ру"
+            },
+            {
+              "end": 5.2,
+              "start": 5.12,
+              "text": "бо"
+            },
+            {
+              "end": 5.28,
+              "start": 5.2,
+              "text": " го"
+            },
+            {
+              "end": 5.36,
+              "start": 5.28,
+              "text": "во"
+            },
+            {
+              "end": 5.44,
+              "start": 5.36,
+              "text": "ря"
+            },
+            {
+              "end": 5.44,
+              "start": 5.36,
+              "text": ","
+            },
+            {
+              "end": 5.6000000000000005,
+              "start": 5.44,
+              "text": " в"
+            },
+            {
+              "end": 5.76,
+              "start": 5.6000000000000005,
+              "text": " два"
+            },
+            {
+              "end": 5.92,
+              "start": 5.76,
+              "text": " ча"
+            },
+            {
+              "end": 6,
+              "start": 5.92,
+              "text": "са"
+            },
+            {
+              "end": 6.08,
+              "start": 6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Г",
+            "ру",
+            "бо",
+            " го",
+            "во",
+            "ря",
+            ",",
+            " в",
+            " два",
+            " ча",
+            "са",
+            "."
+          ]
+        },
+        {
+          "at_s": 6.841056823730469,
+          "confidence": 0.9640299677848816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ночи.",
+          "token_timings": [
+            {
+              "end": 6.32,
+              "start": 6.16,
+              "text": " но"
+            },
+            {
+              "end": 6.5600000000000005,
+              "start": 6.32,
+              "text": "чи"
+            },
+            {
+              "end": 6.640000000000001,
+              "start": 6.5600000000000005,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " но",
+            "чи",
+            "."
+          ]
+        },
+        {
+          "at_s": 7.3310418128967285,
+          "confidence": 0.850341796875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ваши",
+          "token_timings": [
+            {
+              "end": 6.8,
+              "start": 6.72,
+              "text": " ва"
+            },
+            {
+              "end": 6.88,
+              "start": 6.8,
+              "text": "ши"
+            }
+          ],
+          "tokens": [
+            " ва",
+            "ши"
+          ]
+        },
+        {
+          "at_s": 7.842159748077393,
+          "confidence": 0.904052734375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ваша система",
+          "token_timings": [
+            {
+              "end": 6.96,
+              "start": 6.8,
+              "text": " ва"
+            },
+            {
+              "end": 7.12,
+              "start": 6.96,
+              "text": "ша"
+            },
+            {
+              "end": 7.36,
+              "start": 7.12,
+              "text": " систе"
+            },
+            {
+              "end": 7.44,
+              "start": 7.36,
+              "text": "ма"
+            }
+          ],
+          "tokens": [
+            " ва",
+            "ша",
+            " систе",
+            "ма"
+          ]
+        },
+        {
+          "at_s": 8.345248937606812,
+          "confidence": 0.9993896484375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "упадет",
+          "token_timings": [
+            {
+              "end": 7.680000000000001,
+              "start": 7.6000000000000005,
+              "text": " у"
+            },
+            {
+              "end": 7.84,
+              "start": 7.68,
+              "text": "па"
+            },
+            {
+              "end": 7.92,
+              "start": 7.84,
+              "text": "де"
+            },
+            {
+              "end": 8,
+              "start": 7.92,
+              "text": "т"
+            }
+          ],
+          "tokens": [
+            " у",
+            "па",
+            "де",
+            "т"
+          ]
+        },
+        {
+          "at_s": 8.844497919082642,
+          "confidence": 0.9366047978401184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Тема упадет",
+          "token_timings": [
+            {
+              "end": 7.6000000000000005,
+              "start": 7.5200000000000005,
+              "text": " Те"
+            },
+            {
+              "end": 7.680000000000001,
+              "start": 7.6000000000000005,
+              "text": "ма"
+            },
+            {
+              "end": 7.76,
+              "start": 7.68,
+              "text": " у"
+            },
+            {
+              "end": 7.84,
+              "start": 7.76,
+              "text": "па"
+            },
+            {
+              "end": 8,
+              "start": 7.84,
+              "text": "де"
+            },
+            {
+              "end": 8.08,
+              "start": 8,
+              "text": "т"
+            }
+          ],
+          "tokens": [
+            " Те",
+            "ма",
+            " у",
+            "па",
+            "де",
+            "т"
+          ]
+        },
+        {
+          "at_s": 9.345839023590088,
+          "confidence": 0.8955349326133728,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "с отказом попасть.",
+          "token_timings": [
+            {
+              "end": 8.48,
+              "start": 8.32,
+              "text": " с"
+            },
+            {
+              "end": 8.64,
+              "start": 8.48,
+              "text": " от"
+            },
+            {
+              "end": 8.72,
+              "start": 8.64,
+              "text": "ка"
+            },
+            {
+              "end": 8.8,
+              "start": 8.72,
+              "text": "зо"
+            },
+            {
+              "end": 8.88,
+              "start": 8.8,
+              "text": "м"
+            },
+            {
+              "end": 8.96,
+              "start": 8.88,
+              "text": " по"
+            },
+            {
+              "end": 9.040000000000001,
+              "start": 8.96,
+              "text": "па"
+            },
+            {
+              "end": 9.120000000000001,
+              "start": 9.040000000000001,
+              "text": "сть"
+            },
+            {
+              "end": 9.200000000000001,
+              "start": 9.120000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " с",
+            " от",
+            "ка",
+            "зо",
+            "м",
+            " по",
+            "па",
+            "сть",
+            "."
+          ]
+        },
+        {
+          "at_s": 9.845767974853516,
+          "confidence": 0.9927734136581421,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "по памяти.",
+          "token_timings": [
+            {
+              "end": 9.200000000000001,
+              "start": 9.040000000000001,
+              "text": " по"
+            },
+            {
+              "end": 9.280000000000001,
+              "start": 9.200000000000001,
+              "text": " па"
+            },
+            {
+              "end": 9.44,
+              "start": 9.28,
+              "text": "мя"
+            },
+            {
+              "end": 9.6,
+              "start": 9.44,
+              "text": "ти"
+            },
+            {
+              "end": 9.68,
+              "start": 9.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " по",
+            " па",
+            "мя",
+            "ти",
+            "."
+          ]
+        },
+        {
+          "at_s": 10.335741996765137,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 10.84666895866394,
+          "confidence": 0.99151611328125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Будьте готовы.",
+          "token_timings": [
+            {
+              "end": 9.92,
+              "start": 9.76,
+              "text": " Б"
+            },
+            {
+              "end": 10,
+              "start": 9.92,
+              "text": "у"
+            },
+            {
+              "end": 10.08,
+              "start": 10,
+              "text": "дь"
+            },
+            {
+              "end": 10.24,
+              "start": 10.08,
+              "text": "те"
+            },
+            {
+              "end": 10.32,
+              "start": 10.24,
+              "text": " го"
+            },
+            {
+              "end": 10.4,
+              "start": 10.32,
+              "text": "то"
+            },
+            {
+              "end": 10.56,
+              "start": 10.4,
+              "text": "вы"
+            },
+            {
+              "end": 10.64,
+              "start": 10.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Б",
+            "у",
+            "дь",
+            "те",
+            " го",
+            "то",
+            "вы",
+            "."
+          ]
+        },
+        {
+          "at_s": 11.344769954681396,
+          "confidence": 0.9592556357383728,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "к этому, пожалуйста",
+          "token_timings": [
+            {
+              "end": 10.72,
+              "start": 10.64,
+              "text": " к"
+            },
+            {
+              "end": 10.8,
+              "start": 10.72,
+              "text": " это"
+            },
+            {
+              "end": 10.88,
+              "start": 10.8,
+              "text": "му"
+            },
+            {
+              "end": 10.96,
+              "start": 10.88,
+              "text": ","
+            },
+            {
+              "end": 11.040000000000001,
+              "start": 10.96,
+              "text": " по"
+            },
+            {
+              "end": 11.120000000000001,
+              "start": 11.040000000000001,
+              "text": "жа"
+            },
+            {
+              "end": 11.200000000000001,
+              "start": 11.120000000000001,
+              "text": "лу"
+            },
+            {
+              "end": 11.200000000000001,
+              "start": 11.120000000000001,
+              "text": "й"
+            },
+            {
+              "end": 11.280000000000001,
+              "start": 11.200000000000001,
+              "text": "ста"
+            }
+          ],
+          "tokens": [
+            " к",
+            " это",
+            "му",
+            ",",
+            " по",
+            "жа",
+            "лу",
+            "й",
+            "ста"
+          ]
+        },
+        {
+          "at_s": 11.829832077026367,
+          "confidence": 0.9599609375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ".",
+          "token_timings": [
+            {
+              "end": 11.68,
+              "start": 11.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            "."
+          ]
+        },
+        {
+          "at_s": 12.3434898853302,
+          "confidence": 0.992919921875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "вот",
+          "token_timings": [
+            {
+              "end": 11.76,
+              "start": 11.68,
+              "text": " во"
+            },
+            {
+              "end": 11.84,
+              "start": 11.76,
+              "text": "т"
+            }
+          ],
+          "tokens": [
+            " во",
+            "т"
+          ]
+        },
+        {
+          "at_s": 12.833617925643921,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 13.344191074371338,
+          "confidence": 0.8783203363418579,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Это и...",
+          "token_timings": [
+            {
+              "end": 12.88,
+              "start": 12.56,
+              "text": " Это"
+            },
+            {
+              "end": 13.040000000000001,
+              "start": 12.88,
+              "text": " и"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "."
+            },
+            {
+              "end": 13.200000000000001,
+              "start": 13.120000000000001,
+              "text": "."
+            },
+            {
+              "end": 13.280000000000001,
+              "start": 13.200000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Это",
+            " и",
+            ".",
+            ".",
+            "."
+          ]
+        },
+        {
+          "at_s": 13.844167947769165,
+          "confidence": 0.904003918170929,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "есть обирание.",
+          "token_timings": [
+            {
+              "end": 13.200000000000001,
+              "start": 12.96,
+              "text": " есть"
+            },
+            {
+              "end": 13.44,
+              "start": 13.200000000000001,
+              "text": " оби"
+            },
+            {
+              "end": 13.52,
+              "start": 13.44,
+              "text": "ра"
+            },
+            {
+              "end": 13.6,
+              "start": 13.52,
+              "text": "ние"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " есть",
+            " оби",
+            "ра",
+            "ние",
+            "."
+          ]
+        },
+        {
+          "at_s": 14.350028038024902,
+          "confidence": 0.9032505750656128,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "обсервабилити.",
+          "token_timings": [
+            {
+              "end": 13.44,
+              "start": 13.280000000000001,
+              "text": " об"
+            },
+            {
+              "end": 13.52,
+              "start": 13.44,
+              "text": "се"
+            },
+            {
+              "end": 13.6,
+              "start": 13.52,
+              "text": "р"
+            },
+            {
+              "end": 13.76,
+              "start": 13.6,
+              "text": "ва"
+            },
+            {
+              "end": 13.84,
+              "start": 13.76,
+              "text": "би"
+            },
+            {
+              "end": 14,
+              "start": 13.84,
+              "text": "лити"
+            },
+            {
+              "end": 14.08,
+              "start": 14,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " об",
+            "се",
+            "р",
+            "ва",
+            "би",
+            "лити",
+            "."
+          ]
+        },
+        {
+          "at_s": 14.838496923446655,
+          "confidence": 0.8077545166015625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "обсерваберите это один",
+          "token_timings": [
+            {
+              "end": 13.6,
+              "start": 13.44,
+              "text": " об"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "се"
+            },
+            {
+              "end": 13.76,
+              "start": 13.68,
+              "text": "р"
+            },
+            {
+              "end": 13.84,
+              "start": 13.76,
+              "text": "ва"
+            },
+            {
+              "end": 13.92,
+              "start": 13.84,
+              "text": "бе"
+            },
+            {
+              "end": 14.16,
+              "start": 13.92,
+              "text": "рите"
+            },
+            {
+              "end": 14.32,
+              "start": 14.16,
+              "text": " это"
+            },
+            {
+              "end": 14.4,
+              "start": 14.32,
+              "text": " один"
+            }
+          ],
+          "tokens": [
+            " об",
+            "се",
+            "р",
+            "ва",
+            "бе",
+            "рите",
+            " это",
+            " один"
+          ]
+        },
+        {
+          "at_s": 15.342000961303711,
+          "confidence": 0.98388671875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ее аспект.",
+          "token_timings": [
+            {
+              "end": 14.88,
+              "start": 14.72,
+              "text": " ее"
+            },
+            {
+              "end": 14.96,
+              "start": 14.88,
+              "text": " а"
+            },
+            {
+              "end": 15.040000000000001,
+              "start": 14.96,
+              "text": "спе"
+            },
+            {
+              "end": 15.120000000000001,
+              "start": 15.040000000000001,
+              "text": "кт"
+            },
+            {
+              "end": 15.200000000000001,
+              "start": 15.120000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ее",
+            " а",
+            "спе",
+            "кт",
+            "."
+          ]
+        },
+        {
+          "at_s": 15.847779750823975,
+          "confidence": 0.6043701171875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "авто.",
+          "token_timings": [
+            {
+              "end": 15.52,
+              "start": 15.280000000000001,
+              "text": " авто"
+            },
+            {
+              "end": 15.6,
+              "start": 15.52,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " авто",
+            "."
+          ]
+        },
+        {
+          "at_s": 16.348958015441895,
+          "confidence": 0.998046875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "второй аспект",
+          "token_timings": [
+            {
+              "end": 15.6,
+              "start": 15.52,
+              "text": " в"
+            },
+            {
+              "end": 15.68,
+              "start": 15.6,
+              "text": "то"
+            },
+            {
+              "end": 15.68,
+              "start": 15.6,
+              "text": "ро"
+            },
+            {
+              "end": 15.76,
+              "start": 15.68,
+              "text": "й"
+            },
+            {
+              "end": 15.84,
+              "start": 15.76,
+              "text": " а"
+            },
+            {
+              "end": 15.92,
+              "start": 15.84,
+              "text": "спе"
+            },
+            {
+              "end": 16,
+              "start": 15.92,
+              "text": "кт"
+            }
+          ],
+          "tokens": [
+            " в",
+            "то",
+            "ро",
+            "й",
+            " а",
+            "спе",
+            "кт"
+          ]
+        },
+        {
+          "at_s": 16.837605953216553,
+          "confidence": 0.9161376953125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "аспект.",
+          "token_timings": [
+            {
+              "end": 15.92,
+              "start": 15.84,
+              "text": " а"
+            },
+            {
+              "end": 16,
+              "start": 15.92,
+              "text": "спе"
+            },
+            {
+              "end": 16.56,
+              "start": 16,
+              "text": "кт"
+            },
+            {
+              "end": 16.639999999999997,
+              "start": 16.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " а",
+            "спе",
+            "кт",
+            "."
+          ]
+        },
+        {
+          "at_s": 17.319732904434204,
+          "confidence": 0.9537760615348816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "который для меня",
+          "token_timings": [
+            {
+              "end": 16.8,
+              "start": 16.56,
+              "text": " который"
+            },
+            {
+              "end": 16.96,
+              "start": 16.8,
+              "text": " для"
+            },
+            {
+              "end": 17.04,
+              "start": 16.96,
+              "text": " меня"
+            }
+          ],
+          "tokens": [
+            " который",
+            " для",
+            " меня"
+          ]
+        },
+        {
+          "at_s": 17.835068941116333,
+          "confidence": 0.931835949420929,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "на самом деле",
+          "token_timings": [
+            {
+              "end": 17.36,
+              "start": 17.12,
+              "text": " на"
+            },
+            {
+              "end": 17.44,
+              "start": 17.36,
+              "text": " само"
+            },
+            {
+              "end": 17.52,
+              "start": 17.44,
+              "text": "м"
+            },
+            {
+              "end": 17.6,
+              "start": 17.52,
+              "text": " де"
+            },
+            {
+              "end": 17.68,
+              "start": 17.6,
+              "text": "ле"
+            }
+          ],
+          "tokens": [
+            " на",
+            " само",
+            "м",
+            " де",
+            "ле"
+          ]
+        },
+        {
+          "at_s": 18.34792995452881,
+          "confidence": 1,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "деле",
+          "token_timings": [
+            {
+              "end": 17.68,
+              "start": 17.6,
+              "text": " де"
+            },
+            {
+              "end": 17.759999999999998,
+              "start": 17.68,
+              "text": "ле"
+            }
+          ],
+          "tokens": [
+            " де",
+            "ле"
+          ]
+        },
+        {
+          "at_s": 18.846023082733154,
+          "confidence": 0.9534737467765808,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "самый важный.",
+          "token_timings": [
+            {
+              "end": 18.16,
+              "start": 18.080000000000002,
+              "text": " са"
+            },
+            {
+              "end": 18.240000000000002,
+              "start": 18.16,
+              "text": "мы"
+            },
+            {
+              "end": 18.32,
+              "start": 18.240000000000002,
+              "text": "й"
+            },
+            {
+              "end": 18.400000000000002,
+              "start": 18.32,
+              "text": " ва"
+            },
+            {
+              "end": 18.48,
+              "start": 18.400000000000002,
+              "text": "ж"
+            },
+            {
+              "end": 18.56,
+              "start": 18.48,
+              "text": "ный"
+            },
+            {
+              "end": 18.639999999999997,
+              "start": 18.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " са",
+            "мы",
+            "й",
+            " ва",
+            "ж",
+            "ный",
+            "."
+          ]
+        },
+        {
+          "at_s": 19.341158866882324,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 19.839361906051636,
+          "confidence": 0.982177734375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "обычный",
+          "token_timings": [
+            {
+              "end": 19.2,
+              "start": 19.12,
+              "text": " об"
+            },
+            {
+              "end": 19.36,
+              "start": 19.2,
+              "text": "ы"
+            },
+            {
+              "end": 19.44,
+              "start": 19.36,
+              "text": "ч"
+            },
+            {
+              "end": 19.52,
+              "start": 19.44,
+              "text": "ный"
+            }
+          ],
+          "tokens": [
+            " об",
+            "ы",
+            "ч",
+            "ный"
+          ]
+        },
+        {
+          "at_s": 20.343982934951782,
+          "confidence": 0.872283935546875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Обычно мы не знаем.",
+          "token_timings": [
+            {
+              "end": 19.28,
+              "start": 19.12,
+              "text": " О"
+            },
+            {
+              "end": 19.44,
+              "start": 19.28,
+              "text": "бы"
+            },
+            {
+              "end": 19.6,
+              "start": 19.44,
+              "text": "чно"
+            },
+            {
+              "end": 19.76,
+              "start": 19.6,
+              "text": " мы"
+            },
+            {
+              "end": 19.84,
+              "start": 19.76,
+              "text": " не"
+            },
+            {
+              "end": 20,
+              "start": 19.84,
+              "text": " зна"
+            },
+            {
+              "end": 20.08,
+              "start": 20,
+              "text": "ем"
+            },
+            {
+              "end": 20.08,
+              "start": 20,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " О",
+            "бы",
+            "чно",
+            " мы",
+            " не",
+            " зна",
+            "ем",
+            "."
+          ]
+        },
+        {
+          "at_s": 20.846149921417236,
+          "confidence": 0.749267578125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "что.",
+          "token_timings": [
+            {
+              "end": 20.48,
+              "start": 20.32,
+              "text": " что"
+            },
+            {
+              "end": 20.56,
+              "start": 20.48,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " что",
+            "."
+          ]
+        },
+        {
+          "at_s": 21.335800886154175,
+          "confidence": 0.9703776240348816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "нам нужно.",
+          "token_timings": [
+            {
+              "end": 20.88,
+              "start": 20.72,
+              "text": " нам"
+            },
+            {
+              "end": 21.04,
+              "start": 20.88,
+              "text": " нужно"
+            },
+            {
+              "end": 21.119999999999997,
+              "start": 21.04,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " нам",
+            " нужно",
+            "."
+          ]
+        },
+        {
+          "at_s": 21.84238576889038,
+          "confidence": 1,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "знать",
+          "token_timings": [
+            {
+              "end": 21.44,
+              "start": 21.36,
+              "text": " зна"
+            },
+            {
+              "end": 21.52,
+              "start": 21.44,
+              "text": "ть"
+            }
+          ],
+          "tokens": [
+            " зна",
+            "ть"
+          ]
+        },
+        {
+          "at_s": 22.342010021209717,
+          "confidence": 0.485107421875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "о",
+          "token_timings": [
+            {
+              "end": 21.759999999999998,
+              "start": 21.68,
+              "text": " о"
+            }
+          ],
+          "tokens": [
+            " о"
+          ]
+        },
+        {
+          "at_s": 22.821852922439575,
+          "confidence": 0.9007161259651184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "системе.",
+          "token_timings": [
+            {
+              "end": 22.400000000000002,
+              "start": 22.16,
+              "text": " систе"
+            },
+            {
+              "end": 22.56,
+              "start": 22.400000000000002,
+              "text": "ме"
+            },
+            {
+              "end": 22.639999999999997,
+              "start": 22.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " систе",
+            "ме",
+            "."
+          ]
+        },
+        {
+          "at_s": 23.347511768341064,
+          "confidence": 1,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "в тот момент",
+          "token_timings": [
+            {
+              "end": 22.72,
+              "start": 22.64,
+              "text": " в"
+            },
+            {
+              "end": 22.8,
+              "start": 22.72,
+              "text": " то"
+            },
+            {
+              "end": 22.88,
+              "start": 22.8,
+              "text": "т"
+            },
+            {
+              "end": 22.96,
+              "start": 22.88,
+              "text": " мо"
+            },
+            {
+              "end": 23.04,
+              "start": 22.96,
+              "text": "мент"
+            }
+          ],
+          "tokens": [
+            " в",
+            " то",
+            "т",
+            " мо",
+            "мент"
+          ]
+        },
+        {
+          "at_s": 23.84663200378418,
+          "confidence": 0.8551025390625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ", когда мы ее",
+          "token_timings": [
+            {
+              "end": 23.2,
+              "start": 23.12,
+              "text": ","
+            },
+            {
+              "end": 23.36,
+              "start": 23.2,
+              "text": " когда"
+            },
+            {
+              "end": 23.44,
+              "start": 23.36,
+              "text": " мы"
+            },
+            {
+              "end": 23.52,
+              "start": 23.44,
+              "text": " ее"
+            }
+          ],
+          "tokens": [
+            ",",
+            " когда",
+            " мы",
+            " ее"
+          ]
+        },
+        {
+          "at_s": 24.3481707572937,
+          "confidence": 0.9867350459098816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "разрабатываем",
+          "token_timings": [
+            {
+              "end": 23.84,
+              "start": 23.76,
+              "text": " раз"
+            },
+            {
+              "end": 23.92,
+              "start": 23.84,
+              "text": "ра"
+            },
+            {
+              "end": 24,
+              "start": 23.92,
+              "text": "ба"
+            },
+            {
+              "end": 24.080000000000002,
+              "start": 24,
+              "text": "ты"
+            },
+            {
+              "end": 24.16,
+              "start": 24.080000000000002,
+              "text": "ва"
+            },
+            {
+              "end": 24.16,
+              "start": 24.080000000000002,
+              "text": "ем"
+            }
+          ],
+          "tokens": [
+            " раз",
+            "ра",
+            "ба",
+            "ты",
+            "ва",
+            "ем"
+          ]
+        },
+        {
+          "at_s": 24.666222095489502,
+          "confidence": 0.84375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": ".",
+          "token_timings": [
+            {
+              "end": 24.32,
+              "start": 24.240000000000002,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            "."
+          ]
+        },
+        {
+          "at_s": 24.71692395210266,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        }
+      ],
+      "rtf": 1.0046628378814408,
+      "segment_id": "podlodka_test10_ep306",
+      "wall_s": 24.717029094696045
+    },
+    {
+      "audio_s": 20.13225,
+      "final": "Ну и еще. вопрос такой ваш. важный лицензирования. Оп.ен СТТ недоступно. недоступен для построения коммерческих моделей. только академических. а Uh uh Ah uh У голоса... с спродавайся с Там нет никаких... ограничений. лечение фактически это эта лицензия близко. bliska k. creative Comments, share Oi, лицензии Лева у меня школь Это хорошо.",
+      "finish_s": 0.09710907936096191,
+      "partial_count": 41,
+      "partials": [
+        {
+          "at_s": 0.8393721580505371,
+          "confidence": 0.9202880859375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Ну и еще.",
+          "token_timings": [
+            {
+              "end": 0.24,
+              "start": 0,
+              "text": " Ну"
+            },
+            {
+              "end": 0.32,
+              "start": 0.24,
+              "text": " и"
+            },
+            {
+              "end": 0.56,
+              "start": 0.32,
+              "text": " еще"
+            },
+            {
+              "end": 0.64,
+              "start": 0.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Ну",
+            " и",
+            " еще",
+            "."
+          ]
+        },
+        {
+          "at_s": 1.3342530727386475,
+          "confidence": 0.81903076171875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "вопрос такой ваш.",
+          "token_timings": [
+            {
+              "end": 0.64,
+              "start": 0.56,
+              "text": " во"
+            },
+            {
+              "end": 0.72,
+              "start": 0.64,
+              "text": "про"
+            },
+            {
+              "end": 0.8,
+              "start": 0.72,
+              "text": "с"
+            },
+            {
+              "end": 0.88,
+              "start": 0.8,
+              "text": " тако"
+            },
+            {
+              "end": 1.04,
+              "start": 0.88,
+              "text": "й"
+            },
+            {
+              "end": 1.12,
+              "start": 1.04,
+              "text": " ва"
+            },
+            {
+              "end": 1.2000000000000002,
+              "start": 1.12,
+              "text": "ш"
+            },
+            {
+              "end": 1.2000000000000002,
+              "start": 1.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " во",
+            "про",
+            "с",
+            " тако",
+            "й",
+            " ва",
+            "ш",
+            "."
+          ]
+        },
+        {
+          "at_s": 1.8425989151000977,
+          "confidence": 0.9982096552848816,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "важный",
+          "token_timings": [
+            {
+              "end": 1.28,
+              "start": 1.2,
+              "text": " ва"
+            },
+            {
+              "end": 1.44,
+              "start": 1.28,
+              "text": "ж"
+            },
+            {
+              "end": 1.52,
+              "start": 1.44,
+              "text": "ный"
+            }
+          ],
+          "tokens": [
+            " ва",
+            "ж",
+            "ный"
+          ]
+        },
+        {
+          "at_s": 2.3521032333374023,
+          "confidence": 0.843017578125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "лицензир.",
+          "token_timings": [
+            {
+              "end": 1.6800000000000002,
+              "start": 1.6,
+              "text": " ли"
+            },
+            {
+              "end": 1.92,
+              "start": 1.68,
+              "text": "цен"
+            },
+            {
+              "end": 2,
+              "start": 1.92,
+              "text": "зи"
+            },
+            {
+              "end": 2.08,
+              "start": 2,
+              "text": "р"
+            },
+            {
+              "end": 2.16,
+              "start": 2.08,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ли",
+            "цен",
+            "зи",
+            "р",
+            "."
+          ]
+        },
+        {
+          "at_s": 2.8357372283935547,
+          "confidence": 0.8837890625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "лицензирования.",
+          "token_timings": [
+            {
+              "end": 1.76,
+              "start": 1.68,
+              "text": " ли"
+            },
+            {
+              "end": 2.08,
+              "start": 1.76,
+              "text": "цен"
+            },
+            {
+              "end": 2.24,
+              "start": 2.08,
+              "text": "зи"
+            },
+            {
+              "end": 2.4,
+              "start": 2.24,
+              "text": "рова"
+            },
+            {
+              "end": 2.56,
+              "start": 2.4,
+              "text": "ния"
+            },
+            {
+              "end": 2.64,
+              "start": 2.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ли",
+            "цен",
+            "зи",
+            "рова",
+            "ния",
+            "."
+          ]
+        },
+        {
+          "at_s": 3.345919132232666,
+          "confidence": 0.2584635317325592,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "Оп.",
+          "token_timings": [
+            {
+              "end": 2.8000000000000003,
+              "start": 2.64,
+              "text": " О"
+            },
+            {
+              "end": 2.8800000000000003,
+              "start": 2.8000000000000003,
+              "text": "п"
+            },
+            {
+              "end": 2.96,
+              "start": 2.88,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " О",
+            "п",
+            "."
+          ]
+        },
+        {
+          "at_s": 3.8418922424316406,
+          "confidence": 0.588330090045929,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "OpenState",
+          "token_timings": [
+            {
+              "end": 2.88,
+              "start": 2.72,
+              "text": " O"
+            },
+            {
+              "end": 3.12,
+              "start": 2.88,
+              "text": "pen"
+            },
+            {
+              "end": 3.2,
+              "start": 3.12,
+              "text": "S"
+            },
+            {
+              "end": 3.2800000000000002,
+              "start": 3.2,
+              "text": "t"
+            },
+            {
+              "end": 3.3600000000000003,
+              "start": 3.2800000000000002,
+              "text": "ate"
+            }
+          ],
+          "tokens": [
+            " O",
+            "pen",
+            "S",
+            "t",
+            "ate"
+          ]
+        },
+        {
+          "at_s": 4.34453821182251,
+          "confidence": 0.7972548007965088,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ен СТТ недоступно.",
+          "token_timings": [
+            {
+              "end": 3.2,
+              "start": 3.04,
+              "text": "ен"
+            },
+            {
+              "end": 3.2800000000000002,
+              "start": 3.2,
+              "text": " С"
+            },
+            {
+              "end": 3.44,
+              "start": 3.2800000000000002,
+              "text": "Т"
+            },
+            {
+              "end": 3.68,
+              "start": 3.44,
+              "text": "Т"
+            },
+            {
+              "end": 3.7600000000000002,
+              "start": 3.68,
+              "text": " не"
+            },
+            {
+              "end": 3.8400000000000003,
+              "start": 3.7600000000000002,
+              "text": "до"
+            },
+            {
+              "end": 4,
+              "start": 3.84,
+              "text": "ступ"
+            },
+            {
+              "end": 4.08,
+              "start": 4,
+              "text": "но"
+            },
+            {
+              "end": 4.16,
+              "start": 4.08,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            "ен",
+            " С",
+            "Т",
+            "Т",
+            " не",
+            "до",
+            "ступ",
+            "но",
+            "."
+          ]
+        },
+        {
+          "at_s": 4.839698076248169,
+          "confidence": 0.99462890625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "недоступен для",
+          "token_timings": [
+            {
+              "end": 3.7600000000000002,
+              "start": 3.68,
+              "text": " не"
+            },
+            {
+              "end": 3.8400000000000003,
+              "start": 3.7600000000000002,
+              "text": "до"
+            },
+            {
+              "end": 4,
+              "start": 3.84,
+              "text": "ступ"
+            },
+            {
+              "end": 4.16,
+              "start": 4,
+              "text": "ен"
+            },
+            {
+              "end": 4.24,
+              "start": 4.16,
+              "text": " для"
+            }
+          ],
+          "tokens": [
+            " не",
+            "до",
+            "ступ",
+            "ен",
+            " для"
+          ]
+        },
+        {
+          "at_s": 5.3507490158081055,
+          "confidence": 0.9134277105331421,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "для построения коммерческого",
+          "token_timings": [
+            {
+              "end": 4.48,
+              "start": 4.4,
+              "text": " для"
+            },
+            {
+              "end": 4.5600000000000005,
+              "start": 4.48,
+              "text": " по"
+            },
+            {
+              "end": 4.72,
+              "start": 4.5600000000000005,
+              "text": "стро"
+            },
+            {
+              "end": 4.8,
+              "start": 4.72,
+              "text": "е"
+            },
+            {
+              "end": 4.88,
+              "start": 4.8,
+              "text": "ния"
+            },
+            {
+              "end": 4.96,
+              "start": 4.88,
+              "text": " ком"
+            },
+            {
+              "end": 5.04,
+              "start": 4.96,
+              "text": "мер"
+            },
+            {
+              "end": 5.12,
+              "start": 5.04,
+              "text": "че"
+            },
+            {
+              "end": 5.2,
+              "start": 5.12,
+              "text": "ско"
+            },
+            {
+              "end": 5.2,
+              "start": 5.12,
+              "text": "го"
+            }
+          ],
+          "tokens": [
+            " для",
+            " по",
+            "стро",
+            "е",
+            "ния",
+            " ком",
+            "мер",
+            "че",
+            "ско",
+            "го"
+          ]
+        },
+        {
+          "at_s": 5.823905944824219,
+          "confidence": 0.95574951171875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "коммерческих моделей.",
+          "token_timings": [
+            {
+              "end": 5.12,
+              "start": 5.04,
+              "text": " ком"
+            },
+            {
+              "end": 5.2,
+              "start": 5.12,
+              "text": "мер"
+            },
+            {
+              "end": 5.36,
+              "start": 5.2,
+              "text": "чески"
+            },
+            {
+              "end": 5.44,
+              "start": 5.36,
+              "text": "х"
+            },
+            {
+              "end": 5.5200000000000005,
+              "start": 5.44,
+              "text": " мо"
+            },
+            {
+              "end": 5.6000000000000005,
+              "start": 5.5200000000000005,
+              "text": "де"
+            },
+            {
+              "end": 5.680000000000001,
+              "start": 5.6000000000000005,
+              "text": "лей"
+            },
+            {
+              "end": 5.680000000000001,
+              "start": 5.6000000000000005,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " ком",
+            "мер",
+            "чески",
+            "х",
+            " мо",
+            "де",
+            "лей",
+            "."
+          ]
+        },
+        {
+          "at_s": 6.3448450565338135,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 6.834991931915283,
+          "confidence": 0.752685546875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "только как",
+          "token_timings": [
+            {
+              "end": 6.32,
+              "start": 6.08,
+              "text": " только"
+            },
+            {
+              "end": 6.4,
+              "start": 6.32,
+              "text": " как"
+            }
+          ],
+          "tokens": [
+            " только",
+            " как"
+          ]
+        },
+        {
+          "at_s": 7.345556259155273,
+          "confidence": 0.9899553656578064,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "академических.",
+          "token_timings": [
+            {
+              "end": 6.640000000000001,
+              "start": 6.48,
+              "text": " а"
+            },
+            {
+              "end": 6.720000000000001,
+              "start": 6.640000000000001,
+              "text": "ка"
+            },
+            {
+              "end": 6.8,
+              "start": 6.72,
+              "text": "де"
+            },
+            {
+              "end": 6.88,
+              "start": 6.8,
+              "text": "ми"
+            },
+            {
+              "end": 7.04,
+              "start": 6.88,
+              "text": "чески"
+            },
+            {
+              "end": 7.12,
+              "start": 7.04,
+              "text": "х"
+            },
+            {
+              "end": 7.2,
+              "start": 7.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " а",
+            "ка",
+            "де",
+            "ми",
+            "чески",
+            "х",
+            "."
+          ]
+        },
+        {
+          "at_s": 7.842144966125488,
+          "confidence": 0.96435546875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "а",
+          "token_timings": [
+            {
+              "end": 7.5200000000000005,
+              "start": 7.44,
+              "text": " а"
+            }
+          ],
+          "tokens": [
+            " а"
+          ]
+        },
+        {
+          "at_s": 8.338551998138428,
+          "confidence": 0.7180989384651184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Uh uh",
+          "token_timings": [
+            {
+              "end": 7.6000000000000005,
+              "start": 7.44,
+              "text": " U"
+            },
+            {
+              "end": 7.76,
+              "start": 7.6000000000000005,
+              "text": "h"
+            },
+            {
+              "end": 7.84,
+              "start": 7.76,
+              "text": " uh"
+            }
+          ],
+          "tokens": [
+            " U",
+            "h",
+            " uh"
+          ]
+        },
+        {
+          "at_s": 8.835652112960815,
+          "confidence": 0.62744140625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Ah uh",
+          "token_timings": [
+            {
+              "end": 8,
+              "start": 7.5200000000000005,
+              "text": " Ah"
+            },
+            {
+              "end": 8.08,
+              "start": 8,
+              "text": " uh"
+            }
+          ],
+          "tokens": [
+            " Ah",
+            " uh"
+          ]
+        },
+        {
+          "at_s": 9.338633060455322,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 9.837163925170898,
+          "confidence": 0.274658203125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "o",
+          "token_timings": [
+            {
+              "end": 9.040000000000001,
+              "start": 8.96,
+              "text": " o"
+            }
+          ],
+          "tokens": [
+            " o"
+          ]
+        },
+        {
+          "at_s": 10.32881212234497,
+          "confidence": 0.7692463994026184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "У голоса...",
+          "token_timings": [
+            {
+              "end": 9.44,
+              "start": 9.120000000000001,
+              "text": " У"
+            },
+            {
+              "end": 9.68,
+              "start": 9.44,
+              "text": " голо"
+            },
+            {
+              "end": 9.84,
+              "start": 9.68,
+              "text": "са"
+            },
+            {
+              "end": 10,
+              "start": 9.84,
+              "text": "."
+            },
+            {
+              "end": 10.08,
+              "start": 10,
+              "text": "."
+            },
+            {
+              "end": 10.16,
+              "start": 10.08,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " У",
+            " голо",
+            "са",
+            ".",
+            ".",
+            "."
+          ]
+        },
+        {
+          "at_s": 10.844601154327393,
+          "confidence": 0.6092732548713684,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "с градовай.",
+          "token_timings": [
+            {
+              "end": 10.08,
+              "start": 9.92,
+              "text": " с"
+            },
+            {
+              "end": 10.24,
+              "start": 10.08,
+              "text": " гра"
+            },
+            {
+              "end": 10.32,
+              "start": 10.24,
+              "text": "до"
+            },
+            {
+              "end": 10.4,
+              "start": 10.32,
+              "text": "ва"
+            },
+            {
+              "end": 10.56,
+              "start": 10.4,
+              "text": "й"
+            },
+            {
+              "end": 10.64,
+              "start": 10.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " с",
+            " гра",
+            "до",
+            "ва",
+            "й",
+            "."
+          ]
+        },
+        {
+          "at_s": 11.350086212158203,
+          "confidence": 0.693188488483429,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "спродавайся с голос.",
+          "token_timings": [
+            {
+              "end": 10.24,
+              "start": 10.16,
+              "text": " с"
+            },
+            {
+              "end": 10.4,
+              "start": 10.24,
+              "text": "про"
+            },
+            {
+              "end": 10.48,
+              "start": 10.4,
+              "text": "да"
+            },
+            {
+              "end": 10.56,
+              "start": 10.48,
+              "text": "ва"
+            },
+            {
+              "end": 10.64,
+              "start": 10.56,
+              "text": "й"
+            },
+            {
+              "end": 10.72,
+              "start": 10.64,
+              "text": "ся"
+            },
+            {
+              "end": 10.88,
+              "start": 10.72,
+              "text": " с"
+            },
+            {
+              "end": 11.040000000000001,
+              "start": 10.88,
+              "text": " голо"
+            },
+            {
+              "end": 11.120000000000001,
+              "start": 11.040000000000001,
+              "text": "с"
+            },
+            {
+              "end": 11.200000000000001,
+              "start": 11.120000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " с",
+            "про",
+            "да",
+            "ва",
+            "й",
+            "ся",
+            " с",
+            " голо",
+            "с",
+            "."
+          ]
+        },
+        {
+          "at_s": 11.834594249725342,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 12.336530208587646,
+          "confidence": 0.863574206829071,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Там нет никаких...",
+          "token_timings": [
+            {
+              "end": 11.36,
+              "start": 11.200000000000001,
+              "text": " Та"
+            },
+            {
+              "end": 11.52,
+              "start": 11.36,
+              "text": "м"
+            },
+            {
+              "end": 11.6,
+              "start": 11.52,
+              "text": " не"
+            },
+            {
+              "end": 11.76,
+              "start": 11.6,
+              "text": "т"
+            },
+            {
+              "end": 11.92,
+              "start": 11.76,
+              "text": " ни"
+            },
+            {
+              "end": 12,
+              "start": 11.92,
+              "text": "ка"
+            },
+            {
+              "end": 12.08,
+              "start": 12,
+              "text": "ких"
+            },
+            {
+              "end": 12.08,
+              "start": 12,
+              "text": "."
+            },
+            {
+              "end": 12.16,
+              "start": 12.08,
+              "text": "."
+            },
+            {
+              "end": 12.24,
+              "start": 12.16,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Та",
+            "м",
+            " не",
+            "т",
+            " ни",
+            "ка",
+            "ких",
+            ".",
+            ".",
+            "."
+          ]
+        },
+        {
+          "at_s": 12.828699111938477,
+          "confidence": 0.9995930790901184,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "ограничений.",
+          "token_timings": [
+            {
+              "end": 12.24,
+              "start": 12.16,
+              "text": " о"
+            },
+            {
+              "end": 12.32,
+              "start": 12.24,
+              "text": "гра"
+            },
+            {
+              "end": 12.4,
+              "start": 12.32,
+              "text": "ни"
+            },
+            {
+              "end": 12.48,
+              "start": 12.4,
+              "text": "че"
+            },
+            {
+              "end": 12.56,
+              "start": 12.48,
+              "text": "ний"
+            },
+            {
+              "end": 12.64,
+              "start": 12.56,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " о",
+            "гра",
+            "ни",
+            "че",
+            "ний",
+            "."
+          ]
+        },
+        {
+          "at_s": 13.34546709060669,
+          "confidence": 0.9627685546875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "фактически",
+          "token_timings": [
+            {
+              "end": 12.96,
+              "start": 12.88,
+              "text": " ф"
+            },
+            {
+              "end": 13.040000000000001,
+              "start": 12.96,
+              "text": "ак"
+            },
+            {
+              "end": 13.040000000000001,
+              "start": 12.96,
+              "text": "ти"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "чески"
+            }
+          ],
+          "tokens": [
+            " ф",
+            "ак",
+            "ти",
+            "чески"
+          ]
+        },
+        {
+          "at_s": 13.833775997161865,
+          "confidence": 0.8940185308456421,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "лечение фактически это лицея",
+          "token_timings": [
+            {
+              "end": 12.64,
+              "start": 12.56,
+              "text": " ле"
+            },
+            {
+              "end": 12.96,
+              "start": 12.64,
+              "text": "чение"
+            },
+            {
+              "end": 13.040000000000001,
+              "start": 12.96,
+              "text": " ф"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "ак"
+            },
+            {
+              "end": 13.120000000000001,
+              "start": 13.040000000000001,
+              "text": "ти"
+            },
+            {
+              "end": 13.280000000000001,
+              "start": 13.120000000000001,
+              "text": "чески"
+            },
+            {
+              "end": 13.360000000000001,
+              "start": 13.280000000000001,
+              "text": " это"
+            },
+            {
+              "end": 13.44,
+              "start": 13.36,
+              "text": " ли"
+            },
+            {
+              "end": 13.6,
+              "start": 13.44,
+              "text": "це"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "я"
+            }
+          ],
+          "tokens": [
+            " ле",
+            "чение",
+            " ф",
+            "ак",
+            "ти",
+            "чески",
+            " это",
+            " ли",
+            "це",
+            "я"
+          ]
+        },
+        {
+          "at_s": 14.338335037231445,
+          "confidence": 0.883740246295929,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "эта лицензия близко.",
+          "token_timings": [
+            {
+              "end": 13.360000000000001,
+              "start": 13.280000000000001,
+              "text": " э"
+            },
+            {
+              "end": 13.44,
+              "start": 13.36,
+              "text": "та"
+            },
+            {
+              "end": 13.52,
+              "start": 13.44,
+              "text": " ли"
+            },
+            {
+              "end": 13.6,
+              "start": 13.52,
+              "text": "цен"
+            },
+            {
+              "end": 13.68,
+              "start": 13.6,
+              "text": "зи"
+            },
+            {
+              "end": 13.84,
+              "start": 13.68,
+              "text": "я"
+            },
+            {
+              "end": 13.92,
+              "start": 13.84,
+              "text": " бли"
+            },
+            {
+              "end": 14,
+              "start": 13.92,
+              "text": "з"
+            },
+            {
+              "end": 14.08,
+              "start": 14,
+              "text": "ко"
+            },
+            {
+              "end": 14.16,
+              "start": 14.08,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " э",
+            "та",
+            " ли",
+            "цен",
+            "зи",
+            "я",
+            " бли",
+            "з",
+            "ко",
+            "."
+          ]
+        },
+        {
+          "at_s": 14.841430187225342,
+          "confidence": 0.99609375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "близкая",
+          "token_timings": [
+            {
+              "end": 14.16,
+              "start": 14.08,
+              "text": " бли"
+            },
+            {
+              "end": 14.32,
+              "start": 14.16,
+              "text": "з"
+            },
+            {
+              "end": 14.4,
+              "start": 14.32,
+              "text": "ка"
+            },
+            {
+              "end": 14.48,
+              "start": 14.4,
+              "text": "я"
+            }
+          ],
+          "tokens": [
+            " бли",
+            "з",
+            "ка",
+            "я"
+          ]
+        },
+        {
+          "at_s": 15.341525077819824,
+          "confidence": 0.7579345703125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "bliska k.",
+          "token_timings": [
+            {
+              "end": 14.32,
+              "start": 14.16,
+              "text": " bl"
+            },
+            {
+              "end": 14.8,
+              "start": 14.32,
+              "text": "iska"
+            },
+            {
+              "end": 15.040000000000001,
+              "start": 14.8,
+              "text": " k"
+            },
+            {
+              "end": 15.120000000000001,
+              "start": 15.040000000000001,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " bl",
+            "iska",
+            " k",
+            "."
+          ]
+        },
+        {
+          "at_s": 15.832612991333008,
+          "confidence": 0.5458984375,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "к",
+          "token_timings": [
+            {
+              "end": 14.88,
+              "start": 14.8,
+              "text": " к"
+            }
+          ],
+          "tokens": [
+            " к"
+          ]
+        },
+        {
+          "at_s": 16.339735984802246,
+          "confidence": 0.715576171875,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "creative commons",
+          "token_timings": [
+            {
+              "end": 15.52,
+              "start": 15.200000000000001,
+              "text": " cre"
+            },
+            {
+              "end": 15.76,
+              "start": 15.52,
+              "text": "ative"
+            },
+            {
+              "end": 15.92,
+              "start": 15.76,
+              "text": " com"
+            },
+            {
+              "end": 16,
+              "start": 15.92,
+              "text": "m"
+            },
+            {
+              "end": 16.08,
+              "start": 16,
+              "text": "ons"
+            }
+          ],
+          "tokens": [
+            " cre",
+            "ative",
+            " com",
+            "m",
+            "ons"
+          ]
+        },
+        {
+          "at_s": 16.841196060180664,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 17.345582962036133,
+          "confidence": 0.8018798828125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Comments, share like.",
+          "token_timings": [
+            {
+              "end": 16.16,
+              "start": 16.080000000000002,
+              "text": " Com"
+            },
+            {
+              "end": 16.240000000000002,
+              "start": 16.16,
+              "text": "ment"
+            },
+            {
+              "end": 16.4,
+              "start": 16.240000000000002,
+              "text": "s"
+            },
+            {
+              "end": 16.56,
+              "start": 16.4,
+              "text": ","
+            },
+            {
+              "end": 16.64,
+              "start": 16.56,
+              "text": " sh"
+            },
+            {
+              "end": 16.96,
+              "start": 16.64,
+              "text": "are"
+            },
+            {
+              "end": 17.12,
+              "start": 16.96,
+              "text": " like"
+            },
+            {
+              "end": 17.2,
+              "start": 17.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Com",
+            "ment",
+            "s",
+            ",",
+            " sh",
+            "are",
+            " like",
+            "."
+          ]
+        },
+        {
+          "at_s": 17.84282112121582,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 18.34094524383545,
+          "confidence": 0.73834228515625,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Oi, licencia.",
+          "token_timings": [
+            {
+              "end": 17.12,
+              "start": 17.04,
+              "text": " O"
+            },
+            {
+              "end": 17.2,
+              "start": 17.12,
+              "text": "i"
+            },
+            {
+              "end": 17.36,
+              "start": 17.2,
+              "text": ","
+            },
+            {
+              "end": 17.44,
+              "start": 17.36,
+              "text": " l"
+            },
+            {
+              "end": 17.52,
+              "start": 17.44,
+              "text": "ic"
+            },
+            {
+              "end": 17.76,
+              "start": 17.52,
+              "text": "en"
+            },
+            {
+              "end": 18,
+              "start": 17.76,
+              "text": "cia"
+            },
+            {
+              "end": 18.08,
+              "start": 18,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " O",
+            "i",
+            ",",
+            " l",
+            "ic",
+            "en",
+            "cia",
+            "."
+          ]
+        },
+        {
+          "at_s": 18.845530033111572,
+          "confidence": 0.7347548007965088,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "лицензии умножки",
+          "token_timings": [
+            {
+              "end": 17.52,
+              "start": 17.44,
+              "text": " ли"
+            },
+            {
+              "end": 17.68,
+              "start": 17.52,
+              "text": "цен"
+            },
+            {
+              "end": 17.76,
+              "start": 17.68,
+              "text": "зи"
+            },
+            {
+              "end": 18.240000000000002,
+              "start": 17.76,
+              "text": "и"
+            },
+            {
+              "end": 18.32,
+              "start": 18.240000000000002,
+              "text": " у"
+            },
+            {
+              "end": 18.400000000000002,
+              "start": 18.32,
+              "text": "м"
+            },
+            {
+              "end": 18.48,
+              "start": 18.400000000000002,
+              "text": "но"
+            },
+            {
+              "end": 18.56,
+              "start": 18.48,
+              "text": "ж"
+            },
+            {
+              "end": 18.639999999999997,
+              "start": 18.56,
+              "text": "ки"
+            }
+          ],
+          "tokens": [
+            " ли",
+            "цен",
+            "зи",
+            "и",
+            " у",
+            "м",
+            "но",
+            "ж",
+            "ки"
+          ]
+        },
+        {
+          "at_s": 19.35174322128296,
+          "confidence": 0.592698335647583,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Лева у меня школь малируется.",
+          "token_timings": [
+            {
+              "end": 18.16,
+              "start": 18.080000000000002,
+              "text": " Л"
+            },
+            {
+              "end": 18.240000000000002,
+              "start": 18.16,
+              "text": "е"
+            },
+            {
+              "end": 18.32,
+              "start": 18.240000000000002,
+              "text": "ва"
+            },
+            {
+              "end": 18.400000000000002,
+              "start": 18.32,
+              "text": " у"
+            },
+            {
+              "end": 18.56,
+              "start": 18.400000000000002,
+              "text": " меня"
+            },
+            {
+              "end": 18.64,
+              "start": 18.56,
+              "text": " ш"
+            },
+            {
+              "end": 18.72,
+              "start": 18.64,
+              "text": "ко"
+            },
+            {
+              "end": 18.8,
+              "start": 18.72,
+              "text": "ль"
+            },
+            {
+              "end": 18.88,
+              "start": 18.8,
+              "text": " ма"
+            },
+            {
+              "end": 19.04,
+              "start": 18.88,
+              "text": "ли"
+            },
+            {
+              "end": 19.12,
+              "start": 19.04,
+              "text": "ру"
+            },
+            {
+              "end": 19.2,
+              "start": 19.12,
+              "text": "ется"
+            },
+            {
+              "end": 19.2,
+              "start": 19.12,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Л",
+            "е",
+            "ва",
+            " у",
+            " меня",
+            " ш",
+            "ко",
+            "ль",
+            " ма",
+            "ли",
+            "ру",
+            "ется",
+            "."
+          ]
+        },
+        {
+          "at_s": 19.841076135635376,
+          "confidence": 0.9814453125,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": true,
+          "text": "Это хорошо.",
+          "token_timings": [
+            {
+              "end": 19.44,
+              "start": 19.28,
+              "text": " Это"
+            },
+            {
+              "end": 19.52,
+              "start": 19.44,
+              "text": " хоро"
+            },
+            {
+              "end": 19.6,
+              "start": 19.52,
+              "text": "шо"
+            },
+            {
+              "end": 19.68,
+              "start": 19.6,
+              "text": "."
+            }
+          ],
+          "tokens": [
+            " Это",
+            " хоро",
+            "шо",
+            "."
+          ]
+        },
+        {
+          "at_s": 20.186573028564453,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        },
+        {
+          "at_s": 20.23111915588379,
+          "confidence": 0.10000000149011612,
+          "ctc_applied_terms": [],
+          "ctc_detected_terms": [],
+          "is_confirmed": false,
+          "text": "",
+          "token_timings": [],
+          "tokens": []
+        }
+      ],
+      "rtf": 1.0049154012101873,
+      "segment_id": "podlodka_test19_ep292",
+      "wall_s": 20.231208086013794
+    }
+  ],
+  "status": "streaming_measurement_not_benchmark",
+  "step_ms": 20
+}

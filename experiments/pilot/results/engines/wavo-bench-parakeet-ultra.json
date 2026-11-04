@@ -1,0 +1,21 @@
+{
+  "status": "experiment_not_benchmark",
+  "clip": "podlodka_test02_ep132.wav",
+  "clip_s": 17.2436875,
+  "machine": "Apple M4 Pro, 48 GB, macOS 27.0",
+  "command": "wavo bench <model> <wav> -n 10 --backend ane|gpu",
+  "engines": {
+    "parakeet-ultra-ane": {
+      "load_s": 0.3629,
+      "first_s": 0.13440000000000002,
+      "warm_median_s": 0.1227,
+      "warm_min_s": 0.118
+    },
+    "parakeet-ultra-gpu": {
+      "load_s": 0.457,
+      "first_s": 0.2305,
+      "warm_median_s": 0.2035,
+      "warm_min_s": 0.1998
+    }
+  }
+}

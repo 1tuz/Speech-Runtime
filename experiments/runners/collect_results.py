@@ -22,6 +22,7 @@ MEDIUM = "experiments/corpus/local/veche-prepared/medium"
 HARD = "experiments/corpus/local/veche-prepared/hard"
 LORA = "experiments/corpus/local/embedding/lora/report.json"
 EMBED = "experiments/corpus/local/embedding/results.json"
+CORR = "experiments/corpus/local/correction/runs"
 
 SOURCES = [
     (SCORES, "scores"),
@@ -56,6 +57,35 @@ SOURCES = [
     (EMBED, "embedding"),
 ]
 
+# Явные пары «источник → группа → имя»: имена метрик движков не должны совпадать
+# с именами гипотез, а отчёты по фолдам нужно читать по имени встречи.
+NAMED_SOURCES = [
+    (os.path.join(CORR, "wavo-parakeet-ultra-ane-dev-score.json"),
+     "scores", "wavo-parakeet-ultra-ane-dev.json"),
+    (os.path.join(CORR, "wavo-parakeet-ultra-gpu-dev-score.json"),
+     "scores", "wavo-parakeet-ultra-gpu-dev.json"),
+    (os.path.join(CORR, "parakeet-ultra-dev-score.json"),
+     "scores", "parakeet-ultra-nolang-dev.json"),
+    (os.path.join(CORR, "dev-per-meeting.json"), "engines", "parakeet-dev-per-meeting.json"),
+    (os.path.join(CORR, "dev-latency.json"), "engines", "parakeet-dev-latency.json"),
+    (os.path.join(CORR, "wavo-bench-dev.json"), "engines", "wavo-bench-parakeet-ultra.json"),
+]
+for _meeting in ("2-one-to-one", "5-it-product", "7-bi-platform"):
+    NAMED_SOURCES.append((
+        f"experiments/corpus/local/correction/parakeet/fold-{_meeting}-report.json",
+        "correction", f"parakeet-lora-fold-{_meeting}.json"))
+    NAMED_SOURCES.append((
+        f"experiments/corpus/local/correction/parakeet/lora-fold-{_meeting}/run.json",
+        "correction", f"parakeet-lora-train-{_meeting}.json"))
+_STREAM = "experiments/corpus/local/streaming/ultra"
+for _name in ("s050", "s100", "s150", "s200", "s300", "s1100"):
+    NAMED_SOURCES.append((f"{_STREAM}/{_name}.json", "streaming",
+                          f"parakeet-ultra-stream-{_name}.json"))
+    NAMED_SOURCES.append((f"{_STREAM}/{_name}-score.json", "streaming",
+                          f"parakeet-ultra-stream-{_name}-score.json"))
+NAMED_SOURCES.append((f"{_STREAM}/summary.json", "streaming",
+                      "parakeet-ultra-stream-summary.json"))
+
 
 def sha256(path: str) -> str:
     digest = hashlib.sha256()
@@ -71,6 +101,14 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
 
     os.makedirs(args.out, exist_ok=True)
+    manifest_path = os.path.join(args.out, "MANIFEST.json")
+    # Исходные гипотезы из `experiments/corpus/local/` можно удалить, а собранные
+    # копии остаются в Git. Поэтому записи о пропавших источниках сохраняются:
+    # иначе повторный сбор молча теряет историю измерений.
+    kept: list[dict] = []
+    if os.path.isfile(manifest_path):
+        with open(manifest_path, encoding="utf-8") as fh:
+            kept = json.load(fh).get("files", [])
     manifest = []
     for source, group in SOURCES:
         if os.path.isdir(source):
@@ -96,7 +134,21 @@ def main(argv: list[str] | None = None) -> int:
         manifest.append({"group": group, "file": f"{group}/{name}",
                          "source": source, "sha256": sha256(source)})
 
-    with open(os.path.join(args.out, "MANIFEST.json"), "w", encoding="utf-8") as fh:
+    for source, group, name in NAMED_SOURCES:
+        if not os.path.isfile(source):
+            continue
+        dst_dir = os.path.join(args.out, group)
+        os.makedirs(dst_dir, exist_ok=True)
+        shutil.copyfile(source, os.path.join(dst_dir, name))
+        manifest.append({"group": group, "file": f"{group}/{name}",
+                         "source": source, "sha256": sha256(source)})
+
+    seen = {entry["file"] for entry in manifest}
+    for entry in kept:
+        if entry["file"] not in seen:
+            manifest.append(entry)
+    manifest.sort(key=lambda entry: entry["file"])
+    with open(manifest_path, "w", encoding="utf-8") as fh:
         json.dump({"files": manifest}, fh, ensure_ascii=False, indent=2)
     print(json.dumps({"files": len(manifest), "out": args.out}, ensure_ascii=False))
     return 0

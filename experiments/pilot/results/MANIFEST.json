@@ -1,6 +1,174 @@
 {
   "files": [
     {
+      "group": "adaptation",
+      "file": "adaptation/scores-nemotron-dev-none.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-none.json",
+      "sha256": "bd23739d409c23c9c9719d604fc6e1ce4f84088762191aa68ca14a19dcfc8935"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-nemotron-dev-vocab2.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-vocab2.json",
+      "sha256": "1591ae45af8b23dac30ef56f7f0faf6080305f785806be6dbb2d643e823a1a05"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-parakeet-boost-plain-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-plain-dev.json",
+      "sha256": "cee31beedf79f2ccbdfcc6c5e015042e4f0a6c16d1c8f94e3d2511526b4981ea"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-parakeet-boost-vocab-dev.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-vocab-dev.json",
+      "sha256": "a5716e7742c9470a8b951abf58250da143630276754a6e1dcb9628f9af59a33e"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-distractor.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-distractor.json",
+      "sha256": "82ffd6b0621c3771382505c9d133273671e194e3e666c572f4112703f25649cd"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-empty.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-empty.json",
+      "sha256": "026c667480d63de569d9bbb031d5b170c9a6e9f7efdc35fe722b4a662fe93595"
+    },
+    {
+      "group": "adaptation",
+      "file": "adaptation/scores-qwen-dev-relevant.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-relevant.json",
+      "sha256": "02c76d26a59db6b3da259cea9384d0b131f22f233d195d01d50d47dd27c2b9ce"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-fold-2-one-to-one.json",
+      "source": "experiments/corpus/local/correction/parakeet/fold-2-one-to-one-report.json",
+      "sha256": "e9f8fe530a8fb09de23b443d81f037421cd2515e01705910a19d6ba44b032838"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-fold-5-it-product.json",
+      "source": "experiments/corpus/local/correction/parakeet/fold-5-it-product-report.json",
+      "sha256": "e7a37952a66ac9d9d4d2eba9884a852774ca6a3cd246f6b83ab09a1b998737e8"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-fold-7-bi-platform.json",
+      "source": "experiments/corpus/local/correction/parakeet/fold-7-bi-platform-report.json",
+      "sha256": "429e10148a3bb001444a6d10be3362031ab22428afc8e3432a282457aa6a4a0e"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-train-2-one-to-one.json",
+      "source": "experiments/corpus/local/correction/parakeet/lora-fold-2-one-to-one/run.json",
+      "sha256": "38b155dd21da7bac0ffb97ffdc5f6e4de9579fd74d5d73ce0526505dedaa1919"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-train-5-it-product.json",
+      "source": "experiments/corpus/local/correction/parakeet/lora-fold-5-it-product/run.json",
+      "sha256": "12e1fe5f568515952af429742f689db1822ee35b84261fccdf0721b35f834678"
+    },
+    {
+      "group": "correction",
+      "file": "correction/parakeet-lora-train-7-bi-platform.json",
+      "source": "experiments/corpus/local/correction/parakeet/lora-fold-7-bi-platform/run.json",
+      "sha256": "db890c08562d46cfb84480a6c3037496f3e438a399fc781cb44cb431f49d6a34"
+    },
+    {
+      "group": "correction",
+      "file": "correction/runs-correction-char-t0.25.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.25.json",
+      "sha256": "0972237694d89cc2c957019554c4a60f0f17576766df4272d54cccf1c8651d8b"
+    },
+    {
+      "group": "correction",
+      "file": "correction/runs-correction-char-t0.3.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.3.json",
+      "sha256": "06c24d2d60df8b238618cb26bda8d3960cebb6659bae7049a27571c1e819dbcd"
+    },
+    {
+      "group": "correction",
+      "file": "correction/runs-correction-char-t0.4.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.4.json",
+      "sha256": "cfed5397d5510824275695a9e3edb7c98105461120631df993cf61d5a3b4e474"
+    },
+    {
+      "group": "correction",
+      "file": "correction/runs-correction-embed-t0.5.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-embed-t0.5.json",
+      "sha256": "6491ea209c19e8474d55e3650a81132ab3b7c309fd289ed41c7983e24bc52d4e"
+    },
+    {
+      "group": "correction",
+      "file": "correction/runs-correction-embed-t0.6.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-embed-t0.6.json",
+      "sha256": "b4975474a8c65806f536f973ba3bf9c3959df244b3daf3b7ecaabc46b10a0034"
+    },
+    {
+      "group": "der",
+      "file": "der/hard-der.json",
+      "source": "experiments/corpus/local/veche-prepared/hard/der.json",
+      "sha256": "9ba2869c95b037a89166fa187798d2e28f34093885a3c564d3f86ef50ea4d616"
+    },
+    {
+      "group": "der",
+      "file": "der/medium-der.json",
+      "source": "experiments/corpus/local/veche-prepared/medium/der.json",
+      "sha256": "c41af732cc1fb117f6e2546539f4fd6f500e92501da7bfd69b94e0cdcedc06c1"
+    },
+    {
+      "group": "der",
+      "file": "der/runs-der.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/der.json",
+      "sha256": "d73bf35b63e5f2f2b42cd50c35e48c8ba502af5d5da677a4c3f07d191a62fc61"
+    },
+    {
+      "group": "embedding",
+      "file": "embedding/embedding-results.json",
+      "source": "experiments/corpus/local/embedding/results.json",
+      "sha256": "f1dc01fa2e86e25d64d5ad42c450f3001b49c0a37bf4e15a010cef873699c928"
+    },
+    {
+      "group": "embedding",
+      "file": "embedding/lora-report.json",
+      "source": "experiments/corpus/local/embedding/lora/report.json",
+      "sha256": "6dca3aafbd7b1f2a37c6d0c177ca732566ad70ce1bc7759c34ba2ae2717101d7"
+    },
+    {
+      "group": "engines",
+      "file": "engines/parakeet-dev-latency.json",
+      "source": "experiments/corpus/local/correction/runs/dev-latency.json",
+      "sha256": "862ccc5d90a0dee3cab9a474e0088667c415af7cbf81289455417447d08a0017"
+    },
+    {
+      "group": "engines",
+      "file": "engines/parakeet-dev-per-meeting.json",
+      "source": "experiments/corpus/local/correction/runs/dev-per-meeting.json",
+      "sha256": "d7ec308b9e0e9ce9f779dda7b67dd01700625058823b475206e81d3980a0b06f"
+    },
+    {
+      "group": "engines",
+      "file": "engines/wavo-bench-parakeet-ultra.json",
+      "source": "experiments/corpus/local/correction/runs/wavo-bench-dev.json",
+      "sha256": "271a0bd1d91422ed205f98c29ff8ae82376501c75270f35a82fa06bcb3edf3ca"
+    },
+    {
+      "group": "fleurs",
+      "file": "fleurs/fleurs-test-runs-gigaam-test.json",
+      "source": "experiments/corpus/local/fleurs-test/runs-gigaam-test.json",
+      "sha256": "33362184eb8b4090e5eaab670ebc1f38709c334ccf49b6e5c817cae0f2cd20fd"
+    },
+    {
+      "group": "fleurs",
+      "file": "fleurs/fleurs-test-runs-parakeet-test.json",
+      "source": "experiments/corpus/local/fleurs-test/runs-parakeet-test.json",
+      "sha256": "f95daee42eb10a60dac50c3525e03f810105abe9e63815ad64a971561ecf8d65"
+    },
+    {
       "group": "scores",
       "file": "scores/gigaam-ml-hypotheses-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/gigaam-ml-hypotheses-test.json",
@@ -65,6 +233,12 @@
       "file": "scores/parakeet-ultra-hypotheses-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-ultra-hypotheses-test.json",
       "sha256": "01d6142c6409e239c796fac6945b0b41315d5cd47b9805e9ad89e71a0dedb5e6"
+    },
+    {
+      "group": "scores",
+      "file": "scores/parakeet-ultra-nolang-dev.json",
+      "source": "experiments/corpus/local/correction/runs/parakeet-ultra-dev-score.json",
+      "sha256": "db0e6365f7e5505d786767bdd40f9bd61acd0d7b484069ab1ef21fba78d6d261"
     },
     {
       "group": "scores",
@@ -140,6 +314,18 @@
     },
     {
       "group": "scores",
+      "file": "scores/wavo-parakeet-ultra-ane-dev.json",
+      "source": "experiments/corpus/local/correction/runs/wavo-parakeet-ultra-ane-dev-score.json",
+      "sha256": "19cdae9147ce857cdb6be384efdf90ddf7bb88d10cef37d53248d5f98f62a8eb"
+    },
+    {
+      "group": "scores",
+      "file": "scores/wavo-parakeet-ultra-gpu-dev.json",
+      "source": "experiments/corpus/local/correction/runs/wavo-parakeet-ultra-gpu-dev-score.json",
+      "sha256": "a5dc09f2812bf3f4c6664ae94522da98a6ba5a461f0ebadc6346f2f6527d7fc5"
+    },
+    {
+      "group": "scores",
       "file": "scores/whisper-test.json",
       "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/whisper-test.json",
       "sha256": "b0b1d610b21f582cbef753177e416f8d0556df3f2657bc0cb15e5c62ac35d71b"
@@ -151,28 +337,82 @@
       "sha256": "b0b1d610b21f582cbef753177e416f8d0556df3f2657bc0cb15e5c62ac35d71b"
     },
     {
-      "group": "der",
-      "file": "der/runs-der.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/der.json",
-      "sha256": "d73bf35b63e5f2f2b42cd50c35e48c8ba502af5d5da677a4c3f07d191a62fc61"
-    },
-    {
-      "group": "der",
-      "file": "der/medium-der.json",
-      "source": "experiments/corpus/local/veche-prepared/medium/der.json",
-      "sha256": "c41af732cc1fb117f6e2546539f4fd6f500e92501da7bfd69b94e0cdcedc06c1"
-    },
-    {
-      "group": "der",
-      "file": "der/hard-der.json",
-      "source": "experiments/corpus/local/veche-prepared/hard/der.json",
-      "sha256": "9ba2869c95b037a89166fa187798d2e28f34093885a3c564d3f86ef50ea4d616"
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s050-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s050-score.json",
+      "sha256": "a979d362c20d526e82578257463cb36e76b218830ec28efd0346471fb2e5ad24"
     },
     {
       "group": "streaming",
-      "file": "streaming/runs-stream560-latency.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/stream560-latency.json",
-      "sha256": "00c536c94b6d852398956d262b41abd8b5a79b9f4e9c89037e22572a14e2dbf3"
+      "file": "streaming/parakeet-ultra-stream-s050.json",
+      "source": "experiments/corpus/local/streaming/ultra/s050.json",
+      "sha256": "19422404f47142ee690f36f2d3648b906fd0b32c7b8356a2893b3f42cc911817"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s100-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s100-score.json",
+      "sha256": "f3aafc3c37d5084eb1e40afce856369aaef0919d2f3ccd735ee781cfd69391ff"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s100.json",
+      "source": "experiments/corpus/local/streaming/ultra/s100.json",
+      "sha256": "08c8f440946c448c80b8c8f41ef2e684bbd7fb5ef12f0fd0eb004b328650124c"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s1100-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s1100-score.json",
+      "sha256": "71608682d3b74a3b23ff9f65b1df8f8bcdeaf8593313cbe4bebe1e691e0ea6a8"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s1100.json",
+      "source": "experiments/corpus/local/streaming/ultra/s1100.json",
+      "sha256": "32e1230725807cbb4864daee053447eb77f8a1bdf53f7d372ea5a53bfb2b6922"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s150-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s150-score.json",
+      "sha256": "19a8e7b4d1e435175ee646ffc27f52230f964d46e96f931b79103d53450c2e96"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s150.json",
+      "source": "experiments/corpus/local/streaming/ultra/s150.json",
+      "sha256": "8f4c9d93303a1f7b140cfec4fb44f0b713c2564e086a66e2f68ac46490209a33"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s200-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s200-score.json",
+      "sha256": "44a98c53463d037175de1d08f8f2461266b90d79e15a15a4b1a963345802782d"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s200.json",
+      "source": "experiments/corpus/local/streaming/ultra/s200.json",
+      "sha256": "efb59e8311a9e5e762aea5561d52e1c22f4ee9654ca797ffc1900d89937c0763"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s300-score.json",
+      "source": "experiments/corpus/local/streaming/ultra/s300-score.json",
+      "sha256": "1d490dba172b5ec0894b1de63712596ada54b4a8c271e837dcd5d10ef065f2ea"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-s300.json",
+      "source": "experiments/corpus/local/streaming/ultra/s300.json",
+      "sha256": "09299eef3051e72778b3b9872976dad277e647a061b1c7b3d0d4362328079954"
+    },
+    {
+      "group": "streaming",
+      "file": "streaming/parakeet-ultra-stream-summary.json",
+      "source": "experiments/corpus/local/streaming/ultra/summary.json",
+      "sha256": "50d079fc84d3d5599e60c80cef6d6de9af2ec00fa77c71e882ddb6c068fcc721"
     },
     {
       "group": "streaming",
@@ -187,88 +427,16 @@
       "sha256": "d6d6d890d2764e25b90a0ee37cedef9bf07277acb14fa65ae4d774245caa5930"
     },
     {
-      "group": "correction",
-      "file": "correction/runs-correction-char-t0.25.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.25.json",
-      "sha256": "0972237694d89cc2c957019554c4a60f0f17576766df4272d54cccf1c8651d8b"
-    },
-    {
-      "group": "correction",
-      "file": "correction/runs-correction-char-t0.3.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.3.json",
-      "sha256": "06c24d2d60df8b238618cb26bda8d3960cebb6659bae7049a27571c1e819dbcd"
-    },
-    {
-      "group": "correction",
-      "file": "correction/runs-correction-char-t0.4.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-char-t0.4.json",
-      "sha256": "cfed5397d5510824275695a9e3edb7c98105461120631df993cf61d5a3b4e474"
-    },
-    {
-      "group": "correction",
-      "file": "correction/runs-correction-embed-t0.5.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-embed-t0.5.json",
-      "sha256": "6491ea209c19e8474d55e3650a81132ab3b7c309fd289ed41c7983e24bc52d4e"
-    },
-    {
-      "group": "correction",
-      "file": "correction/runs-correction-embed-t0.6.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/correction-embed-t0.6.json",
-      "sha256": "b4975474a8c65806f536f973ba3bf9c3959df244b3daf3b7ecaabc46b10a0034"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-qwen-dev-empty.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-empty.json",
-      "sha256": "026c667480d63de569d9bbb031d5b170c9a6e9f7efdc35fe722b4a662fe93595"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-qwen-dev-relevant.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-relevant.json",
-      "sha256": "02c76d26a59db6b3da259cea9384d0b131f22f233d195d01d50d47dd27c2b9ce"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-qwen-dev-distractor.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/qwen-dev-distractor.json",
-      "sha256": "82ffd6b0621c3771382505c9d133273671e194e3e666c572f4112703f25649cd"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-nemotron-dev-none.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-none.json",
-      "sha256": "bd23739d409c23c9c9719d604fc6e1ce4f84088762191aa68ca14a19dcfc8935"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-nemotron-dev-vocab2.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/nemotron-dev-vocab2.json",
-      "sha256": "1591ae45af8b23dac30ef56f7f0faf6080305f785806be6dbb2d643e823a1a05"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-parakeet-boost-plain-dev.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-plain-dev.json",
-      "sha256": "cee31beedf79f2ccbdfcc6c5e015042e4f0a6c16d1c8f94e3d2511526b4981ea"
-    },
-    {
-      "group": "adaptation",
-      "file": "adaptation/scores-parakeet-boost-vocab-dev.json",
-      "source": "experiments/corpus/local/veche-prepared/simple/runs/scores/parakeet-boost-vocab-dev.json",
-      "sha256": "a5716e7742c9470a8b951abf58250da143630276754a6e1dcb9628f9af59a33e"
+      "group": "streaming",
+      "file": "streaming/runs-stream560-latency.json",
+      "source": "experiments/corpus/local/veche-prepared/simple/runs/stream560-latency.json",
+      "sha256": "00c536c94b6d852398956d262b41abd8b5a79b9f4e9c89037e22572a14e2dbf3"
     },
     {
       "group": "variants",
-      "file": "variants/medium-runs-parakeet-test.json",
-      "source": "experiments/corpus/local/veche-prepared/medium/runs-parakeet-test.json",
-      "sha256": "fc159281f012b9fdb58c510917ad86c4ebbbf333903fdf082e26679eed5e4075"
-    },
-    {
-      "group": "variants",
-      "file": "variants/medium-runs-gigaam-test.json",
-      "source": "experiments/corpus/local/veche-prepared/medium/runs-gigaam-test.json",
-      "sha256": "631dc195c2a2cfc37499230a795afe27a43a90c41f388de5b7fe24f8ecea2b2d"
+      "file": "variants/hard-runs-gigaam-test.json",
+      "source": "experiments/corpus/local/veche-prepared/hard/runs-gigaam-test.json",
+      "sha256": "df499bec73534c20c730ecbfd10017e178680f78634a71b5bc10d523cbcadbe9"
     },
     {
       "group": "variants",
@@ -278,33 +446,15 @@
     },
     {
       "group": "variants",
-      "file": "variants/hard-runs-gigaam-test.json",
-      "source": "experiments/corpus/local/veche-prepared/hard/runs-gigaam-test.json",
-      "sha256": "df499bec73534c20c730ecbfd10017e178680f78634a71b5bc10d523cbcadbe9"
+      "file": "variants/medium-runs-gigaam-test.json",
+      "source": "experiments/corpus/local/veche-prepared/medium/runs-gigaam-test.json",
+      "sha256": "631dc195c2a2cfc37499230a795afe27a43a90c41f388de5b7fe24f8ecea2b2d"
     },
     {
-      "group": "fleurs",
-      "file": "fleurs/fleurs-test-runs-parakeet-test.json",
-      "source": "experiments/corpus/local/fleurs-test/runs-parakeet-test.json",
-      "sha256": "f95daee42eb10a60dac50c3525e03f810105abe9e63815ad64a971561ecf8d65"
-    },
-    {
-      "group": "fleurs",
-      "file": "fleurs/fleurs-test-runs-gigaam-test.json",
-      "source": "experiments/corpus/local/fleurs-test/runs-gigaam-test.json",
-      "sha256": "33362184eb8b4090e5eaab670ebc1f38709c334ccf49b6e5c817cae0f2cd20fd"
-    },
-    {
-      "group": "embedding",
-      "file": "embedding/lora-report.json",
-      "source": "experiments/corpus/local/embedding/lora/report.json",
-      "sha256": "6dca3aafbd7b1f2a37c6d0c177ca732566ad70ce1bc7759c34ba2ae2717101d7"
-    },
-    {
-      "group": "embedding",
-      "file": "embedding/embedding-results.json",
-      "source": "experiments/corpus/local/embedding/results.json",
-      "sha256": "f1dc01fa2e86e25d64d5ad42c450f3001b49c0a37bf4e15a010cef873699c928"
+      "group": "variants",
+      "file": "variants/medium-runs-parakeet-test.json",
+      "source": "experiments/corpus/local/veche-prepared/medium/runs-parakeet-test.json",
+      "sha256": "fc159281f012b9fdb58c510917ad86c4ebbbf333903fdf082e26679eed5e4075"
     }
   ]
 }

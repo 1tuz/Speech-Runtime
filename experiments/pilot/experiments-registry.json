@@ -419,6 +419,52 @@
       },
       "result": "scores/gigaam-v3-dev.json",
       "note": "пересчёт из существующих гипотез, без инференса"
+    },
+    {
+      "id": "veche-dev/parakeet-ultra-nolang-wavo-ane",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-ultra (wavo 0.11.3, GGUF Q8_0, Neural Engine)",
+      "wer": 10.87,
+      "cer": 3.8,
+      "result": "scores/wavo-parakeet-ultra-ane-dev.json",
+      "note": "тот же dev-сплит, что и FluidAudio CoreML; ANE-бэкенд wavo"
+    },
+    {
+      "id": "veche-dev/parakeet-ultra-nolang-wavo-gpu",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-ultra (wavo 0.11.3, GGUF Q8_0, Metal GPU)",
+      "wer": 10.98,
+      "cer": 3.85,
+      "result": "scores/wavo-parakeet-ultra-gpu-dev.json",
+      "note": "GPU-бэкенд; RTF по 321 вызову 0.041 против 0.036 у ANE"
+    },
+    {
+      "id": "streaming/parakeet-ultra-chunk-sweep",
+      "dataset": "podlodka-clips (3 записи)",
+      "model": "parakeet-ultra (FluidAudio 0.17.7 ANE)",
+      "result": "streaming/parakeet-ultra-stream-summary.json",
+      "note": "чанки 0.5–11 с при realtime-подаче: первый текст = chunk + right (0.84 с при 0.5 с), WER на 3 записях 35.0/22.9/15.9/15.3/14.7/12.7 % — цель < 1 с достигается только ценой роста WER до 35 %"
+    },
+    {
+      "id": "correction/parakeet-qwen3-0.6b-lora-folds",
+      "dataset": "veche-bench-simple/dev",
+      "model": "Qwen3-0.6B + LoRA (unsloth MLX, 3 эпохи, rank 16)",
+      "result": "correction/parakeet-lora-fold-*.json",
+      "note": "три фолда leave-one-meeting-out на парах гипотез Parakeet Ultra: WER 10.42 → 14.24 % суммарно (2 исправления против 111 новых ошибок) — корректор отклонён"
+    },
+    {
+      "id": "engines/parakeet-ultra-wavo-bench",
+      "dataset": "podlodka_test02_ep132 (17.24 с)",
+      "model": "parakeet-ultra GGUF Q8_0",
+      "result": "engines/wavo-bench-parakeet-ultra.json",
+      "note": "wavo bench: ANE load 0.36 с / warm 0.123 с, GPU load 0.46 с / warm 0.204 с (M4 Pro)"
+    },
+    {
+      "id": "engines/parakeet-ultra-dev-latency",
+      "dataset": "veche-bench-simple/dev",
+      "model": "parakeet-ultra (wavo ANE, отдельный процесс на реплику)",
+      "result": "engines/parakeet-dev-latency.json",
+      "note": "p50 0.128 с на реплику, RTF без старта процесса 0.0036; ANE-бэкенд быстрее GPU"
     }
   ],
   "screening_decisions": {
