@@ -1,0 +1,43 @@
+{
+  "status": "experiment_not_benchmark",
+  "note": "те же 3 записи Podlodka, что в свипе стриминга (157 слов); это санити-проверка потолка двухпроходной схемы, а не бенчмарк: доверительный интервал на таком объёме ~±6 п.п.",
+  "machine": "Apple M4 (Mac mini, 16 GB, macOS 27.2)",
+  "segments": [
+    "podlodka_test02_ep132",
+    "podlodka_test10_ep306",
+    "podlodka_test19_ep292"
+  ],
+  "words": 157,
+  "results": {
+    "fluid-ultra": {
+      "wer": 0.11464968152866242,
+      "cer": 0.09649122807017543,
+      "substitutions": 13,
+      "deletions": 2,
+      "insertions": 3,
+      "words": 157
+    },
+    "wavo-ultra": {
+      "wer": 0.1337579617834395,
+      "cer": 0.10526315789473684,
+      "substitutions": 15,
+      "deletions": 1,
+      "insertions": 5,
+      "words": 157
+    },
+    "wavo-gigaam": {
+      "wer": 0.14012738853503184,
+      "cer": 0.11654135338345864,
+      "substitutions": 13,
+      "deletions": 3,
+      "insertions": 6,
+      "words": 157
+    }
+  },
+  "batch_latency_s": {
+    "fluid-ultra_per_clip_17_2s": 0.19,
+    "wavo_ultra_ane_warm_median": 0.119,
+    "wavo_gigaam_ane_warm_median": 0.08
+  },
+  "interpretation": "финальный проход по записи даёт 11.46 % против 12.74 % у лучшего стриминга (чанк 11 с) и 35.03 % при чанке 0.5 с; добавка к задержке — 0.19 с на 17 с аудио"
+}

@@ -78,6 +78,9 @@ for _meeting in ("2-one-to-one", "5-it-product", "7-bi-platform"):
         f"experiments/corpus/local/correction/parakeet/lora-fold-{_meeting}/run.json",
         "correction", f"parakeet-lora-train-{_meeting}.json"))
 NAMED_SOURCES.append((
+    "experiments/corpus/local/engines/batch-baseline-podlodka.json",
+    "engines", "batch-baseline-podlodka.json"))
+NAMED_SOURCES.append((
     "experiments/corpus/local/engines/peak-rss.json",
     "engines", "peak-rss.json"))
 NAMED_SOURCES.append((

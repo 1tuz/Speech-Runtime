@@ -146,6 +146,12 @@
     },
     {
       "group": "engines",
+      "file": "engines/batch-baseline-podlodka.json",
+      "source": "experiments/corpus/local/engines/batch-baseline-podlodka.json",
+      "sha256": "6f4ef53f795bf8559d302255a0d72330e0ffc59668402339d3d5a7e63e2af1a0"
+    },
+    {
+      "group": "engines",
       "file": "engines/parakeet-dev-latency.json",
       "source": "experiments/corpus/local/correction/runs/dev-latency.json",
       "sha256": "862ccc5d90a0dee3cab9a474e0088667c415af7cbf81289455417447d08a0017"
