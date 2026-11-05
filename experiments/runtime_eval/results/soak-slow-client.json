@@ -1,0 +1,212 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "slow-client",
+  "argv": [
+    "slow-client",
+    "--wav",
+    "/tmp/window.wav",
+    "--speed",
+    "4",
+    "--json",
+    "runtime_eval/results/soak-slow-client.json"
+  ],
+  "started_utc": "2026-11-05T21:34:28.100314+00:00",
+  "finished_utc": "2026-11-05T21:34:40.106947+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "stream": "A1C0A418-9E5F-42EB-9CC6-FAC7CB08801A",
+  "feed_seconds": 11.96,
+  "audio_seconds": 47.74,
+  "speed": 4.0,
+  "health_ms": {
+    "n": 56,
+    "mean": 1.8,
+    "p50": 1.9,
+    "p95": 2.3
+  },
+  "health_samples": 56,
+  "counters": [
+    {
+      "t": 0.001,
+      "streams": 1,
+      "session_buffers": 0,
+      "event_waiters": 0
+    },
+    {
+      "t": 0.205,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 0.437,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 0.638,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 0.855,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 1.059,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 1.262,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 1.488,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 1.712,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 1.913,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 2.135,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 2.362,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 2.58,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 2.781,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 2.988,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 3.211,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 3.411,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 3.638,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 3.857,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    },
+    {
+      "t": 4.062,
+      "streams": 1,
+      "session_buffers": 1,
+      "event_waiters": 0
+    }
+  ],
+  "finals": 12,
+  "utterance_events": 12,
+  "error_events": [],
+  "end_reason_counts": {
+    "silence": 12,
+    "max_utterance": 0,
+    "client_end": 0,
+    "unknown": 0
+  },
+  "streams_baseline": 0,
+  "streams_after": 0,
+  "assertions": [
+    {
+      "name": "model_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "health_responsive",
+      "pass": true,
+      "status": "PASS",
+      "detail": "health p95=2.3 ms max=3.3 ms"
+    },
+    {
+      "name": "session_visible",
+      "pass": true,
+      "status": "PASS",
+      "detail": "session_buffers peak=1"
+    },
+    {
+      "name": "no_error_events",
+      "pass": true,
+      "status": "PASS",
+      "detail": "none"
+    },
+    {
+      "name": "no_silent_loss",
+      "pass": true,
+      "status": "PASS",
+      "detail": "12 finals vs 12 utterance events"
+    },
+    {
+      "name": "stream_ended",
+      "pass": true,
+      "status": "PASS",
+      "detail": "ended=True finals=12"
+    },
+    {
+      "name": "streams_back_to_baseline",
+      "pass": true,
+      "status": "PASS",
+      "detail": "0 -> 0"
+    }
+  ],
+  "exit_code": 0
+}

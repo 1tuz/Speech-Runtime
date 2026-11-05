@@ -1,0 +1,77 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "crash",
+  "argv": [
+    "crash",
+    "--wav",
+    "corpus/local/audio/podlodka_test19_ep292.wav",
+    "--speed",
+    "1",
+    "--json",
+    "runtime_eval/results/soak-crash.json"
+  ],
+  "started_utc": "2026-11-05T21:37:30.064375+00:00",
+  "finished_utc": "2026-11-05T21:37:45.481213+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "worker_pid": 3830,
+  "restarts_before": 0,
+  "restarts_after": 1,
+  "client_error": "worker exited with status 9",
+  "recovery": {
+    "ended": true,
+    "error": null,
+    "finals": 2
+  },
+  "assertions": [
+    {
+      "name": "model_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "worker_pid_known",
+      "pass": true,
+      "status": "PASS",
+      "detail": "pid=3830"
+    },
+    {
+      "name": "client_saw_explicit_error",
+      "pass": true,
+      "status": "PASS",
+      "detail": "worker exited with status 9"
+    },
+    {
+      "name": "daemon_alive",
+      "pass": true,
+      "status": "PASS",
+      "detail": "GET /health ok"
+    },
+    {
+      "name": "restarts_incremented",
+      "pass": true,
+      "status": "PASS",
+      "detail": "restarts 0 -> 1"
+    },
+    {
+      "name": "model_reloaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "new_stream_after_reload",
+      "pass": true,
+      "status": "PASS",
+      "detail": "ended=True error=None"
+    }
+  ],
+  "exit_code": 0
+}

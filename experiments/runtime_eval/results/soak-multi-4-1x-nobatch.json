@@ -1,0 +1,104 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "multiclient",
+  "argv": [
+    "multiclient",
+    "--wav",
+    "corpus/local/veche-bench/data_simple/7-bi-platform/7-bi-platform.wav",
+    "--clients",
+    "4",
+    "--speed",
+    "1",
+    "--json",
+    "runtime_eval/results/soak-multi-4-1x-nobatch.json"
+  ],
+  "started_utc": "2026-11-05T21:22:37.284454+00:00",
+  "finished_utc": "2026-11-05T21:34:27.966192+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "clients": 4,
+  "wall_ms": 710349,
+  "per_client": {
+    "0": {
+      "ended": true,
+      "error": null,
+      "finals": 96
+    },
+    "1": {
+      "ended": true,
+      "error": null,
+      "finals": 96
+    },
+    "2": {
+      "ended": true,
+      "error": null,
+      "finals": 96
+    },
+    "3": {
+      "ended": true,
+      "error": null,
+      "finals": 96
+    }
+  },
+  "interactive": {
+    "asr_ms": {
+      "n": 384,
+      "mean": 46.7,
+      "p50": 42.0,
+      "p95": 84.0
+    },
+    "queue_ms": {
+      "n": 384,
+      "mean": 77.4,
+      "p50": 75.0,
+      "p95": 176.0
+    },
+    "e2e_ms": {
+      "n": 384,
+      "mean": 535.8,
+      "p50": 530.0,
+      "p95": 690.0
+    }
+  },
+  "end_reason_counts": {
+    "silence": 372,
+    "max_utterance": 8,
+    "client_end": 4,
+    "unknown": 0
+  },
+  "batch": null,
+  "errors": {},
+  "assertions": [
+    {
+      "name": "model_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "all_streams_ok",
+      "pass": true,
+      "status": "PASS",
+      "detail": "4/4 ended without error; errors=none"
+    },
+    {
+      "name": "finals_nonempty",
+      "pass": true,
+      "status": "PASS",
+      "detail": "384 finals; end_reason={'silence': 372, 'max_utterance': 8, 'client_end': 4, 'unknown': 0}"
+    },
+    {
+      "name": "streams_back_to_baseline",
+      "pass": true,
+      "status": "PASS",
+      "detail": "0 -> 0"
+    }
+  ],
+  "exit_code": 0
+}

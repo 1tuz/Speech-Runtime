@@ -391,6 +391,44 @@ class MakeAudioIntegrationTests(unittest.TestCase):
                 all(v == 0 for v in samples[pe.ms_to_samples(2100):pe.ms_to_samples(3000)])
             )
 
+    def test_wavs_concatenates_files_verbatim_with_gap(self):
+        """`--wavs` joins whole files: no lead/trail silence, `--gap-ms` between them."""
+        with tempfile.TemporaryDirectory() as tmp:
+            first = os.path.join(tmp, "first.wav")
+            second = os.path.join(tmp, "second.wav")
+            first_samples = [111 if i % 3 else -111 for i in range(16000)]
+            second_samples = [222 if i % 5 else -222 for i in range(8000)]
+            pe.write_wav(first, first_samples)
+            pe.write_wav(second, second_samples)
+            out = os.path.join(tmp, "long.wav")
+            self.assertEqual(
+                pe.cmd_make_audio(
+                    ["--wavs", f"{first},{second}", "--gap-ms", "1000", "--out", out]
+                ),
+                0,
+            )
+            samples, rate, _ = pe.read_wav_i16(out)
+            self.assertEqual(rate, 16000)
+            gap = [0] * pe.ms_to_samples(1000)
+            self.assertEqual(samples, first_samples + gap + second_samples)
+            with open(os.path.splitext(out)[0] + ".jsonl", encoding="utf-8") as fh:
+                entries = [json.loads(line) for line in fh]
+            self.assertEqual([e["id"] for e in entries], ["first.wav", "second.wav"])
+            self.assertEqual([e["gap_before_ms"] for e in entries], [0, 1000])
+            self.assertEqual([e["start_ms"] for e in entries], [0, 2000])
+            self.assertEqual([e["end_ms"] for e in entries], [1000, 2500])
+
+    def test_wavs_missing_file_is_an_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(ValueError):
+                pe.cmd_make_audio(
+                    [
+                        "--wavs", os.path.join(tmp, "nope.wav"),
+                        "--gap-ms", "0",
+                        "--out", os.path.join(tmp, "out.wav"),
+                    ]
+                )
+
     def test_start_out_of_range(self):
         with tempfile.TemporaryDirectory() as tmp:
             dataset = self._make_dataset(tmp)

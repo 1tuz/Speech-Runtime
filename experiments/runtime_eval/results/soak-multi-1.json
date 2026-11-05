@@ -1,0 +1,89 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "multiclient",
+  "argv": [
+    "multiclient",
+    "--wav",
+    "corpus/local/veche-bench/data_simple/7-bi-platform/7-bi-platform.wav",
+    "--clients",
+    "1",
+    "--speed",
+    "8",
+    "--json",
+    "runtime_eval/results/soak-multi-1.json"
+  ],
+  "started_utc": "2026-11-05T17:51:57.857873+00:00",
+  "finished_utc": "2026-11-05T17:53:27.049659+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "clients": 1,
+  "wall_ms": 88816,
+  "per_client": {
+    "0": {
+      "ended": true,
+      "error": null,
+      "finals": 96
+    }
+  },
+  "interactive": {
+    "asr_ms": {
+      "n": 96,
+      "mean": 50.9,
+      "p50": 46.0,
+      "p95": 92.0
+    },
+    "queue_ms": {
+      "n": 96,
+      "mean": 0.0,
+      "p50": 0.0,
+      "p95": 0.0
+    },
+    "e2e_ms": {
+      "n": 96,
+      "mean": 102.1,
+      "p50": 99.0,
+      "p95": 144.0
+    }
+  },
+  "end_reason_counts": {
+    "silence": 93,
+    "max_utterance": 2,
+    "client_end": 1,
+    "unknown": 0
+  },
+  "batch": null,
+  "errors": {},
+  "assertions": [
+    {
+      "name": "model_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "all_streams_ok",
+      "pass": true,
+      "status": "PASS",
+      "detail": "1/1 ended without error; errors=none"
+    },
+    {
+      "name": "finals_nonempty",
+      "pass": true,
+      "status": "PASS",
+      "detail": "96 finals; end_reason={'silence': 93, 'max_utterance': 2, 'client_end': 1, 'unknown': 0}"
+    },
+    {
+      "name": "streams_back_to_baseline",
+      "pass": true,
+      "status": "PASS",
+      "detail": "0 -> 0"
+    }
+  ],
+  "exit_code": 0
+}

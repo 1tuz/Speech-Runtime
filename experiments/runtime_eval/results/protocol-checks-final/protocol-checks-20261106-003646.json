@@ -1,0 +1,331 @@
+{
+ "schema": "protocol_checks/1",
+ "timestamp": "2026-11-06T00:36:46",
+ "port": 8592,
+ "cases": [
+  {
+   "case": "health_without_token_is_open",
+   "status": 200,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "health is the only unauthenticated route",
+   "reply": "{\"version\":\"0.1.0\",\"worker\":{\"session_buffers\":0,\"retired_sessions\":0,\"pid\":16623,\"pending_replies\":0,\"models\":[],\"sessions\":0,\"memory\":{\"neural_lifetime_max_bytes\":0,\"phys_footprint_bytes\":2015736,\"r"
+  },
+  {
+   "case": "missing_token_is_401",
+   "status": 401,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "no Authorization header",
+   "reply": "{\"error\":\"missing or invalid bearer token\"}"
+  },
+  {
+   "case": "bad_token_is_401",
+   "status": 401,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "wrong bearer token",
+   "reply": "{\"error\":\"missing or invalid bearer token\"}"
+  },
+  {
+   "case": "unknown_route_is_404",
+   "status": 404,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "authenticated unknown path",
+   "reply": "{\"error\":\"no route for GET /v1/nope\"}"
+  },
+  {
+   "case": "unknown_method_is_404",
+   "status": 404,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "path exists, method does not",
+   "reply": "{\"error\":\"no route for PUT /v1/models/load\"}"
+  },
+  {
+   "case": "content_length_negative_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "sign is not a length",
+   "reply": "{\"error\":\"invalid content-length header\"}"
+  },
+  {
+   "case": "content_length_plus_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "plus sign must not be parsed as a length",
+   "reply": "{\"error\":\"invalid content-length header\"}"
+  },
+  {
+   "case": "content_length_text_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "non-digits",
+   "reply": "{\"error\":\"invalid content-length header\"}"
+  },
+  {
+   "case": "content_length_hex_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "hex is not decimal",
+   "reply": "{\"error\":\"invalid content-length header\"}"
+  },
+  {
+   "case": "duplicate_content_length_conflict_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "conflicting declarations must not be resolved by guessing",
+   "reply": "{\"error\":\"conflicting content-length headers\"}"
+  },
+  {
+   "case": "duplicate_content_length_equal_is_accepted",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "identical duplicates are consistent framing",
+   "reply": "{\"error\":\"field \\\"model\\\" is required\"}"
+  },
+  {
+   "case": "content_length_over_limit_is_413",
+   "status": 413,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "300 MiB > 256 MiB limit, rejected before the body",
+   "reply": "{\"error\":\"request body too large\"}"
+  },
+  {
+   "case": "transfer_encoding_is_501",
+   "status": 501,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "chunked framing is refused, not misread",
+   "reply": "{\"error\":\"transfer-encoding is not supported\"}"
+  },
+  {
+   "case": "obsolete_line_folding_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "continuation lines are ambiguous with the terminator",
+   "reply": "{\"error\":\"malformed header line\"}"
+  },
+  {
+   "case": "header_without_colon_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "no colon",
+   "reply": "{\"error\":\"malformed header line\"}"
+  },
+  {
+   "case": "header_name_with_space_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "space is not a token character",
+   "reply": "{\"error\":\"malformed header line\"}"
+  },
+  {
+   "case": "too_many_headers_is_431",
+   "status": 431,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "120 > 100 header limit",
+   "reply": "{\"error\":\"too many headers\"}"
+  },
+  {
+   "case": "oversized_headers_is_431",
+   "status": 431,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "40 KiB > 32 KiB header-byte limit",
+   "reply": "{\"error\":\"request headers too large\"}"
+  },
+  {
+   "case": "garbage_request_line_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "no method/target split",
+   "reply": "{\"error\":\"malformed request line\"}"
+  },
+  {
+   "case": "empty_head_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "empty request line",
+   "reply": "{\"error\":\"malformed request line\"}"
+  },
+  {
+   "case": "bad_http_version_is_400",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "only HTTP/1.x is framed here",
+   "reply": "{\"error\":\"malformed request line\"}"
+  },
+  {
+   "case": "http_0_9_style_line_is_served",
+   "status": 200,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "two-part request line, version omitted",
+   "reply": "{\"version\":\"0.1.0\",\"worker\":{\"session_buffers\":0,\"retired_sessions\":0,\"pid\":16623,\"pending_replies\":0,\"models\":[],\"sessions\":0,\"memory\":{\"neural_lifetime_max_bytes\":0,\"phys_footprint_bytes\":2130424,\"r"
+  },
+  {
+   "case": "exactly_one_reply_per_request",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "an error is still exactly one response; the socket closes",
+   "reply": "{\"error\":\"unknown model no-such-model\"}"
+  },
+  {
+   "case": "error_body_is_json",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.0,
+   "note": "errors carry a machine-readable message",
+   "reply": "{\"error\":\"unknown model no-such-model\"}"
+  },
+  {
+   "case": "slow_body_still_framed",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": null,
+   "note": "the parser waits for the declared body instead of guessing length 0",
+   "reply": "{\"error\":\"unknown model no-such-model\"}"
+  },
+  {
+   "case": "pipelined_second_request_is_not_answered",
+   "status": 200,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": null,
+   "note": "one request per connection: the surplus bytes are dropped, not dispatched",
+   "reply": ""
+  },
+  {
+   "case": "canary_body_is_not_logged",
+   "status": 400,
+   "responses": 1,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 0.001,
+   "note": "payload must not reach the log file",
+   "reply": "{\"error\":\"unknown model PROTOCOL-CANARY-7134f0a1-do-not-log; declared models: [\\\"gigaam\\\", \\\"parakeet-ultra\\\"]\"}"
+  },
+  {
+   "case": "stalled_connection_is_closed_by_the_server",
+   "status": null,
+   "responses": 0,
+   "passed": true,
+   "expectation_met": true,
+   "daemon_alive": true,
+   "seconds": 30.61,
+   "closed_at_s": 30.61,
+   "note": "32 s request timeout releases a socket that never speaks"
+  }
+ ],
+ "failures": [],
+ "log": {
+  "path": "/Users/antony/Documents/projects/Speech-Runtime/experiments/runtime_eval/.work/protocol-checks/daemon-8592.log",
+  "canary_hits": 0,
+  "suspicious_markers": []
+ },
+ "daemon": {
+  "pid_before": 16623,
+  "pid_after": 16623,
+  "worker_restarts": 0,
+  "alive": true
+ },
+ "verdict": {
+  "status": "PASS",
+  "failures": []
+ }
+}

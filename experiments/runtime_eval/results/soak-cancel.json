@@ -1,0 +1,57 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "cancel",
+  "argv": [
+    "cancel",
+    "--wav",
+    "corpus/local/audio/podlodka_test19_ep292.wav",
+    "--speed",
+    "1",
+    "--json",
+    "runtime_eval/results/soak-cancel.json"
+  ],
+  "started_utc": "2026-11-05T21:37:45.570919+00:00",
+  "finished_utc": "2026-11-05T21:38:21.881372+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "stream": "3E551EF6-9A7B-41F6-A045-834D0647A211",
+  "finals_before_cancel": 0,
+  "late_finals": 0,
+  "saw_cancelled_event": false,
+  "cancel_drain_ms": 30003,
+  "streams_baseline": 0,
+  "streams_after": 0,
+  "assertions": [
+    {
+      "name": "model_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": "gigaam"
+    },
+    {
+      "name": "cancel_accepted",
+      "pass": true,
+      "status": "PASS",
+      "detail": "stream=3E551EF6-9A7B-41F6-A045-834D0647A211 finals_before=0"
+    },
+    {
+      "name": "no_final_after_cancel",
+      "pass": true,
+      "status": "PASS",
+      "detail": "0 late finals"
+    },
+    {
+      "name": "streams_back_to_baseline",
+      "pass": true,
+      "status": "PASS",
+      "detail": "0 -> 0"
+    }
+  ],
+  "exit_code": 0
+}

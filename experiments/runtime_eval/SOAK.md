@@ -140,6 +140,22 @@ python3 -m runtime_eval.soak cancel --wav /tmp/window.wav
 python3 -m runtime_eval.soak two-models --wav /tmp/window.wav
 ```
 
+### `slow-client`
+
+Клиент подаёт весь поток, но **не опрашивает события** до конца аудио: проверяется, что
+демон не блокируется и не теряет события молча. Во время подачи харнесс трогает только
+`/health` (второе соединение) и меряет его задержку; события сливаются потом с курсора 0.
+
+Проверки: `health_responsive` (p95 `/health` < 500 мс при непрочитанном буфере),
+`session_visible` (`session_buffers ≥ 1` виден из `/health`), `no_error_events`,
+`no_silent_loss` (число `final` равно числу событий `utterance`), `stream_ended`,
+`streams_back_to_baseline`. Бюджет непрочитанных событий — явный: cap буфера 20 000
+событий и TTL 300 с после `ended`; при вытеснении растёт `droppedCount`, а не тишина.
+
+```bash
+python3 -m runtime_eval.soak slow-client --wav /tmp/window.wav --speed 4
+```
+
 ### `memory`
 
 RSS/`phys_footprint` в точках baseline → loaded → N стримов (`--clients`,

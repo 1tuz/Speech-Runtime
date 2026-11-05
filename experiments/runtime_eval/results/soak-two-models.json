@@ -1,0 +1,88 @@
+{
+  "schema": "runtime-soak-v1",
+  "command": "two-models",
+  "argv": [
+    "two-models",
+    "--wav",
+    "corpus/local/audio/podlodka_test19_ep292.wav",
+    "--speed",
+    "1",
+    "--json",
+    "runtime_eval/results/soak-two-models.json"
+  ],
+  "started_utc": "2026-11-05T17:42:44.110038+00:00",
+  "finished_utc": "2026-11-05T17:43:04.441632+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "models": [
+    "gigaam",
+    "parakeet-ultra"
+  ],
+  "per_model": {
+    "gigaam": {
+      "ended": true,
+      "error": null,
+      "finals": 2,
+      "asr_ms": {
+        "n": 2,
+        "mean": 90.0,
+        "p50": 60.0,
+        "p95": 120.0
+      },
+      "e2e_ms": {
+        "n": 2,
+        "mean": 111.5,
+        "p50": 89.0,
+        "p95": 134.0
+      }
+    },
+    "parakeet-ultra": {
+      "ended": true,
+      "error": null,
+      "finals": 2,
+      "asr_ms": {
+        "n": 2,
+        "mean": 110.0,
+        "p50": 34.0,
+        "p95": 186.0
+      },
+      "e2e_ms": {
+        "n": 2,
+        "mean": 98.5,
+        "p50": 63.0,
+        "p95": 134.0
+      }
+    }
+  },
+  "failures": {},
+  "assertions": [
+    {
+      "name": "both_models_configured",
+      "pass": true,
+      "status": "PASS",
+      "detail": "missing from /Users/antony/Documents/projects/Speech-Runtime/runtime/models.json: none"
+    },
+    {
+      "name": "both_models_loaded",
+      "pass": true,
+      "status": "PASS",
+      "detail": {
+        "gigaam": true,
+        "parakeet-ultra": true
+      }
+    },
+    {
+      "name": "no_model_failures",
+      "pass": true,
+      "status": "PASS",
+      "detail": "none"
+    }
+  ],
+  "exit_code": 0
+}

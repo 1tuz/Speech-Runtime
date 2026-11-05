@@ -238,22 +238,55 @@ def cmd_make_audio(argv: list[str]) -> int:
     parser.add_argument(
         "--gaps", default=None, help="comma-separated per-junction silence, ms"
     )
-    parser.add_argument("--lead-ms", type=int, default=200)
-    parser.add_argument("--trail-ms", type=int, default=1200)
+    parser.add_argument(
+        "--lead-ms",
+        type=int,
+        default=None,
+        help="silence before the first file (default: 200 dataset, 0 with --wavs)",
+    )
+    parser.add_argument(
+        "--trail-ms",
+        type=int,
+        default=None,
+        help="silence after the last file (default: 1200 dataset, 0 with --wavs)",
+    )
+    parser.add_argument(
+        "--wavs",
+        default=None,
+        help=(
+            "comma-separated WAV paths: concatenate whole files verbatim with "
+            "--gap-ms between them (long-audio mode); dataset/start/count ignored"
+        ),
+    )
     parser.add_argument("--out", required=True, help="output WAV path")
 
     args = parser.parse_args(argv)
     gaps = [int(v) for v in args.gaps.split(",")] if args.gaps else None
+    verbatim = [p for p in (args.wavs.split(",") if args.wavs else []) if p]
     utterances = []
-    for row in select_window(args.dataset, args.recording, args.start, args.count):
-        samples, rate, _ = read_wav_i16(row["path"])
-        if rate != SAMPLE_RATE:
-            raise ValueError(f"{row['path']}: {rate} Hz, expected {SAMPLE_RATE} Hz")
-        utterances.append(
-            {"id": row["id"], "reference": row["reference"], "samples": samples}
-        )
+    if verbatim:
+        for path in verbatim:
+            if not os.path.exists(path):
+                raise ValueError(f"{path}: not found")
+            samples, rate, _ = read_wav_i16(path)
+            if rate != SAMPLE_RATE:
+                raise ValueError(f"{path}: {rate} Hz, expected {SAMPLE_RATE} Hz")
+            utterances.append(
+                {"id": os.path.basename(path), "reference": None, "samples": samples}
+            )
+    else:
+        for row in select_window(args.dataset, args.recording, args.start, args.count):
+            samples, rate, _ = read_wav_i16(row["path"])
+            if rate != SAMPLE_RATE:
+                raise ValueError(f"{row['path']}: {rate} Hz, expected {SAMPLE_RATE} Hz")
+            utterances.append(
+                {"id": row["id"], "reference": row["reference"], "samples": samples}
+            )
+    lead_default, trail_default = (0, 0) if verbatim else (200, 1200)
+    lead_ms = lead_default if args.lead_ms is None else args.lead_ms
+    trail_ms = trail_default if args.trail_ms is None else args.trail_ms
     samples, entries = build_window(
-        utterances, args.gap_ms, args.lead_ms, args.trail_ms, gaps
+        utterances, args.gap_ms, lead_ms, trail_ms, gaps
     )
     write_wav(args.out, samples)
     sidecar = os.path.splitext(args.out)[0] + ".jsonl"

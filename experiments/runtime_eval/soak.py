@@ -1054,6 +1054,105 @@ def scenario_memory(args, client: rc.RuntimeClient, samples, rate: int, check) -
     }
 
 
+def scenario_slow_client(args, client: rc.RuntimeClient, samples, rate: int, check) -> dict:
+    """Feed a whole stream and never poll its events until the audio is done.
+
+    A client that reads slowly must not lose events silently and must not make the daemon
+    unresponsive for everyone else: during the feed the harness only touches `/health`
+    (a second connection) and measures its latency. Events are drained afterwards from
+    cursor 0, so anything the daemon dropped would show up as a final without its
+    `utterance` event, or as a gap in `next`.
+    """
+    check("model_loaded", _ensure_loaded(client, args.model), args.model)
+    baseline_streams = client.health().get("streams")
+    stream_id = client.open_stream(args.model, {})
+    step = max(1, int(round(100 * rate / 1000.0)))
+
+    health_ms: list[float] = []
+    counters: list[dict] = []
+    offset = 0
+    started = time.monotonic()
+    next_probe = 0.0
+    while offset < len(samples):
+        client.send_audio(stream_id, samples[offset:offset + step])
+        offset += step
+        now = time.monotonic() - started
+        if now >= next_probe:
+            next_probe = now + 0.2
+            probe_started = time.monotonic()
+            state = client.health()
+            health_ms.append((time.monotonic() - probe_started) * 1000.0)
+            counters.append({
+                "t": round(now, 3),
+                "streams": state.get("streams"),
+                "session_buffers": (state.get("worker") or {}).get("session_buffers"),
+                "event_waiters": (state.get("worker") or {}).get("event_waiters"),
+            })
+        target = offset / rate / args.speed
+        time.sleep(max(0.0, target - (time.monotonic() - started)))
+    feed_seconds = time.monotonic() - started
+
+    client.end_stream(stream_id)
+    finals: list[dict] = []
+    heard_utterances = 0
+    error_events: list[str] = []
+    ended = False
+    cursor = 0
+    deadline = time.monotonic() + 60.0
+    while time.monotonic() < deadline:
+        batch = client.events(stream_id, cursor, wait=0.5)
+        cursor = int(batch.get("next", cursor))
+        for event in batch.get("events", []):
+            name = event.get("event")
+            data = event.get("data") or {}
+            if name == "final":
+                finals.append(data)
+            elif name == "utterance":
+                heard_utterances += 1
+            elif name == "error":
+                error_events.append(str(data.get("message")))
+            elif name == "ended":
+                ended = True
+        if ended:
+            break
+
+    latencies = percentile_stats(health_ms)
+    check(
+        "health_responsive",
+        latencies["p95"] is not None and latencies["p95"] < 500.0,
+        f"health p95={latencies['p95']} ms max={round(max(health_ms), 1) if health_ms else None} ms",
+    )
+    check("session_visible", any((c["session_buffers"] or 0) >= 1 for c in counters),
+          f"session_buffers peak={max((c['session_buffers'] or 0) for c in counters) if counters else None}")
+    check("no_error_events", not error_events, error_events or "none")
+    check(
+        "no_silent_loss",
+        bool(finals) and len(finals) == heard_utterances,
+        f"{len(finals)} finals vs {heard_utterances} utterance events",
+    )
+    check("stream_ended", ended, f"ended={ended} finals={len(finals)}")
+    client.cancel_stream(stream_id)
+    streams_after = client.health().get("streams")
+    check("streams_back_to_baseline", streams_after == baseline_streams,
+          f"{baseline_streams} -> {streams_after}")
+    return {
+        "stream": stream_id,
+        "feed_seconds": round(feed_seconds, 2),
+        "audio_seconds": round(len(samples) / rate, 2),
+        "speed": args.speed,
+        "health_ms": latencies,
+        "health_samples": len(health_ms),
+        "counters": counters[:20],
+        "finals": len(finals),
+        "utterance_events": heard_utterances,
+        "error_events": error_events,
+        "end_reason_counts": _end_reason_counts(finals),
+        "streams_baseline": baseline_streams,
+        "streams_after": streams_after,
+        "assertions": check.results,
+    }
+
+
 def _safe_unload(client: rc.RuntimeClient, model: str) -> bool:
     try:
         client.unload(model)
@@ -1074,6 +1173,7 @@ SCENARIOS = {
     "cancel": scenario_cancel,
     "two-models": scenario_two_models,
     "memory": scenario_memory,
+    "slow-client": scenario_slow_client,
 }
 
 
@@ -1131,6 +1231,10 @@ def build_parser() -> argparse.ArgumentParser:
     p = sub.add_parser("two-models", help="gigaam + parakeet-ultra concurrently")
     add_common(p, with_model=False)
     p.add_argument("--speed", type=float, default=1.0)
+
+    p = sub.add_parser("slow-client", help="feed without polling events; drain afterwards")
+    add_common(p)
+    p.add_argument("--speed", type=float, default=4.0)
 
     p = sub.add_parser("memory", help="baseline -> loaded -> N streams -> unloaded")
     add_common(p)

@@ -1,0 +1,2092 @@
+{
+  "schema": "runtime-pipeline-eval-v1",
+  "command": "sweep",
+  "argv": [
+    "--wav",
+    "/tmp/dev-window.wav",
+    "--model",
+    "gigaam",
+    "--realtime",
+    "8",
+    "--config",
+    "min_silence_ms=320,500,700",
+    "--config",
+    "pre_roll_ms=200,300",
+    "--config",
+    "post_roll_ms=200,300",
+    "--json",
+    "runtime_eval/results/sweep-endpointing-dev.json",
+    "--markdown",
+    "runtime_eval/results/sweep-endpointing-dev.md"
+  ],
+  "started_utc": "2026-11-05T18:21:38.267780+00:00",
+  "finished_utc": "2026-11-05T18:23:01.919758+00:00",
+  "machine": {
+    "machine": "arm64",
+    "node": "Mac.dlink",
+    "system": "Darwin",
+    "release": "27.2.0",
+    "processor": "arm",
+    "python": "3.15.2"
+  },
+  "grid": {
+    "min_silence_ms": [
+      320,
+      500,
+      700
+    ],
+    "pre_roll_ms": [
+      200,
+      300
+    ],
+    "post_roll_ms": [
+      200,
+      300
+    ]
+  },
+  "results": [
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 320,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5971,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.058823529411764705,
+        "cer": 0.008771929824561403,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 51,
+            "queue_ms": 0,
+            "audio_ms": 4160,
+            "start_ms": 56,
+            "end_ms": 4216,
+            "last_voice_ms": 4016,
+            "detected_ms": 4336,
+            "e2e_ms": 111
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 45,
+            "queue_ms": 0,
+            "audio_ms": 4976,
+            "start_ms": 4456,
+            "end_ms": 9432,
+            "last_voice_ms": 9232,
+            "detected_ms": 9552,
+            "e2e_ms": 96
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 3120,
+            "start_ms": 9688,
+            "end_ms": 12808,
+            "last_voice_ms": 12608,
+            "detected_ms": 12928,
+            "e2e_ms": 99
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 47,
+            "queue_ms": 0,
+            "audio_ms": 4992,
+            "start_ms": 13048,
+            "end_ms": 18040,
+            "last_voice_ms": 17840,
+            "detected_ms": 18160,
+            "e2e_ms": 95
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 2384,
+            "start_ms": 18328,
+            "end_ms": 20712,
+            "last_voice_ms": 20512,
+            "detected_ms": 20832,
+            "e2e_ms": 99
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными.",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 4224,
+            "start_ms": 21000,
+            "end_ms": 25224,
+            "last_voice_ms": 25024,
+            "detected_ms": 25344,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 35,
+            "queue_ms": 0,
+            "audio_ms": 3856,
+            "start_ms": 25496,
+            "end_ms": 29352,
+            "last_voice_ms": 29152,
+            "detected_ms": 29472,
+            "e2e_ms": 81
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 2448,
+            "start_ms": 29688,
+            "end_ms": 32136,
+            "last_voice_ms": 31936,
+            "detected_ms": 32256,
+            "e2e_ms": 83
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 5024,
+            "start_ms": 32328,
+            "end_ms": 37352,
+            "last_voice_ms": 37152,
+            "detected_ms": 37472,
+            "e2e_ms": 94
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 3664,
+            "start_ms": 37560,
+            "end_ms": 41224,
+            "last_voice_ms": 41024,
+            "detected_ms": 41344,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3632,
+            "start_ms": 41480,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45232,
+            "e2e_ms": 99
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 34,
+            "queue_ms": 0,
+            "audio_ms": 1344,
+            "start_ms": 45480,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 46944,
+            "e2e_ms": 85
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 41.4,
+            "p50_ms": 41.0
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 94.7,
+            "p50_ms": 96.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3652.0,
+          "p50_ms": 3760.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 320,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.058823529411764705,
+        "cer": 0.008771929824561403,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 4216,
+            "start_ms": 0,
+            "end_ms": 4216,
+            "last_voice_ms": 4016,
+            "detected_ms": 4336,
+            "e2e_ms": 86
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 5076,
+            "start_ms": 4356,
+            "end_ms": 9432,
+            "last_voice_ms": 9232,
+            "detected_ms": 9552,
+            "e2e_ms": 96
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 3220,
+            "start_ms": 9588,
+            "end_ms": 12808,
+            "last_voice_ms": 12608,
+            "detected_ms": 12928,
+            "e2e_ms": 100
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 5092,
+            "start_ms": 12948,
+            "end_ms": 18040,
+            "last_voice_ms": 17840,
+            "detected_ms": 18160,
+            "e2e_ms": 96
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 2484,
+            "start_ms": 18228,
+            "end_ms": 20712,
+            "last_voice_ms": 20512,
+            "detected_ms": 20832,
+            "e2e_ms": 86
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными.",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 4324,
+            "start_ms": 20900,
+            "end_ms": 25224,
+            "last_voice_ms": 25024,
+            "detected_ms": 25344,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 39,
+            "queue_ms": 0,
+            "audio_ms": 3956,
+            "start_ms": 25396,
+            "end_ms": 29352,
+            "last_voice_ms": 29152,
+            "detected_ms": 29472,
+            "e2e_ms": 94
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 39,
+            "queue_ms": 0,
+            "audio_ms": 2548,
+            "start_ms": 29588,
+            "end_ms": 32136,
+            "last_voice_ms": 31936,
+            "detected_ms": 32256,
+            "e2e_ms": 96
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 5096,
+            "start_ms": 32256,
+            "end_ms": 37352,
+            "last_voice_ms": 37152,
+            "detected_ms": 37472,
+            "e2e_ms": 82
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 3752,
+            "start_ms": 37472,
+            "end_ms": 41224,
+            "last_voice_ms": 41024,
+            "detected_ms": 41344,
+            "e2e_ms": 85
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 3732,
+            "start_ms": 41380,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45232,
+            "e2e_ms": 99
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 1444,
+            "start_ms": 45380,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 46944,
+            "e2e_ms": 85
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 38.8,
+            "p50_ms": 38.5
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 91.8,
+            "p50_ms": 95.0
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3745.0,
+          "p50_ms": 3854.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 320,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.0784313725490196,
+        "cer": 0.015789473684210527,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 31,
+            "queue_ms": 0,
+            "audio_ms": 4260,
+            "start_ms": 56,
+            "end_ms": 4316,
+            "last_voice_ms": 4016,
+            "detected_ms": 4336,
+            "e2e_ms": 86
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 5076,
+            "start_ms": 4456,
+            "end_ms": 9532,
+            "last_voice_ms": 9232,
+            "detected_ms": 9552,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 35,
+            "queue_ms": 0,
+            "audio_ms": 3220,
+            "start_ms": 9688,
+            "end_ms": 12908,
+            "last_voice_ms": 12608,
+            "detected_ms": 12928,
+            "e2e_ms": 87
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 5092,
+            "start_ms": 13048,
+            "end_ms": 18140,
+            "last_voice_ms": 17840,
+            "detected_ms": 18160,
+            "e2e_ms": 95
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 2484,
+            "start_ms": 18328,
+            "end_ms": 20812,
+            "last_voice_ms": 20512,
+            "detected_ms": 20832,
+            "e2e_ms": 87
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями плюс требования в Тиккете оказались не совсем полными.",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 4324,
+            "start_ms": 21000,
+            "end_ms": 25324,
+            "last_voice_ms": 25024,
+            "detected_ms": 25344,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 3956,
+            "start_ms": 25496,
+            "end_ms": 29452,
+            "last_voice_ms": 29152,
+            "detected_ms": 29472,
+            "e2e_ms": 82
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 31,
+            "queue_ms": 0,
+            "audio_ms": 2548,
+            "start_ms": 29688,
+            "end_ms": 32236,
+            "last_voice_ms": 31936,
+            "detected_ms": 32256,
+            "e2e_ms": 84
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 5124,
+            "start_ms": 32328,
+            "end_ms": 37452,
+            "last_voice_ms": 37152,
+            "detected_ms": 37472,
+            "e2e_ms": 94
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести чай на следующий спринг.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 3764,
+            "start_ms": 37560,
+            "end_ms": 41324,
+            "last_voice_ms": 41024,
+            "detected_ms": 41344,
+            "e2e_ms": 98
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 3732,
+            "start_ms": 41480,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45232,
+            "e2e_ms": 99
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 33,
+            "queue_ms": 0,
+            "audio_ms": 1444,
+            "start_ms": 45480,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 46944,
+            "e2e_ms": 85
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 38.2,
+            "p50_ms": 38.0
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 90.9,
+            "p50_ms": 90.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3752.0,
+          "p50_ms": 3860.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 320,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.058823529411764705,
+        "cer": 0.012280701754385965,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 4316,
+            "start_ms": 0,
+            "end_ms": 4316,
+            "last_voice_ms": 4016,
+            "detected_ms": 4336,
+            "e2e_ms": 86
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 5176,
+            "start_ms": 4356,
+            "end_ms": 9532,
+            "last_voice_ms": 9232,
+            "detected_ms": 9552,
+            "e2e_ms": 97
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 31,
+            "queue_ms": 0,
+            "audio_ms": 3320,
+            "start_ms": 9588,
+            "end_ms": 12908,
+            "last_voice_ms": 12608,
+            "detected_ms": 12928,
+            "e2e_ms": 88
+          },
+          {
+            "utterance": 3,
+            "text": "Основной код написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 33,
+            "queue_ms": 0,
+            "audio_ms": 5192,
+            "start_ms": 12948,
+            "end_ms": 18140,
+            "last_voice_ms": 17840,
+            "detected_ms": 18160,
+            "e2e_ms": 83
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 32,
+            "queue_ms": 0,
+            "audio_ms": 2584,
+            "start_ms": 18228,
+            "end_ms": 20812,
+            "last_voice_ms": 20512,
+            "detected_ms": 20832,
+            "e2e_ms": 86
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 4424,
+            "start_ms": 20900,
+            "end_ms": 25324,
+            "last_voice_ms": 25024,
+            "detected_ms": 25344,
+            "e2e_ms": 98
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 4056,
+            "start_ms": 25396,
+            "end_ms": 29452,
+            "last_voice_ms": 29152,
+            "detected_ms": 29472,
+            "e2e_ms": 82
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 32,
+            "queue_ms": 0,
+            "audio_ms": 2648,
+            "start_ms": 29588,
+            "end_ms": 32236,
+            "last_voice_ms": 31936,
+            "detected_ms": 32256,
+            "e2e_ms": 84
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 5196,
+            "start_ms": 32256,
+            "end_ms": 37452,
+            "last_voice_ms": 37152,
+            "detected_ms": 37472,
+            "e2e_ms": 94
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести чай на следующий спринг.",
+            "asr_ms": 34,
+            "queue_ms": 0,
+            "audio_ms": 3852,
+            "start_ms": 37472,
+            "end_ms": 41324,
+            "last_voice_ms": 41024,
+            "detected_ms": 41344,
+            "e2e_ms": 85
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 33,
+            "queue_ms": 0,
+            "audio_ms": 3832,
+            "start_ms": 41380,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45232,
+            "e2e_ms": 87
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 31,
+            "queue_ms": 0,
+            "audio_ms": 1544,
+            "start_ms": 45380,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 46944,
+            "e2e_ms": 85
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 35.8,
+            "p50_ms": 33.5
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 87.9,
+            "p50_ms": 86.0
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3845.0,
+          "p50_ms": 3954.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 500,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5971,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.06862745098039216,
+        "cer": 0.015789473684210527,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 32,
+            "queue_ms": 0,
+            "audio_ms": 4160,
+            "start_ms": 56,
+            "end_ms": 4216,
+            "last_voice_ms": 4016,
+            "detected_ms": 4528,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 4904,
+            "start_ms": 4528,
+            "end_ms": 9432,
+            "last_voice_ms": 9232,
+            "detected_ms": 9744,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 3064,
+            "start_ms": 9744,
+            "end_ms": 12808,
+            "last_voice_ms": 12608,
+            "detected_ms": 13120,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 45,
+            "queue_ms": 0,
+            "audio_ms": 4920,
+            "start_ms": 13120,
+            "end_ms": 18040,
+            "last_voice_ms": 17840,
+            "detected_ms": 18352,
+            "e2e_ms": 120
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 2360,
+            "start_ms": 18352,
+            "end_ms": 20712,
+            "last_voice_ms": 20512,
+            "detected_ms": 21024,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями + требования в Тикете оказались не совсем полными.",
+            "asr_ms": 39,
+            "queue_ms": 0,
+            "audio_ms": 4200,
+            "start_ms": 21024,
+            "end_ms": 25224,
+            "last_voice_ms": 25024,
+            "detected_ms": 25536,
+            "e2e_ms": 122
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 3816,
+            "start_ms": 25536,
+            "end_ms": 29352,
+            "last_voice_ms": 29152,
+            "detected_ms": 29664,
+            "e2e_ms": 119
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 2448,
+            "start_ms": 29688,
+            "end_ms": 32136,
+            "last_voice_ms": 31936,
+            "detected_ms": 32448,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 31,
+            "queue_ms": 0,
+            "audio_ms": 4904,
+            "start_ms": 32448,
+            "end_ms": 37352,
+            "last_voice_ms": 37152,
+            "detected_ms": 37664,
+            "e2e_ms": 106
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 3560,
+            "start_ms": 37664,
+            "end_ms": 41224,
+            "last_voice_ms": 41024,
+            "detected_ms": 41536,
+            "e2e_ms": 110
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3576,
+            "start_ms": 41536,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45424,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 32,
+            "queue_ms": 0,
+            "audio_ms": 1344,
+            "start_ms": 45480,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 47136,
+            "e2e_ms": 110
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 38.0,
+            "p50_ms": 38.5
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 116.8,
+            "p50_ms": 119.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3604.7,
+          "p50_ms": 3696.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 500,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.06862745098039216,
+        "cer": 0.015789473684210527,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 4216,
+            "start_ms": 0,
+            "end_ms": 4216,
+            "last_voice_ms": 4016,
+            "detected_ms": 4528,
+            "e2e_ms": 123
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 45,
+            "queue_ms": 0,
+            "audio_ms": 4904,
+            "start_ms": 4528,
+            "end_ms": 9432,
+            "last_voice_ms": 9232,
+            "detected_ms": 9744,
+            "e2e_ms": 122
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3064,
+            "start_ms": 9744,
+            "end_ms": 12808,
+            "last_voice_ms": 12608,
+            "detected_ms": 13120,
+            "e2e_ms": 125
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 45,
+            "queue_ms": 0,
+            "audio_ms": 4920,
+            "start_ms": 13120,
+            "end_ms": 18040,
+            "last_voice_ms": 17840,
+            "detected_ms": 18352,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 2360,
+            "start_ms": 18352,
+            "end_ms": 20712,
+            "last_voice_ms": 20512,
+            "detected_ms": 21024,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями + требования в Тикете оказались не совсем полными.",
+            "asr_ms": 39,
+            "queue_ms": 0,
+            "audio_ms": 4200,
+            "start_ms": 21024,
+            "end_ms": 25224,
+            "last_voice_ms": 25024,
+            "detected_ms": 25536,
+            "e2e_ms": 110
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3816,
+            "start_ms": 25536,
+            "end_ms": 29352,
+            "last_voice_ms": 29152,
+            "detected_ms": 29664,
+            "e2e_ms": 119
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 2472,
+            "start_ms": 29664,
+            "end_ms": 32136,
+            "last_voice_ms": 31936,
+            "detected_ms": 32448,
+            "e2e_ms": 108
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 4904,
+            "start_ms": 32448,
+            "end_ms": 37352,
+            "last_voice_ms": 37152,
+            "detected_ms": 37664,
+            "e2e_ms": 120
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3560,
+            "start_ms": 37664,
+            "end_ms": 41224,
+            "last_voice_ms": 41024,
+            "detected_ms": 41536,
+            "e2e_ms": 123
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 3576,
+            "start_ms": 41536,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45424,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 1400,
+            "start_ms": 45424,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 47136,
+            "e2e_ms": 110
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 41.9,
+            "p50_ms": 42.0
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 119.1,
+            "p50_ms": 121.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3616.0,
+          "p50_ms": 3696.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 500,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.06862745098039216,
+        "cer": 0.015789473684210527,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 4260,
+            "start_ms": 56,
+            "end_ms": 4316,
+            "last_voice_ms": 4016,
+            "detected_ms": 4528,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 5004,
+            "start_ms": 4528,
+            "end_ms": 9532,
+            "last_voice_ms": 9232,
+            "detected_ms": 9744,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 3164,
+            "start_ms": 9744,
+            "end_ms": 12908,
+            "last_voice_ms": 12608,
+            "detected_ms": 13120,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 5020,
+            "start_ms": 13120,
+            "end_ms": 18140,
+            "last_voice_ms": 17840,
+            "detected_ms": 18352,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 2460,
+            "start_ms": 18352,
+            "end_ms": 20812,
+            "last_voice_ms": 20512,
+            "detected_ms": 21024,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями + требования в Тикете оказались не совсем полными.",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 4300,
+            "start_ms": 21024,
+            "end_ms": 25324,
+            "last_voice_ms": 25024,
+            "detected_ms": 25536,
+            "e2e_ms": 123
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3916,
+            "start_ms": 25536,
+            "end_ms": 29452,
+            "last_voice_ms": 29152,
+            "detected_ms": 29664,
+            "e2e_ms": 119
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 2548,
+            "start_ms": 29688,
+            "end_ms": 32236,
+            "last_voice_ms": 31936,
+            "detected_ms": 32448,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 46,
+            "queue_ms": 0,
+            "audio_ms": 5004,
+            "start_ms": 32448,
+            "end_ms": 37452,
+            "last_voice_ms": 37152,
+            "detected_ms": 37664,
+            "e2e_ms": 119
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 3660,
+            "start_ms": 37664,
+            "end_ms": 41324,
+            "last_voice_ms": 41024,
+            "detected_ms": 41536,
+            "e2e_ms": 123
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 41,
+            "queue_ms": 0,
+            "audio_ms": 3676,
+            "start_ms": 41536,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45424,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 1444,
+            "start_ms": 45480,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 47136,
+            "e2e_ms": 110
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 41.2,
+            "p50_ms": 41.5
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 120.1,
+            "p50_ms": 121.0
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3704.7,
+          "p50_ms": 3796.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 500,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5974,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 12,
+        "ended": true,
+        "wer": 0.06862745098039216,
+        "cer": 0.015789473684210527,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе.",
+            "asr_ms": 46,
+            "queue_ms": 0,
+            "audio_ms": 4316,
+            "start_ms": 0,
+            "end_ms": 4316,
+            "last_voice_ms": 4016,
+            "detected_ms": 4528,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 1,
+            "text": "Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 5004,
+            "start_ms": 4528,
+            "end_ms": 9532,
+            "last_voice_ms": 9232,
+            "detected_ms": 9744,
+            "e2e_ms": 122
+          },
+          {
+            "utterance": 2,
+            "text": "О'кей, по логированию какой статус сейчас?",
+            "asr_ms": 39,
+            "queue_ms": 0,
+            "audio_ms": 3164,
+            "start_ms": 9744,
+            "end_ms": 12908,
+            "last_voice_ms": 12608,
+            "detected_ms": 13120,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 3,
+            "text": "Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного.",
+            "asr_ms": 47,
+            "queue_ms": 0,
+            "audio_ms": 5020,
+            "start_ms": 13120,
+            "end_ms": 18140,
+            "last_voice_ms": 17840,
+            "detected_ms": 18352,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 4,
+            "text": "Что именно вызвало сложности?",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 2460,
+            "start_ms": 18352,
+            "end_ms": 20812,
+            "last_voice_ms": 20512,
+            "detected_ms": 21024,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 5,
+            "text": "Связи между модулями + требования в Тикете оказались не совсем полными.",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 4300,
+            "start_ms": 21024,
+            "end_ms": 25324,
+            "last_voice_ms": 25024,
+            "detected_ms": 25536,
+            "e2e_ms": 123
+          },
+          {
+            "utterance": 6,
+            "text": "Понял. Ты уточнял это заранее или уже в процессе?",
+            "asr_ms": 38,
+            "queue_ms": 0,
+            "audio_ms": 3916,
+            "start_ms": 25536,
+            "end_ms": 29452,
+            "last_voice_ms": 29152,
+            "detected_ms": 29664,
+            "e2e_ms": 107
+          },
+          {
+            "utterance": 7,
+            "text": "Уже в процессе, да? Наверное, поздновато.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 2572,
+            "start_ms": 29664,
+            "end_ms": 32236,
+            "last_voice_ms": 31936,
+            "detected_ms": 32448,
+            "e2e_ms": 121
+          },
+          {
+            "utterance": 8,
+            "text": "Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте?",
+            "asr_ms": 43,
+            "queue_ms": 0,
+            "audio_ms": 5004,
+            "start_ms": 32448,
+            "end_ms": 37452,
+            "last_voice_ms": 37152,
+            "detected_ms": 37664,
+            "e2e_ms": 119
+          },
+          {
+            "utterance": 9,
+            "text": "Честно, нет, я бы предложил перенести часть на следующий спринг.",
+            "asr_ms": 34,
+            "queue_ms": 0,
+            "audio_ms": 3660,
+            "start_ms": 37664,
+            "end_ms": 41324,
+            "last_voice_ms": 41024,
+            "detected_ms": 41536,
+            "e2e_ms": 110
+          },
+          {
+            "utterance": 10,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3676,
+            "start_ms": 41536,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45424,
+            "e2e_ms": 124
+          },
+          {
+            "utterance": 11,
+            "text": "Ок, спасибо.",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 1500,
+            "start_ms": 45424,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 47136,
+            "e2e_ms": 123
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 12,
+            "mean_ms": 41.0,
+            "p50_ms": 42.0
+          },
+          "queue_ms": {
+            "n": 12,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 12,
+            "mean_ms": 119.2,
+            "p50_ms": 121.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 12,
+          "mean_ms": 3716.0,
+          "p50_ms": 3796.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 12,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 1,
+        "boundary_insertion_examples": [
+          "о"
+        ],
+        "insertions_total": 1
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 700,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 4,
+        "ended": true,
+        "wer": 0.0196078431372549,
+        "cer": 0.005263157894736842,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе? Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис. Окей, по логированию какой статус сейчас? Основной код написал, но долго разбирался с существующей архитектурой, там много неочевидного. Что именно вызвало сложности?",
+            "asr_ms": 91,
+            "queue_ms": 0,
+            "audio_ms": 20008,
+            "start_ms": 56,
+            "end_ms": 20064,
+            "last_voice_ms": 20032,
+            "detected_ms": 20064,
+            "e2e_ms": 109
+          },
+          {
+            "utterance": 1,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными. Понял. Ты уточнял это заранее или уже в процессе? Уже в процессе, да, наверное, поздновато. Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте? Честно, нет. Я бы предложил перенести часть на следующий спринт.",
+            "asr_ms": 96,
+            "queue_ms": 0,
+            "audio_ms": 20008,
+            "start_ms": 21000,
+            "end_ms": 41008,
+            "last_voice_ms": 41008,
+            "detected_ms": 41008,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 2,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 44,
+            "queue_ms": 0,
+            "audio_ms": 3632,
+            "start_ms": 41480,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45616,
+            "e2e_ms": 149
+          },
+          {
+            "utterance": 3,
+            "text": "Ок, спасибо.",
+            "asr_ms": 37,
+            "queue_ms": 0,
+            "audio_ms": 1208,
+            "start_ms": 45616,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 47328,
+            "e2e_ms": 135
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 4,
+            "mean_ms": 67.0,
+            "p50_ms": 67.5
+          },
+          "queue_ms": {
+            "n": 4,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 4,
+            "mean_ms": 126.2,
+            "p50_ms": 123.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 4,
+          "mean_ms": 11214.0,
+          "p50_ms": 11820.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 4,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 0,
+        "boundary_insertion_examples": [],
+        "insertions_total": 0
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 700,
+        "post_roll_ms": 200,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 4,
+        "ended": true,
+        "wer": 0.029411764705882353,
+        "cer": 0.007017543859649123,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе? Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис. Окей, по логированию какой статус сейчас? Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного. Что именно вызвало сложности?",
+            "asr_ms": 96,
+            "queue_ms": 0,
+            "audio_ms": 20000,
+            "start_ms": 0,
+            "end_ms": 20000,
+            "last_voice_ms": 20000,
+            "detected_ms": 20000,
+            "e2e_ms": 100
+          },
+          {
+            "utterance": 1,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными. Понял. Ты уточнял это заранее или уже в процессе? Уже в процессе, да, наверное, поздновато. Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте? Честно, нет. Я бы предложил перенести часть на следующий спринт.",
+            "asr_ms": 95,
+            "queue_ms": 0,
+            "audio_ms": 20012,
+            "start_ms": 20900,
+            "end_ms": 40912,
+            "last_voice_ms": 40912,
+            "detected_ms": 40912,
+            "e2e_ms": 111
+          },
+          {
+            "utterance": 2,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 40,
+            "queue_ms": 0,
+            "audio_ms": 4200,
+            "start_ms": 40912,
+            "end_ms": 45112,
+            "last_voice_ms": 44912,
+            "detected_ms": 45616,
+            "e2e_ms": 149
+          },
+          {
+            "utterance": 3,
+            "text": "Ок, спасибо.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 1208,
+            "start_ms": 45616,
+            "end_ms": 46824,
+            "last_voice_ms": 46624,
+            "detected_ms": 47328,
+            "e2e_ms": 135
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 4,
+            "mean_ms": 66.8,
+            "p50_ms": 67.5
+          },
+          "queue_ms": {
+            "n": 4,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 4,
+            "mean_ms": 123.8,
+            "p50_ms": 123.0
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 4,
+          "mean_ms": 11355.0,
+          "p50_ms": 12100.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 4,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 0,
+        "boundary_insertion_examples": [],
+        "insertions_total": 0
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 700,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 200
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5973,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 4,
+        "ended": true,
+        "wer": 0.0196078431372549,
+        "cer": 0.005263157894736842,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе? Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис. Окей, по логированию какой статус сейчас? Основной код написал, но долго разбирался с существующей архитектурой, там много неочевидного. Что именно вызвало сложности?",
+            "asr_ms": 79,
+            "queue_ms": 0,
+            "audio_ms": 20008,
+            "start_ms": 56,
+            "end_ms": 20064,
+            "last_voice_ms": 20032,
+            "detected_ms": 20064,
+            "e2e_ms": 96
+          },
+          {
+            "utterance": 1,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными. Понял. Ты уточнял это заранее или уже в процессе? Уже в процессе, да, наверное, поздновато. Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте? Честно, нет. Я бы предложил перенести часть на следующий спринт.",
+            "asr_ms": 97,
+            "queue_ms": 0,
+            "audio_ms": 20008,
+            "start_ms": 21000,
+            "end_ms": 41008,
+            "last_voice_ms": 41008,
+            "detected_ms": 41008,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 2,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 3732,
+            "start_ms": 41480,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45616,
+            "e2e_ms": 149
+          },
+          {
+            "utterance": 3,
+            "text": "Ок, спасибо.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 1308,
+            "start_ms": 45616,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 47328,
+            "e2e_ms": 135
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 4,
+            "mean_ms": 63.5,
+            "p50_ms": 60.5
+          },
+          "queue_ms": {
+            "n": 4,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 4,
+            "mean_ms": 123.0,
+            "p50_ms": 123.5
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 4,
+          "mean_ms": 11264.0,
+          "p50_ms": 11870.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 4,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 0,
+        "boundary_insertion_examples": [],
+        "insertions_total": 0
+      }
+    },
+    {
+      "model": "gigaam",
+      "config": {
+        "min_silence_ms": 700,
+        "post_roll_ms": 300,
+        "pre_roll_ms": 300
+      },
+      "realtime": 8.0,
+      "audio": {
+        "path": "/tmp/dev-window.wav",
+        "sha256": "714a80376252086dc5deb2a037d0e34c9c1b5827821cad314c212a799b94280c",
+        "audio_ms": 47743,
+        "wall_ms": 5975,
+        "utterances": 12
+      },
+      "stream": {
+        "finals": 4,
+        "ended": true,
+        "wer": 0.029411764705882353,
+        "cer": 0.007017543859649123,
+        "per_final": [
+          {
+            "utterance": 0,
+            "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе? Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис. Окей, по логированию какой статус сейчас? Основной кот написал, но долго разбирался с существующей архитектурой, там много неочевидного. Что именно вызвало сложности?",
+            "asr_ms": 87,
+            "queue_ms": 0,
+            "audio_ms": 20000,
+            "start_ms": 0,
+            "end_ms": 20000,
+            "last_voice_ms": 20000,
+            "detected_ms": 20000,
+            "e2e_ms": 89
+          },
+          {
+            "utterance": 1,
+            "text": "Связи между модулями плюс требования в Тикете оказались не совсем полными. Понял. Ты уточнял это заранее или уже в процессе? Уже в процессе, да, наверное, поздновато. Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте? Честно, нет. Я бы предложил перенести часть на следующий спринт.",
+            "asr_ms": 97,
+            "queue_ms": 0,
+            "audio_ms": 20012,
+            "start_ms": 20900,
+            "end_ms": 40912,
+            "last_voice_ms": 40912,
+            "detected_ms": 40912,
+            "e2e_ms": 112
+          },
+          {
+            "utterance": 2,
+            "text": "Согласен. Тогда фиксируем перенос второй части задания.",
+            "asr_ms": 42,
+            "queue_ms": 0,
+            "audio_ms": 4300,
+            "start_ms": 40912,
+            "end_ms": 45212,
+            "last_voice_ms": 44912,
+            "detected_ms": 45616,
+            "e2e_ms": 149
+          },
+          {
+            "utterance": 3,
+            "text": "Ок, спасибо.",
+            "asr_ms": 36,
+            "queue_ms": 0,
+            "audio_ms": 1308,
+            "start_ms": 45616,
+            "end_ms": 46924,
+            "last_voice_ms": 46624,
+            "detected_ms": 47328,
+            "e2e_ms": 136
+          }
+        ],
+        "latency": {
+          "asr_ms": {
+            "n": 4,
+            "mean_ms": 65.5,
+            "p50_ms": 64.5
+          },
+          "queue_ms": {
+            "n": 4,
+            "mean_ms": 0.0,
+            "p50_ms": 0.0
+          },
+          "e2e_ms": {
+            "n": 4,
+            "mean_ms": 121.5,
+            "p50_ms": 124.0
+          }
+        },
+        "utterance_duration_ms": {
+          "n": 4,
+          "mean_ms": 11405.0,
+          "p50_ms": 12150.0
+        }
+      },
+      "boundary": {
+        "references": 12,
+        "finals": 4,
+        "boundary_deletions": 0,
+        "boundary_deletion_examples": [],
+        "boundary_insertions": 0,
+        "boundary_insertion_examples": [],
+        "insertions_total": 0
+      }
+    }
+  ],
+  "baseline": {
+    "text": "Илья, привет. Давай начнём. Расскажи, чем занимался на прошлой неделе? Привет, Алексей. В основном работал над задачей по логированию, частично трогал старый сервис. Окей, по логированию какой статус сейчас? Основной код написал, но долго разбирался с существующей архитектурой, там много неочевидного. Что именно вызвало сложности? Связи между модулями плюс требования в Тикете оказались не совсем полными. Понял. Ты уточнял это заранее или уже в процессе? Уже в процессе, да, наверное, поздновато. Такое бывает. По срокам ты успеваешь закрыть задачу в этом спринте? Честно, нет, я бы предложил перенести часть на следующий спринг. Согласен. Тогда фиксируем перенос второй части задания. Ок, спасибо.",
+    "asr_ms": 149,
+    "wall_ms": 203,
+    "audio_ms": 47743,
+    "wer": 0.029411764705882353,
+    "cer": 0.007017543859649123,
+    "counts": {
+      "substitutions": 2,
+      "deletions": 1,
+      "insertions": 0
+    }
+  },
+  "baseline_per_utterance": {
+    "n": 12,
+    "wer": 0.058823529411764705,
+    "cer": 0.008771929824561403,
+    "counts": {
+      "substitutions": 4,
+      "deletions": 1,
+      "insertions": 1
+    }
+  }
+}

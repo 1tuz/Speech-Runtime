@@ -19,6 +19,7 @@
 | `runtime_client.py` | stdlib HTTP-клиент контракта + CLI (`health`, `models`, `load`, `unload`, `transcribe`, `stream`) |
 | `pipeline_eval.py` | `make-audio` / `run` / `sweep` — сборка окна, прогон, скоринг, свип |
 | `tests/test_pipeline_eval.py` | офлайн-тесты чистых частей: `python3 -m unittest`, без демона и моделей |
+| `podlodka_wer.py` | WER демона на локальных клипах Podlodka + ΔWER к файловому батч-базлайну |
 | `memprobe.py` | общий внешний сэмплер памяти процесса (обёртка над `tools/memory_probe`) |
 | `memory_matrix.py` | `M0` / `M1` / `M3` — матрица локализации роста памяти (§3.2 RESEARCH.md) |
 | `ane1.py` | ANE-последовательность: current vs lifetime/interval peak по своим процессам |
@@ -94,6 +95,20 @@ detected_ms}` (все `*_ms`, кроме текста, — миллисекун�
 duration_ms, gap_before_ms}` — смещения в аудиопотоке, поэтому любой финал можно
 сопоставить референсу по времени. Корпус — 16 кГц моно 16-bit; иное отвергается.
 
+Режим `--wavs a.wav,b.wav,...` склеивает **целые файлы** как есть (`--gap-ms`
+между ними, без начальной и конечной тишины): так собирается длинное аудио для
+многочасовых прогонов. Вход — те же 16 кГц моно 16-bit, ровно те же байты на
+выходе; `--lead-ms`/`--trail-ms` по умолчанию 0, `id` в sidecar — имя файла.
+
+Длинное аудио прогона §4 `FINAL_VALIDATION.md`
+(1479.243 с, SHA-256 `dc0994730da6ea447d5e3f62c027b6188611aeff503310cc6d417702942cc2f0`):
+
+```bash
+python3 -m runtime_eval.pipeline_eval make-audio --gap-ms 1000 \
+  --wavs corpus/local/audio/podlodka_test02_ep132.wav,corpus/local/audio/podlodka_test10_ep306.wav,corpus/local/audio/podlodka_test17_ep292.wav,corpus/local/audio/podlodka_test18_ep292.wav,corpus/local/audio/podlodka_test19_ep292.wav,corpus/local/veche-bench/data_simple/2-one-to-one/2-one-to-one.wav,corpus/local/veche-bench/data_simple/5-it-product/5-it-product.wav,corpus/local/veche-bench/data_simple/7-bi-platform/7-bi-platform.wav \
+  --out /tmp/real-audio-25min.wav
+```
+
 ### `run`
 
 1. Стримит WAV через демон при `--realtime` (типично 8), собирает `final`.
@@ -120,6 +135,23 @@ SHA-256 WAV, UTC-времена начала/конца, машина (`platform
 `baseline_per_utterance` (они — свойство аудио, а не конфига). Выход: JSON +
 markdown-таблица (`config | WER | CER | finals | refs | utt mean/p50 | asr | queue |
 e2e | boundary del/ins`) и базлайны под таблицей.
+
+## `podlodka_wer.py`
+
+Runtime- WER на тех же локальных клипах Podlodka, что в файловом батч-базлайне
+(`experiments/corpus/local/engines/batch-baseline-podlodka.json`): клип уходит в
+`POST /v1/audio/transcriptions`, склейка не делается, оценка — тот же `asr_eval`
+(`wer.corpus`, norm-v2). В артефакт попадают SHA-256 каждого WAV, `annotation_status`
+эталона, `asr_ms`/`queue_ms`, тексты и ΔWER к лучшему файловому движку. Демон не
+запускается; модель догружается через `POST /v1/models/load`, если её нет в `/health`.
+
+```bash
+python3 -m runtime_eval.podlodka_wer --model gigaam --json /tmp/wer-gigaam.json
+python3 -m runtime_eval.podlodka_wer --model parakeet-ultra --json /tmp/wer-parakeet.json
+```
+
+Эталоны — поле `transcription` датасета (`unverified`), 5 клипов, dev-only: числа
+годичны для сравнения «файл против runtime» на одном аудио, но не как бенчмарк.
 
 ## `protocol_checks.py`
 
