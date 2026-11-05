@@ -1,0 +1,665 @@
+{
+ "started": "2026-11-05T18:48:44",
+ "options": {
+  "mode": "M1",
+  "series": 3,
+  "rps": 20.0,
+  "seconds": 3.0,
+  "cooldown": 3.0,
+  "port": 8591,
+  "out": "/Users/antony/Documents/projects/Speech-Runtime/experiments/runtime_eval/results"
+ },
+ "epoch": {
+  "note": "each mode uses its own daemon process; series share one process"
+ },
+ "M1": {
+  "mode": "M1",
+  "path": "/no-such-route",
+  "series": [
+   {
+    "series": 1,
+    "load": {
+     "requests": 60,
+     "errors": {
+      "http_404": 60
+     },
+     "seconds": 2.96,
+     "achieved_rps": 20.2,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 5
+    }
+   },
+   {
+    "series": 2,
+    "load": {
+     "requests": 60,
+     "errors": {
+      "http_404": 60
+     },
+     "seconds": 2.96,
+     "achieved_rps": 20.2,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 5
+    }
+   },
+   {
+    "series": 3,
+    "load": {
+     "requests": 60,
+     "errors": {
+      "http_404": 60
+     },
+     "seconds": 2.96,
+     "achieved_rps": 20.3,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": null,
+     "rss_mib": null,
+     "samples": 5
+    },
+    "counters_final": null,
+    "counters_samples": 0
+   }
+  ],
+  "rows": [
+   {
+    "t": 1793893727.073684,
+    "label": "baseline",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893728.128503,
+    "label": "baseline",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893729.189879,
+    "label": "baseline",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893730.250015,
+    "label": "baseline",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893731.309223,
+    "label": "baseline",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893732.084363,
+    "label": "series1-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893732.134455,
+    "label": "series1-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893733.170618,
+    "label": "series1-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893734.2323258,
+    "label": "series1-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893735.098059,
+    "label": "series1-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893735.146602,
+    "label": "series1-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893736.181215,
+    "label": "series1-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893737.2409668,
+    "label": "series1-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893738.157087,
+    "label": "series2-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893738.206562,
+    "label": "series2-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893739.242107,
+    "label": "series2-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893740.3049312,
+    "label": "series2-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893741.171058,
+    "label": "series2-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893741.221384,
+    "label": "series2-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893742.2564638,
+    "label": "series2-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893743.3181791,
+    "label": "series2-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893744.232953,
+    "label": "series3-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893744.282494,
+    "label": "series3-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893745.317337,
+    "label": "series3-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893746.379936,
+    "label": "series3-load",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893747.2452962,
+    "label": "series3-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893747.293853,
+    "label": "series3-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893748.328483,
+    "label": "series3-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893749.388418,
+    "label": "series3-settle",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893750.30444,
+    "label": "end",
+    "daemon": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "worker_pid": 24760,
+    "worker": {
+     "resident_size": null,
+     "physical_footprint_bytes": null,
+     "neural_footprint_bytes": null,
+     "neural_lifetime_max_bytes": null
+    },
+    "fds": 15,
+    "threads": null
+   }
+  ],
+  "verdict": {
+   "status": "UNMEASURED",
+   "detail": "footprint missing"
+  }
+ }
+}

@@ -1,0 +1,105 @@
+{
+ "schema": "environment/1",
+ "captured_at": "2026-11-05T19:08:52+0300",
+ "reproduce": "python3 -m runtime_eval.environment",
+ "host": {
+  "os": "macOS-27.2-arm64-arm-64bit-Mach-O",
+  "os_version": "27.2",
+  "os_build": "26B123",
+  "arch": "arm64",
+  "machine_model": "Mac16,10",
+  "cpu": "Apple M4",
+  "cpu_count": 10,
+  "memory_bytes": 17179869184,
+  "python": "3.15.2"
+ },
+ "toolchains": {
+  "swift": "Apple Swift version 6.4 (swiftlang-6.4.0.34.1 clang-2100.3.34.1) | Target: arm64-apple-macosx27.2.0",
+  "swiftpm": "Swift Package Manager - Swift 6.4.0-dev",
+  "rustc": "rustc 1.95.0 (59807616e 2026-04-14) | binary: rustc | commit-hash: 59807616e1fa2540724bfbac14d7976d7e4a3860 | commit-date: 2026-04-14 | host: aarch64-apple-darwin | release: 1.95.0 | LLVM version: 22.1.2",
+  "cargo": "cargo 1.95.0 (f2d3ce0bd 2026-03-21)",
+  "clang": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers"
+ },
+ "build_mode": "release (swift build -c release, cargo build --release); debug binaries hashed separately",
+ "git": {
+  "commit": "ff1c15b64f448c933f5a6fe285ac2169e508811e",
+  "short": "ff1c15b",
+  "subject": "fix: \u0443\u0447\u0451\u0442 \u0441\u0435\u0441\u0441\u0438\u0439 \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043f\u0430\u043c\u044f\u0442\u0438 runtime",
+  "committed_at": "2026-11-04T22:17:14+03:00",
+  "dirty": true,
+  "dirty_files": 25
+ },
+ "dependencies": {
+  "cargo_lock_sha256": "525d8e80420b1aa6d0195240f1797cf3ac775ce2e12248582dbfdc273f28c849",
+  "python": "stdlib only (no third-party packages used by the experiment harnesses)"
+ },
+ "binaries": {
+  "daemon_release": {
+   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/daemon/.build/release/speech-runtime",
+   "exists": true,
+   "bytes": 736048,
+   "sha256": "1edf80204c2047acdcc3557698f658a45edecbacc45b3154dde87314117463e7",
+   "hash_seconds": 0.0
+  },
+  "daemon_debug": {
+   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/daemon/.build/debug/speech-runtime",
+   "exists": true,
+   "bytes": 1024864,
+   "sha256": "ef5b5672cf854bf6c9d3c88747f07d70a448b822b30fdd932429d799fbf2ec81",
+   "hash_seconds": 0.0
+  },
+  "worker_release": {
+   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/worker/target/release/sr-worker",
+   "exists": true,
+   "bytes": 6857696,
+   "sha256": "a517b04797ff50c25d956b021fb2c6dba2d65ea319463017cd29896bfbad61cd",
+   "hash_seconds": 0.0
+  },
+  "worker_debug": {
+   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/worker/target/debug/sr-worker",
+   "exists": true,
+   "bytes": 27462888,
+   "sha256": "0758ad4c42e05b2d5a011f4c56f5e86fb99da267b68a8ca53ac1450d074a4bb5",
+   "hash_seconds": 0.01
+  }
+ },
+ "models": {
+  "gigaam": {
+   "backend": "ane",
+   "languages": [
+    "ru"
+   ],
+   "configured_path": "~/.cache/huggingface/hub/models--handy-computer--gigaam-v3-e2e-rnnt-gguf/snapshots/3efd5b39882ceadca5570a8fb9fa1a2c801d6d6d/gigaam-v3-e2e-rnnt-Q8_0.gguf",
+   "resolved_path": "/Users/antony/.cache/huggingface/hub/models--handy-computer--gigaam-v3-e2e-rnnt-gguf/snapshots/3efd5b39882ceadca5570a8fb9fa1a2c801d6d6d/gigaam-v3-e2e-rnnt-Q8_0.gguf",
+   "exists": true,
+   "bytes": 273724832
+  },
+  "parakeet-ultra": {
+   "backend": "ane",
+   "languages": [
+    "ru",
+    "en"
+   ],
+   "configured_path": "~/.cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots/a1539be1b849ea7463b88343e5277b373d0c4ea9/parakeet-ultra-Q8_0.gguf",
+   "resolved_path": "/Users/antony/.cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots/a1539be1b849ea7463b88343e5277b373d0c4ea9/parakeet-ultra-Q8_0.gguf",
+   "exists": true,
+   "bytes": 740363168
+  }
+ },
+ "privacy": {
+  "excluded": [
+   "hardware serial number",
+   "host UUID",
+   "user name",
+   "tokens",
+   "audio payloads",
+   "transcripts"
+  ],
+  "env_keys_not_read": [
+   "SPEECH_RUNTIME_TOKEN",
+   "HF_TOKEN",
+   "HUGGING_FACE_HUB_TOKEN"
+  ]
+ }
+}

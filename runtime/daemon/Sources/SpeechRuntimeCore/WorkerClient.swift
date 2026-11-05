@@ -19,7 +19,10 @@ public actor WorkerClient {
     private static let highFrequency: Set<String> = ["session_audio", "stats"]
     private nonisolated let opNames = OpNames()
     private var sessionBuffers: [String: SessionEventBuffer] = [:]
-    private var sessionWaiters: [CheckedContinuation<Void, Never>] = []
+    private nonisolated let waiters = WaiterTable()
+    /// Sessions this daemon has already forgotten. A late event from one must be dropped rather
+    /// than resurrect a buffer whose `ended` flag was already accounted for.
+    private var retired = RetiredSessions()
     private let workerPath: String
     private let log: @Sendable (String) -> Void
     private var restarts = 0
@@ -41,6 +44,24 @@ public actor WorkerClient {
     public var restartCount: Int { restarts }
     public var workerLastExit: Int32? { lastExit }
     public var uptime: TimeInterval { Date().timeIntervalSince(startedAt) }
+
+    /// Live non-session bookkeeping, exposed for `GET /health` so a leak shows up as a rising
+    /// count before it shows up as memory.
+    public struct Internals: Sendable {
+        public var pendingReplies: Int
+        public var eventWaiters: Int
+        public var sessionBuffers: Int
+        public var retiredSessions: Int
+    }
+
+    public func internals() -> Internals {
+        Internals(
+            pendingReplies: pending.count,
+            eventWaiters: waiters.count,
+            sessionBuffers: sessionBuffers.count,
+            retiredSessions: retired.count
+        )
+    }
 
     public func start() throws {
         guard process == nil else { return }
@@ -67,14 +88,25 @@ public actor WorkerClient {
         let thread = Thread {
             var buffer = Data()
             while true {
-                let chunk = stdoutHandle.availableData
-                if chunk.isEmpty { break }
-                buffer.append(chunk)
-                while let newline = buffer.firstIndex(of: 0x0A) {
-                    let line = String(decoding: buffer[..<newline], as: UTF8.self)
-                    buffer.removeSubrange(buffer.startIndex...newline)
-                    continuation.yield(line)
+                // `availableData` autoreleases a chunk of up to 20 KiB and a bare Foundation
+                // `Thread` pops its implicit pool only when the thread ends, so without this the
+                // daemon retains one buffer per worker line for its whole lifetime. Measured:
+                // +53.7 MiB per 3000 `/health` requests, flat worker (RESEARCH §3.2).
+                var ended = false
+                autoreleasepool {
+                    let chunk = stdoutHandle.availableData
+                    if chunk.isEmpty {
+                        ended = true
+                        return
+                    }
+                    buffer.append(chunk)
+                    while let newline = buffer.firstIndex(of: 0x0A) {
+                        let line = String(decoding: buffer[..<newline], as: UTF8.self)
+                        buffer.removeSubrange(buffer.startIndex...newline)
+                        continuation.yield(line)
+                    }
                 }
+                if ended { break }
             }
             continuation.finish()
         }
@@ -91,10 +123,34 @@ public actor WorkerClient {
             guard let self else { return }
             do {
                 for try await line in errPipe.fileHandleForReading.bytes.lines {
-                    await self.log("worker: \(line)")
+                    // Worker stderr is not a trusted log channel: a Rust panic prints the unwrapped
+                    // payload, and any future `eprintln!` could carry transcript text. Size plus a
+                    // panic marker answers "did the child complain, and how loudly" without copying
+                    // the line into the daemon log.
+                    let kind = line.contains("panicked at") ? "panic" : "message"
+                    await self.log("worker stderr: \(kind) \(line.utf8.count) B")
                 }
             } catch {}
         }
+    }
+
+    /// Exit status of a child Foundation has not necessarily reaped yet, without ever releasing
+    /// a live `Process`. Both `terminationStatus` and the deallocator raise
+    /// `NSInvalidArgumentException` ("task still running") while the child is unreaped, and the
+    /// last reference is dropped right here — a worker `SIGKILL` used to take the daemon down
+    /// through this path. A survivor is terminated and then either reaped inside a short bounded
+    /// wait or handed to a background waiter that keeps the object alive until the kernel reaps it.
+    static func exitStatus(of task: Process?, waitSeconds: TimeInterval = 1) -> Int32? {
+        guard let task else { return nil }
+        if !task.isRunning { return task.terminationStatus }
+        task.terminate()
+        let deadline = Date().addingTimeInterval(waitSeconds)
+        while task.isRunning, Date() < deadline {
+            usleep(20_000)
+        }
+        if !task.isRunning { return task.terminationStatus }
+        DispatchQueue.global().async { task.waitUntilExit() }
+        return nil
     }
 
     /// Intentional shutdown: kills the child without ever arming the crash-restart path.
@@ -102,11 +158,11 @@ public actor WorkerClient {
         intentionalStop = true
         reader?.cancel()
         stderrReader?.cancel()
-        if let process, process.isRunning {
-            process.terminate()
-        }
+        let previous = process
         process = nil
         stdinPipe = nil
+        let code = Self.exitStatus(of: previous)
+        log("worker stopped intentionally (status \(code.map(String.init) ?? "unreaped"))")
         failPending("worker stopped")
     }
 
@@ -131,15 +187,38 @@ public actor WorkerClient {
         let verbose = !Self.highFrequency.contains(op)
         opNames.insert(id, op)
         if verbose { log("→ [\(id)] \(op) \(bytes.count) B") }
-        return try await withCheckedThrowingContinuation { continuation in
-            pending.insert(id, continuation)
-            stdinPipe.fileHandleForWriting.write(bytes)
-            Task { [pending, opNames] in
-                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-                pending.take(id)?.resume(throwing: RuntimeError.message("worker request timed out after \(Int(timeout)) s"))
+        return try await withTaskCancellationHandler {
+            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<[String: Any], Error>) in
+                // A cancellation that raced the registration marks the id; refuse it here so the
+                // continuation is always resumed exactly once.
+                guard pending.insert(id, continuation) else {
+                    _ = opNames.take(id)
+                    continuation.resume(throwing: CancellationError())
+                    return
+                }
+                stdinPipe.fileHandleForWriting.write(bytes)
+                let timer = CancelableTimeout(nanoseconds: UInt64(max(timeout, 0) * 1_000_000_000)) { [weak self] in
+                    guard let self else { return }
+                    Task { await self.fireTimeout(id: id, seconds: timeout) }
+                }
+                pending.arm(id, timer)
+            }
+        } onCancel: {
+            // The caller gave up: drop the waiter so a late reply is logged instead of resumed.
+            if let abandoned = pending.abandon(id) {
                 _ = opNames.take(id)
+                abandoned.resume(throwing: CancellationError())
             }
         }
+    }
+
+    /// Timeout path: the timer only fires when the waiter is still registered, so a reply that
+    /// won the race cancels the timer instead of racing the reply.
+    private func fireTimeout(id: UInt64, seconds: TimeInterval) {
+        guard let continuation = pending.take(id) else { return }
+        _ = opNames.take(id)
+        log("timeout [\(id)] after \(Int(seconds)) s")
+        continuation.resume(throwing: RuntimeError.message("worker request timed out after \(Int(seconds)) s"))
     }
 
     public func ping() async throws -> [String: Any] {
@@ -179,7 +258,9 @@ public actor WorkerClient {
     }
 
     public func openSession(id: String, model: String, config: [String: Any]) async throws -> [String: Any] {
-        try await request(["op": "session_open", "session": id, "model": model, "config": config], timeout: 10)
+        // The client may reuse an id that this daemon already forgot; it is a fresh session then.
+        retired.revive(id)
+        return try await request(["op": "session_open", "session": id, "model": model, "config": config], timeout: 10)
     }
 
     public func sessionAudio(id: String, pcm: [Float]) async throws {
@@ -213,9 +294,11 @@ public actor WorkerClient {
         }
     }
 
-    /// Drops a session's buffered events without waiting; used by cancel and error paths.
+    /// Drops a session's buffered events without waiting; used by cancel and error paths. The id is
+    /// remembered so a late event from the dying worker cannot recreate the buffer.
     public func forgetSession(_ id: String) {
         sessionBuffers.removeValue(forKey: id)
+        retired.retire(id)
     }
 
     /// Reaps ended sessions past their retention window. Called from poll/health paths.
@@ -223,7 +306,9 @@ public actor WorkerClient {
         let now = Date()
         for (session, buffer) in sessionBuffers where buffer.isExpired(now: now) {
             sessionBuffers.removeValue(forKey: session)
+            retired.retire(session, now: now)
         }
+        retired.prune(now: now)
     }
 
     /// Returns buffered events after `since`. Waits up to `timeout` for the first one.
@@ -234,27 +319,38 @@ public actor WorkerClient {
             if let buffer = sessionBuffers[session] {
                 let (events, next) = buffer.slice(since: since)
                 if !events.isEmpty || buffer.ended { return (events, next) }
-            } else if since > 0 {
+            } else if since > 0 || retired.contains(session) {
                 // Forgotten (cancel/crash-reaped) session: report the cursor we have.
                 return ([], since)
             }
             if timeout <= 0 { return ([], since) }
             let remaining = deadline.timeIntervalSinceNow
             if remaining <= 0 { return ([], since) }
-            await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-                sessionWaiters.append(continuation)
-                Task {
-                    try? await Task.sleep(nanoseconds: UInt64(max(remaining, 0.001) * 1_000_000_000))
-                    await self.wakeWaiters()
+            // Cap the number of parked long polls: each one holds a continuation for up to
+            // `remaining` seconds, and a buggy client could otherwise pin thousands of them.
+            if waiters.isFull { return ([], since) }
+            _ = await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+                guard let waiter = waiters.add(session: session, continuation: continuation) else {
+                    continuation.resume()  // raced to the cap: fall back to the loop's re-check
+                    return
                 }
+                let seconds = max(remaining, 0.001)
+                let timer = CancelableTimeout(nanoseconds: UInt64(seconds * 1_000_000_000)) { [weak self] in
+                    guard let self else { return }
+                    Task { await self.expireWaiter(waiter) }
+                }
+                waiters.arm(waiter, timer)
             }
         }
     }
 
-    private func wakeWaiters() {
-        let waiters = sessionWaiters
-        sessionWaiters.removeAll()
-        for waiter in waiters { waiter.resume() }
+    private func expireWaiter(_ id: UInt64) {
+        waiters.expire(id)
+    }
+
+    /// Wakes parked long polls: one session's event must not wake clients of other sessions.
+    private func wakeWaiters(session: String? = nil) {
+        waiters.wake(session: session)
     }
 
     private func handle(line: String) async {
@@ -262,7 +358,8 @@ public actor WorkerClient {
               let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = object["type"] as? String
         else {
-            log("worker sent unparsable line: \(line.prefix(200))")
+            // Never echo a worker line into the log: it can carry transcript text.
+            log("worker sent unparsable line: \(line.utf8.count) B")
             return
         }
 
@@ -271,7 +368,9 @@ public actor WorkerClient {
             guard let id = (object["id"] as? NSNumber)?.uint64Value,
                   let continuation = pending.take(id)
             else {
-                log("worker reply without waiter: \(line.prefix(200))")
+                // Metadata only: a late or duplicated reply must not leak its payload to the log.
+                let id = (object["id"] as? NSNumber)?.uint64Value ?? 0
+                log("worker reply without waiter: type=\(type) id=\(id) bytes=\(line.utf8.count)")
                 return
             }
             if let op = opNames.take(id), !Self.highFrequency.contains(op) {
@@ -286,14 +385,20 @@ public actor WorkerClient {
             guard let session = object["session"] as? String,
                   let name = object["event"] as? String
             else { return }
+            if retired.contains(session) {
+                // Ids are client- and worker-controlled strings; keep them bounded and never
+                // print the event payload next to them.
+                log("dropped late event for retired session=\(session.prefix(64)) event=\(name.prefix(32))")
+                return
+            }
             var payload = object
             payload.removeValue(forKey: "type")
             payload.removeValue(forKey: "session")
             payload.removeValue(forKey: "event")
             sessionBuffers[session, default: SessionEventBuffer()].append(SessionEvent(name: name, data: payload))
-            wakeWaiters()
+            wakeWaiters(session: session)
         default:
-            log("worker sent unknown message type: \(type)")
+            log("worker sent unknown message type: \(type.prefix(40))")
         }
     }
 
@@ -301,14 +406,17 @@ public actor WorkerClient {
     /// ended), bump the generation and bring a fresh worker up. An intentional `stop()` never
     /// comes through here.
     private func workerExited() {
-        guard !intentionalStop else {
-            log("worker stopped intentionally (status \(process?.terminationStatus ?? -1))")
-            return
-        }
-        let code = process?.terminationStatus ?? -1
-        lastExit = code
+        let previous = process
         process = nil
         stdinPipe = nil
+        // The pipe closed, so the child is dead or dying; reap it before the reference is dropped
+        // (see `exitStatus(of:)`). The exact status is only echoed after it is safe to read.
+        let code = Self.exitStatus(of: previous) ?? lastExit ?? -1
+        guard !intentionalStop else {
+            log("worker stopped intentionally (status \(code))")
+            return
+        }
+        lastExit = code
         failPending("worker exited with status \(code)")
         for (session, buffer) in sessionBuffers where !buffer.ended {
             var dead = buffer
@@ -343,30 +451,217 @@ public actor WorkerClient {
 }
 
 /// Replies are matched on the caller's thread so a reply can never race the registration of the
-/// continuation that is waiting for it.
+/// continuation that is waiting for it. Each entry owns its timeout task, so a reply cancels the
+/// timer instead of leaving a stray task asleep for the whole timeout window.
 final class PendingReplies: @unchecked Sendable {
     private let lock = NSLock()
-    private var map: [UInt64: CheckedContinuation<[String: Any], Error>] = [:]
+    private var map: [UInt64: Entry] = [:]
+    /// Ids whose caller was cancelled before the registration landed. Bounded: entries are
+    /// consumed by `insert` or by a late `take`.
+    private var cancelled: Set<UInt64> = []
 
-    func insert(_ id: UInt64, _ continuation: CheckedContinuation<[String: Any], Error>) {
+    private struct Entry {
+        var continuation: CheckedContinuation<[String: Any], Error>
+        var timer: CancelableTimeout?
+    }
+
+    var count: Int {
+        lock.lock(); defer { lock.unlock() }
+        return map.count
+    }
+
+    /// False when the caller already cancelled: the continuation must be resumed by the caller.
+    func insert(_ id: UInt64, _ continuation: CheckedContinuation<[String: Any], Error>) -> Bool {
         lock.lock()
-        map[id] = continuation
+        defer { lock.unlock() }
+        if cancelled.remove(id) != nil { return false }
+        map[id] = Entry(continuation: continuation, timer: nil)
+        return true
+    }
+
+    /// Arms the timeout after registration. A reply that raced the registration cancels the timer
+    /// immediately instead of leaving a live task behind.
+    func arm(_ id: UInt64, _ timer: CancelableTimeout) {
+        lock.lock()
+        let entry = map[id]
+        if map[id] != nil { map[id]!.timer = timer }
         lock.unlock()
+        if entry == nil { timer.cancel() }
     }
 
     func take(_ id: UInt64) -> CheckedContinuation<[String: Any], Error>? {
         lock.lock()
-        defer { lock.unlock() }
-        return map.removeValue(forKey: id)
+        let entry = map.removeValue(forKey: id)
+        cancelled.remove(id)
+        lock.unlock()
+        entry?.timer?.cancel()
+        return entry?.continuation
+    }
+
+    /// Cancellation path: returns the waiter to resume, or marks the id for a registration that
+    /// has not landed yet.
+    func abandon(_ id: UInt64) -> CheckedContinuation<[String: Any], Error>? {
+        lock.lock()
+        let entry = map.removeValue(forKey: id)
+        if entry == nil, cancelled.count < 4096 { cancelled.insert(id) }
+        lock.unlock()
+        entry?.timer?.cancel()
+        return entry?.continuation
     }
 
     func failAll(_ message: String) {
         lock.lock()
         let waiting = map
         map.removeAll()
+        cancelled.removeAll()
         lock.unlock()
-        for (_, continuation) in waiting {
-            continuation.resume(throwing: RuntimeError.message(message))
+        for (_, entry) in waiting {
+            entry.timer?.cancel()
+            entry.continuation.resume(throwing: RuntimeError.message(message))
+        }
+    }
+}
+
+/// One-shot timer whose cancellation is guaranteed not to fall through into the timeout action.
+/// `Task.sleep` throws on cancellation, so a cancelled timer's action never runs.
+final class CancelableTimeout: @unchecked Sendable {
+    private let lock = NSLock()
+    private var task: Task<Void, Never>?
+    private var fired = false
+
+    init(nanoseconds: UInt64, action: @escaping @Sendable () -> Void) {
+        task = Task { [weak self] in
+            do {
+                try await Task.sleep(nanoseconds: nanoseconds)
+            } catch {
+                return
+            }
+            guard let self, self.claim() else { return }
+            action()
+        }
+    }
+
+    private func claim() -> Bool {
+        lock.lock(); defer { lock.unlock() }
+        if fired { return false }
+        fired = true
+        return true
+    }
+
+    func cancel() {
+        lock.lock()
+        let task = self.task
+        lock.unlock()
+        task?.cancel()
+    }
+
+    var didFire: Bool {
+        lock.lock(); defer { lock.unlock() }
+        return fired
+    }
+}
+
+/// Parked long polls, keyed by session so an event for one session does not wake every client, and
+/// bounded so abandoned polls cannot pin unbounded continuations.
+final class WaiterTable: @unchecked Sendable {
+    let cap: Int
+    private let lock = NSLock()
+    private var entries: [UInt64: Entry] = [:]
+    private var next: UInt64 = 1
+
+    private struct Entry {
+        let session: String
+        var continuation: CheckedContinuation<Void, Never>
+        var timer: CancelableTimeout?
+    }
+
+    init(cap: Int = 256) {
+        self.cap = cap
+    }
+
+    var count: Int {
+        lock.lock(); defer { lock.unlock() }
+        return entries.count
+    }
+
+    var isFull: Bool { count >= cap }
+
+    /// Registers a waiter; returns nil when the table is at its cap (caller must resume at once).
+    func add(session: String, continuation: CheckedContinuation<Void, Never>) -> UInt64? {
+        lock.lock()
+        defer { lock.unlock() }
+        guard entries.count < cap else { return nil }
+        let id = next
+        next += 1
+        entries[id] = Entry(session: session, continuation: continuation, timer: nil)
+        return id
+    }
+
+    func arm(_ id: UInt64, _ timer: CancelableTimeout) {
+        lock.lock()
+        let known = entries[id] != nil
+        if known { entries[id]!.timer = timer }
+        lock.unlock()
+        if !known { timer.cancel() }
+    }
+
+    /// Wakes waiters for one session, or all of them when `session` is nil.
+    func wake(session: String?) {
+        lock.lock()
+        var woken: [Entry] = []
+        for (id, entry) in entries where session == nil || entry.session == session {
+            woken.append(entry)
+            entries.removeValue(forKey: id)
+        }
+        lock.unlock()
+        for entry in woken {
+            entry.timer?.cancel()
+            entry.continuation.resume()
+        }
+    }
+
+    /// Timer path: the waiter must be released even though no event arrived.
+    func expire(_ id: UInt64) {
+        lock.lock()
+        let entry = entries.removeValue(forKey: id)
+        lock.unlock()
+        entry?.timer?.cancel()
+        entry?.continuation.resume()
+    }
+}
+
+/// Session ids this daemon has already forgotten. Late events from a retired session are dropped:
+/// a recreated buffer would never be reaped, because its `ended` event had already been consumed.
+struct RetiredSessions {
+    static let ttl: TimeInterval = 900
+    static let cap = 4096
+
+    private var retired: [String: Date] = [:]
+
+    var count: Int { retired.count }
+
+    mutating func retire(_ id: String, now: Date = Date()) {
+        retired[id] = now
+        prune(now: now)
+    }
+
+    mutating func revive(_ id: String) {
+        retired.removeValue(forKey: id)
+    }
+
+    func contains(_ id: String) -> Bool {
+        retired[id] != nil
+    }
+
+    /// Keeps the table bounded and drops ids old enough that no worker event can still arrive.
+    mutating func prune(now: Date = Date()) {
+        for (id, at) in retired where now.timeIntervalSince(at) >= Self.ttl {
+            retired.removeValue(forKey: id)
+        }
+        guard retired.count > Self.cap else { return }
+        let ordered = retired.sorted { $0.value < $1.value }
+        for (id, _) in ordered.prefix(ordered.count - Self.cap) {
+            retired.removeValue(forKey: id)
         }
     }
 }

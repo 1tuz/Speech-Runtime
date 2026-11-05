@@ -28,10 +28,12 @@ pub enum Meta {
         end_ms: u64,
         detected_ms: u64,
         audio_ms: u64,
+        /// Why the utterance ended: `silence`, `max_utterance` or `client_end`.
+        end_reason: &'static str,
     },
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Response {
     Loaded { model: String, device: String, load_ms: u64 },
     Unloaded { model: String },
@@ -146,11 +148,18 @@ impl ModelHandle {
                             }
                         };
                         inflight.fetch_add(1, Ordering::SeqCst);
-                        let response = if job.cancelled.load(Ordering::SeqCst) {
-                            Response::Cancelled
-                        } else {
-                            run(&model_name, &job.kind, &mut held, &done, &failed, &loaded, &device, queue_ms)
-                        };
+                        let response = run_with_cancel_gate(&job.cancelled, || {
+                            run(
+                                &model_name,
+                                &job.kind,
+                                &mut held,
+                                &done,
+                                &failed,
+                                &loaded,
+                                &device,
+                                queue_ms,
+                            )
+                        });
                         inflight.fetch_sub(1, Ordering::SeqCst);
                         {
                             let (lock, _) = &*queues;
@@ -333,6 +342,100 @@ fn run(
                     Response::Failed { message: format!("transcribe: {message}") }
                 }
             }
+        }
+    }
+}
+
+/// Both cancel gates around one inference call, in the order the worker applies them.
+///
+/// The pre-run gate avoids starting work for an already-cancelled job; the post-run gate
+/// catches a cancel that landed while `run` was in flight, since wavo cannot abort
+/// inference (RESEARCH 2.5). Keeping the pair in one function is what makes the wiring
+/// testable: a fake `run` can flip the flag between the two checks.
+fn run_with_cancel_gate<F>(cancelled: &AtomicBool, run: F) -> Response
+where
+    F: FnOnce() -> Response,
+{
+    if cancelled.load(Ordering::SeqCst) {
+        return Response::Cancelled;
+    }
+    let response = run();
+    finalize_response(cancelled.load(Ordering::SeqCst), response)
+}
+
+/// Decides what the router sees when a job answers: a cancel that landed while
+/// inference was running drops the result (wavo has no abort), except an
+/// unload ack, which its caller still needs.
+pub fn finalize_response(cancelled: bool, response: Response) -> Response {
+    if cancelled && !matches!(response, Response::Unloaded { .. }) {
+        Response::Cancelled
+    } else {
+        response
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn text() -> Response {
+        Response::Text { text: "hi".into(), asr_ms: 1, queue_ms: 0, tokens: Vec::new() }
+    }
+
+    #[test]
+    fn text_becomes_cancelled_when_the_flag_landed_after_run() {
+        assert!(matches!(finalize_response(true, text()), Response::Cancelled));
+    }
+
+    /// The defect RESEARCH 2.5 names: a cancel must not leave a final behind. This drives the
+    /// gate pair, not the helper alone, so deleting the post-run re-check turns it red.
+    #[test]
+    fn cancel_landing_during_run_suppresses_the_final() {
+        let cancelled = AtomicBool::new(false);
+        let response = run_with_cancel_gate(&cancelled, || {
+            cancelled.store(true, Ordering::SeqCst); // arrives mid-inference
+            text()
+        });
+        assert!(matches!(response, Response::Cancelled), "late cancel let a final through");
+    }
+
+    #[test]
+    fn already_cancelled_job_never_runs() {
+        let cancelled = AtomicBool::new(true);
+        let response = run_with_cancel_gate(&cancelled, || panic!("run must not start"));
+        assert!(matches!(response, Response::Cancelled));
+    }
+
+    #[test]
+    fn unload_ack_survives_a_late_cancel() {
+        let cancelled = AtomicBool::new(false);
+        let response = run_with_cancel_gate(&cancelled, || {
+            cancelled.store(true, Ordering::SeqCst);
+            Response::Unloaded { model: "m".into() }
+        });
+        assert!(matches!(response, Response::Unloaded { .. }), "unload caller must still see its ack");
+    }
+
+    #[test]
+    fn text_is_preserved_when_not_cancelled() {
+        let response = Response::Text {
+            text: "hi".into(),
+            asr_ms: 1,
+            queue_ms: 0,
+            tokens: Vec::new(),
+        };
+        match finalize_response(false, response) {
+            Response::Text { text, .. } => assert_eq!(text, "hi"),
+            other => panic!("expected text, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn unload_ack_is_preserved_even_when_cancelled() {
+        let response = Response::Unloaded { model: "m".into() };
+        match finalize_response(true, response) {
+            Response::Unloaded { model } => assert_eq!(model, "m"),
+            other => panic!("expected unloaded, got {other:?}"),
         }
     }
 }

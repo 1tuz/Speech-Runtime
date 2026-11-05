@@ -93,6 +93,7 @@ impl Worker {
                     "models": models,
                     "sessions": self.sessions.len(),
                     "ending_sessions": ending,
+                    "memory": sr_worker::mem::read_memory().to_json(),
                 }));
             }
             Request::Load { id, model, path, backend } => self.load(id, model, path, backend),
@@ -161,7 +162,7 @@ impl Worker {
                     Ok(p) => p,
                     Err(e) => return self.err(id, e),
                 };
-                if self.session_audio(&session, &pcm) {
+                if self.session_audio(id, &session, &pcm) {
                     self.ok(id, json!({"session_audio": session, "samples": pcm.len()}));
                 }
             }
@@ -212,13 +213,13 @@ impl Worker {
 
     /// Returns false when the frame was rejected (no session / ending),
     /// so the caller answers with an error instead of ok.
-    fn session_audio(&mut self, id: &str, pcm: &[f32]) -> bool {
+    fn session_audio(&mut self, req_id: Option<u64>, id: &str, pcm: &[f32]) -> bool {
         let Some(session) = self.sessions.get_mut(id) else {
-            self.err(None, format!("no session {id:?}"));
+            self.err(req_id, format!("no session {id:?}"));
             return false;
         };
         if session.jobs.is_ending() {
-            self.err(None, format!("session {id:?} is ending"));
+            self.err(req_id, format!("session {id:?} is ending"));
             return false;
         }
         let mut events = Vec::new();
@@ -248,7 +249,7 @@ impl Worker {
                     event: "speech_start".into(),
                     data: json!({"at_ms": at_ms}),
                 }),
-                Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms } => {
+                Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms, end_reason } => {
                     let audio_ms = pcm.len() as u64 * 1000 / 16_000;
                     let submitted = match self.models.get(&model) {
                         Some(handle) => handle.submit(
@@ -262,6 +263,7 @@ impl Worker {
                                 end_ms,
                                 detected_ms,
                                 audio_ms,
+                                end_reason,
                             },
                         ),
                         None => Err(format!("model {model:?} not loaded")),
@@ -277,7 +279,10 @@ impl Worker {
                             if let Some(session) = self.sessions.get_mut(id) {
                                 session.jobs.track_failed();
                             }
-                            self.err(None, e);
+                            // Exactly one ack/error per request: the error
+                            // answers the whole session_audio request.
+                            self.err(req_id, e);
+                            return false;
                         }
                     }
                     self.send(&Reply::Event {
@@ -290,6 +295,7 @@ impl Worker {
                             "last_voice_ms": last_voice_ms,
                             "detected_ms": detected_ms,
                             "audio_ms": audio_ms,
+                            "end_reason": end_reason,
                         }),
                     });
                     utterance += 1;
@@ -316,7 +322,20 @@ impl Worker {
             }));
             return;
         }
+        // Flush the carry first: a non-empty leftover becomes one padded frame
+        // through feed_tail (with the detector score of that padded frame), so
+        // the leftover reaches the utterance exactly once. If feed_tail itself
+        // ends the utterance, flush() below has nothing left to end.
         let mut events = Vec::new();
+        let carry = std::mem::take(&mut entry.carry);
+        if !carry.is_empty() {
+            let mut frame = vec![0.0f32; FRAME];
+            frame[..carry.len()].copy_from_slice(&carry);
+            let score = entry.detector.predict_f32(&frame);
+            if let Some(event) = entry.endpointer.feed_tail(&carry, score) {
+                events.push(event);
+            }
+        }
         if let Some(event) = entry.endpointer.flush() {
             events.push(event);
         }
@@ -327,9 +346,12 @@ impl Worker {
             entry.model.clone(),
             entry.endpointer.config().language.clone(),
         );
+        // One request gets one reply: if a tail job cannot be queued, the client is told
+        // through the error reply below and must not also receive the success ack.
+        let mut submit_failed = false;
         for event in events {
-            let Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms } = event else {
-                continue; // flush() only produces utterances
+            let Event::Utterance { pcm, start_ms, end_ms, last_voice_ms, detected_ms, end_reason } = event else {
+                continue; // feed_tail/flush only produce utterances
             };
             let audio_ms = pcm.len() as u64 * 1000 / 16_000;
             let submitted = match self.models.get(&model) {
@@ -344,6 +366,7 @@ impl Worker {
                         end_ms,
                         detected_ms,
                         audio_ms,
+                        end_reason,
                     },
                 ),
                 None => Err(format!("model {model:?} not loaded")),
@@ -359,7 +382,11 @@ impl Worker {
                     if let Some(entry) = self.sessions.get_mut(session) {
                         entry.jobs.track_failed();
                     }
-                    self.err(None, e);
+                    // The tail was never queued, so there is no `utterance` to announce and no
+                    // `final` to wait for; announcing one would leave the client waiting forever.
+                    self.err(id, e);
+                    submit_failed = true;
+                    continue;
                 }
             }
             self.send(&Reply::Event {
@@ -372,9 +399,14 @@ impl Worker {
                     "last_voice_ms": last_voice_ms,
                     "detected_ms": detected_ms,
                     "audio_ms": audio_ms,
+                    "end_reason": end_reason,
                 }),
             });
             utterance += 1;
+        }
+        if submit_failed {
+            self.retire_if_drained(session);
+            return;
         }
         let (pending, utterances, failed) = {
             let entry = self.sessions.get(session).expect("session still present");
@@ -453,49 +485,37 @@ fn main() {
                             other => w.send(&Reply::Error { id: Some(id), message: format!("unexpected: {other:?}") }),
                         }
                     }
-                    Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms } => {
-                        if let Some(s) = w.sessions.get_mut(&session) {
-                            s.jobs.answer(msg.job);
+                    Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms, end_reason } => {
+                        // A job whose session was cancelled/removed, or that
+                        // is no longer tracked, must not produce a late final.
+                        let job_tracked = w
+                            .sessions
+                            .get_mut(&session)
+                            .map(|s| s.jobs.answer(msg.job))
+                            .unwrap_or(false);
+                        let session_present = w.sessions.contains_key(&session);
+                        for reply in session_replies(
+                            session_present,
+                            job_tracked,
+                            &session,
+                            utterance,
+                            last_voice_ms,
+                            start_ms,
+                            end_ms,
+                            detected_ms,
+                            audio_ms,
+                            end_reason,
+                            msg.response.clone(),
+                        ) {
+                            w.send(&reply);
                         }
-                        match msg.response {
-                            Response::Text { text, asr_ms, queue_ms, tokens } => {
-                                w.send(&Reply::Event {
-                                    session: session.clone(),
-                                    event: "final".into(),
-                                    data: json!({
-                                        "utterance": utterance,
-                                        "text": text,
-                                        "asr_ms": asr_ms,
-                                        "queue_ms": queue_ms,
-                                        "audio_ms": audio_ms,
-                                        "start_ms": start_ms,
-                                        "end_ms": end_ms,
-                                        "last_voice_ms": last_voice_ms,
-                                        "detected_ms": detected_ms,
-                                        "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
-                                    }),
-                                });
-                            }
-                            Response::Cancelled => w.send(&Reply::Event {
-                                session: session.clone(),
-                                event: "cancelled".into(),
-                                data: json!({"utterance": utterance}),
-                            }),
-                            Response::Failed { message } => {
+                        // note_failed only when we actually reported it.
+                        if job_tracked {
+                            if let Response::Failed { .. } = &msg.response {
                                 if let Some(s) = w.sessions.get_mut(&session) {
                                     s.jobs.note_failed();
                                 }
-                                w.send(&Reply::Event {
-                                    session: session.clone(),
-                                    event: "error".into(),
-                                    data: json!({"utterance": utterance, "message": message}),
-                                });
                             }
-                            other => w.send(&Reply::Event {
-                                session: session.clone(),
-                                event: "error".into(),
-                                data: json!({"message": format!("unexpected: {other:?}")}),
-                            }),
                         }
                         w.retire_if_drained(&session);
                     }
@@ -521,5 +541,133 @@ fn main() {
                 w.err(None, format!("bad request: {e}"));
             }
         }
+    }
+}
+
+/// Replies for one session-tagged engine response. Pure decision: no late
+/// `final` for a dead session (removed/cancelled) or an untracked job; the
+/// response is reported only when the session is still present and the job was
+/// still tracked when it answered.
+#[allow(clippy::too_many_arguments)]
+fn session_replies(
+    session_present: bool,
+    job_tracked: bool,
+    session: &str,
+    utterance: u64,
+    last_voice_ms: u64,
+    start_ms: u64,
+    end_ms: u64,
+    detected_ms: u64,
+    audio_ms: u64,
+    end_reason: &str,
+    response: Response,
+) -> Vec<Reply> {
+    if !session_present || !job_tracked {
+        return Vec::new();
+    }
+    let mut replies = Vec::with_capacity(1);
+    match response {
+        Response::Text { text, asr_ms, queue_ms, tokens } => replies.push(Reply::Event {
+            session: session.to_string(),
+            event: "final".into(),
+            data: json!({
+                "utterance": utterance,
+                "text": text,
+                "asr_ms": asr_ms,
+                "queue_ms": queue_ms,
+                "audio_ms": audio_ms,
+                "start_ms": start_ms,
+                "end_ms": end_ms,
+                "last_voice_ms": last_voice_ms,
+                "detected_ms": detected_ms,
+                "end_reason": end_reason,
+                "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
+            }),
+        }),
+        Response::Cancelled => replies.push(Reply::Event {
+            session: session.to_string(),
+            event: "cancelled".into(),
+            data: json!({"utterance": utterance}),
+        }),
+        Response::Failed { message } => replies.push(Reply::Event {
+            session: session.to_string(),
+            event: "error".into(),
+            data: json!({"utterance": utterance, "message": message}),
+        }),
+        other => replies.push(Reply::Event {
+            session: session.to_string(),
+            event: "error".into(),
+            data: json!({"message": format!("unexpected: {other:?}")}),
+        }),
+    }
+    replies
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn text_response() -> Response {
+        Response::Text { text: "hi".into(), asr_ms: 1, queue_ms: 0, tokens: Vec::new() }
+    }
+
+    #[test]
+    fn untracked_job_produces_no_replies() {
+        let replies = session_replies(
+            true, false, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+        );
+        assert!(replies.is_empty(), "no late final for an untracked job");
+    }
+
+    #[test]
+    fn removed_session_produces_no_replies() {
+        let replies = session_replies(
+            false, true, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+        );
+        assert!(replies.is_empty(), "no late final for a removed session");
+    }
+
+    #[test]
+    fn tracked_job_gets_final_with_end_reason() {
+        let replies = session_replies(
+            true, true, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+        );
+        assert_eq!(replies.len(), 1);
+        match &replies[0] {
+            Reply::Event { event, data, .. } => {
+                assert_eq!(event, "final");
+                assert_eq!(data["end_reason"], "silence");
+                assert_eq!(data["utterance"], 1);
+            }
+            other => panic!("expected final event, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn cancelled_and_failed_report_only_when_tracked() {
+        let cancelled = session_replies(
+            true, true, "s", 2, 100, 0, 100, 100, 100, "silence", Response::Cancelled,
+        );
+        assert_eq!(cancelled.len(), 1);
+        assert!(matches!(
+            &cancelled[0],
+            Reply::Event { event, .. } if event == "cancelled"
+        ));
+
+        let failed = session_replies(
+            true, true, "s", 3, 100, 0, 100, 100, 100, "silence",
+            Response::Failed { message: "boom".into() },
+        );
+        assert_eq!(failed.len(), 1);
+        assert!(matches!(
+            &failed[0],
+            Reply::Event { event, .. } if event == "error"
+        ));
+
+        let dead = session_replies(
+            true, false, "s", 4, 100, 0, 100, 100, 100, "silence",
+            Response::Failed { message: "boom".into() },
+        );
+        assert!(dead.is_empty(), "untracked failures are silent");
     }
 }

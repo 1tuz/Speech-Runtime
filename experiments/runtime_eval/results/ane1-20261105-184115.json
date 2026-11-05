@@ -1,0 +1,1252 @@
+{
+  "schema": "ane1/1",
+  "started": "2026-11-05T18:47:34",
+  "machine": "arm64",
+  "audio": "experiments/corpus/local/tools/FluidAudio/Tests/FluidAudioTests/ASR/Parakeet/SlidingWindow/Fixtures/03-diff-explanation-16.9s.wav",
+  "repeats": 100,
+  "idle_seconds": [
+    15,
+    60,
+    300
+  ],
+  "visibility_boundary": "task_vm_info is only readable for the probe's own process; daemon/worker numbers come from proc_pid_rusage RUSAGE_INFO_V6 (same-user pids, no root). Process neural counters are not whole-system ANE usage.",
+  "points": [
+    {
+      "step": "1-fresh-no-model",
+      "t_s": 0.0,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 4031040,
+        "ri_resident_size": 11599872,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 2015736,
+        "ri_resident_size": 6635520,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618731520,
+        "Pages stored in compressor": 10721820672
+      }
+    },
+    {
+      "step": "2-loaded",
+      "t_s": 0.1,
+      "note": "cold start",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 4227648,
+        "ri_resident_size": 11796480,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 25002704,
+        "ri_resident_size": 35504128,
+        "ri_neural_footprint": 255524864,
+        "ri_lifetime_max_neural_footprint": 256081920,
+        "ri_interval_max_neural_footprint": 256081920,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618731520,
+        "Pages stored in compressor": 10721820672
+      }
+    },
+    {
+      "step": "3-first-inference",
+      "t_s": 0.2,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 6275648,
+        "ri_resident_size": 13860864,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 26084048,
+        "ri_resident_size": 36945920,
+        "ri_neural_footprint": 270319616,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618731520,
+        "Pages stored in compressor": 10721820672
+      }
+    },
+    {
+      "step": "4-100-repeats",
+      "t_s": 3.3,
+      "note": "100x 4.0s input",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9323072,
+        "ri_resident_size": 16908288,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 26215120,
+        "ri_resident_size": 37109760,
+        "ri_neural_footprint": 270319616,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618715136,
+        "Pages stored in compressor": 10721492992
+      }
+    },
+    {
+      "step": "5-varied-lengths",
+      "t_s": 3.4,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 15581760,
+        "ri_resident_size": 23166976,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 32031440,
+        "ri_resident_size": 42926080,
+        "ri_neural_footprint": 270319616,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618715136,
+        "Pages stored in compressor": 10721492992
+      }
+    },
+    {
+      "step": "6-unloaded",
+      "t_s": 3.4,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 15614528,
+        "ri_resident_size": 23199744,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 32031440,
+        "ri_resident_size": 42532864,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618715136,
+        "Pages stored in compressor": 10721492992
+      }
+    },
+    {
+      "step": "7-idle-15s",
+      "t_s": 18.5,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 15516224,
+        "ri_resident_size": 23101440,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 31490768,
+        "ri_resident_size": 42500096,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4618715136,
+        "Pages stored in compressor": 10721361920
+      }
+    },
+    {
+      "step": "7-idle-60s",
+      "t_s": 78.6,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 15499840,
+        "ri_resident_size": 23101440,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 31523536,
+        "ri_resident_size": 42532864,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4612358144,
+        "Pages stored in compressor": 10691330048
+      }
+    },
+    {
+      "step": "7-idle-300s",
+      "t_s": 378.6,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 13009472,
+        "ri_resident_size": 22642688,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 27296464,
+        "ri_resident_size": 42549248,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559864832
+      }
+    },
+    {
+      "step": "8-new-worker-no-model",
+      "t_s": 379.0,
+      "note": "old pid 23609 replaced by 24561",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 8995392,
+        "ri_resident_size": 22659072,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 2015736,
+        "ri_resident_size": 6422528,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559864832
+      }
+    },
+    {
+      "step": "8b-new-worker-loaded",
+      "t_s": 379.1,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9175616,
+        "ri_resident_size": 22724608,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 26051280,
+        "ri_resident_size": 36896768,
+        "ri_neural_footprint": 270319616,
+        "ri_lifetime_max_neural_footprint": 270319616,
+        "ri_interval_max_neural_footprint": 270319616,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559848448
+      }
+    },
+    {
+      "step": "9-two-models",
+      "t_s": 379.3,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9208384,
+        "ri_resident_size": 22757376,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 65307368,
+        "ri_resident_size": 76185600,
+        "ri_neural_footprint": 983498752,
+        "ri_lifetime_max_neural_footprint": 983498752,
+        "ri_interval_max_neural_footprint": 983498752,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559848448
+      }
+    },
+    {
+      "step": "9b-one-unloaded",
+      "t_s": 379.3,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9208384,
+        "ri_resident_size": 22757376,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 65307368,
+        "ri_resident_size": 75792384,
+        "ri_neural_footprint": 713179136,
+        "ri_lifetime_max_neural_footprint": 983498752,
+        "ri_interval_max_neural_footprint": 983498752,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559848448
+      }
+    },
+    {
+      "step": "9c-both-unloaded",
+      "t_s": 379.3,
+      "note": "",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9208384,
+        "ri_resident_size": 22757376,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 65307368,
+        "ri_resident_size": 75038720,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 983498752,
+        "ri_interval_max_neural_footprint": 983498752,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559848448
+      }
+    },
+    {
+      "step": "10-final-health",
+      "t_s": 379.3,
+      "note": "health itself performs IPC (worker.stats)",
+      "daemon": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 9224768,
+        "ri_resident_size": 22773760,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 0,
+        "ri_interval_max_neural_footprint": 0,
+        "task_vm_info": "unsupported"
+      },
+      "worker": {
+        "target": "external pid (proc_pid_rusage only)",
+        "rusage_api": "RUSAGE_INFO_V6",
+        "rusage_status": "ok",
+        "ri_physical_footprint_bytes": 65307368,
+        "ri_resident_size": 75055104,
+        "ri_neural_footprint": 0,
+        "ri_lifetime_max_neural_footprint": 983498752,
+        "ri_interval_max_neural_footprint": 983498752,
+        "task_vm_info": "unsupported"
+      },
+      "system": {
+        "swap": "total = 2048.00M  used = 736.12M  free = 1311.88M  (encrypted)",
+        "Pages occupied by compressor": 4615749632,
+        "Pages stored in compressor": 10559848448
+      }
+    }
+  ],
+  "summary": {
+    "notes": [
+      "cold load 63 ms"
+    ],
+    "transcribe": [
+      {
+        "repeat": 0,
+        "audio_ms": 4000,
+        "queue_ms": 0,
+        "asr_ms": 34,
+        "tokens": [
+          {
+            "start_ms": 1320,
+            "text": "▁Де"
+          },
+          {
+            "start_ms": 1640,
+            "text": "ф"
+          },
+          {
+            "start_ms": 1920,
+            "text": "ми"
+          },
+          {
+            "start_ms": 2200,
+            "text": "н"
+          },
+          {
+            "start_ms": 2360,
+            "text": "с"
+          }
+        ],
+        "wall_ms": 35
+      },
+      {
+        "input": "short-4s",
+        "audio_ms": 4000,
+        "queue_ms": 0,
+        "asr_ms": 28,
+        "tokens": [
+          {
+            "start_ms": 1320,
+            "text": "▁Де"
+          },
+          {
+            "start_ms": 1640,
+            "text": "ф"
+          },
+          {
+            "start_ms": 1920,
+            "text": "ми"
+          },
+          {
+            "start_ms": 2200,
+            "text": "н"
+          },
+          {
+            "start_ms": 2360,
+            "text": "с"
+          }
+        ],
+        "wall_ms": 29
+      },
+      {
+        "input": "medium-8s",
+        "audio_ms": 8000,
+        "queue_ms": 0,
+        "asr_ms": 30,
+        "tokens": [
+          {
+            "start_ms": 1320,
+            "text": "▁D"
+          },
+          {
+            "start_ms": 1400,
+            "text": "e"
+          },
+          {
+            "start_ms": 1560,
+            "text": "f"
+          },
+          {
+            "start_ms": 1880,
+            "text": "m"
+          },
+          {
+            "start_ms": 2040,
+            "text": "in"
+          },
+          {
+            "start_ms": 2400,
+            "text": "s"
+          },
+          {
+            "start_ms": 3680,
+            "text": "▁C"
+          },
+          {
+            "start_ms": 3920,
+            "text": "o"
+          },
+          {
+            "start_ms": 4000,
+            "text": "m"
+          },
+          {
+            "start_ms": 4120,
+            "text": "p"
+          },
+          {
+            "start_ms": 4280,
+            "text": "er"
+          },
+          {
+            "start_ms": 4560,
+            "text": "in"
+          },
+          {
+            "start_ms": 4800,
+            "text": "g"
+          },
+          {
+            "start_ms": 5760,
+            "text": "▁"
+          },
+          {
+            "start_ms": 5840,
+            "text": "W"
+          },
+          {
+            "start_ms": 6000,
+            "text": "h"
+          },
+          {
+            "start_ms": 6080,
+            "text": "a"
+          },
+          {
+            "start_ms": 6120,
+            "text": "t"
+          },
+          {
+            "start_ms": 6200,
+            "text": "▁"
+          },
+          {
+            "start_ms": 6280,
+            "text": "I"
+          },
+          {
+            "start_ms": 6400,
+            "text": "s"
+          },
+          {
+            "start_ms": 6520,
+            "text": "▁N"
+          },
+          {
+            "start_ms": 6680,
+            "text": "e"
+          },
+          {
+            "start_ms": 6760,
+            "text": "t"
+          },
+          {
+            "start_ms": 6880,
+            "text": "▁"
+          },
+          {
+            "start_ms": 7000,
+            "text": "n"
+          },
+          {
+            "start_ms": 7080,
+            "text": "e"
+          },
+          {
+            "start_ms": 7160,
+            "text": "w"
+          }
+        ],
+        "wall_ms": 33
+      },
+      {
+        "input": "long-16.9s",
+        "audio_ms": 16937,
+        "queue_ms": 0,
+        "asr_ms": 65,
+        "tokens": [
+          {
+            "start_ms": 1320,
+            "text": "▁D"
+          },
+          {
+            "start_ms": 1400,
+            "text": "e"
+          },
+          {
+            "start_ms": 1560,
+            "text": "f"
+          },
+          {
+            "start_ms": 1880,
+            "text": "m"
+          },
+          {
+            "start_ms": 2000,
+            "text": "in"
+          },
+          {
+            "start_ms": 2400,
+            "text": "s"
+          },
+          {
+            "start_ms": 3680,
+            "text": "▁C"
+          },
+          {
+            "start_ms": 3920,
+            "text": "o"
+          },
+          {
+            "start_ms": 4000,
+            "text": "m"
+          },
+          {
+            "start_ms": 4120,
+            "text": "p"
+          },
+          {
+            "start_ms": 4280,
+            "text": "er"
+          },
+          {
+            "start_ms": 4560,
+            "text": "in"
+          },
+          {
+            "start_ms": 4760,
+            "text": "g"
+          },
+          {
+            "start_ms": 5720,
+            "text": "▁"
+          },
+          {
+            "start_ms": 5880,
+            "text": "W"
+          },
+          {
+            "start_ms": 5960,
+            "text": "h"
+          },
+          {
+            "start_ms": 6040,
+            "text": "a"
+          },
+          {
+            "start_ms": 6120,
+            "text": "t"
+          },
+          {
+            "start_ms": 6200,
+            "text": "▁"
+          },
+          {
+            "start_ms": 6280,
+            "text": "i"
+          },
+          {
+            "start_ms": 6360,
+            "text": "s"
+          },
+          {
+            "start_ms": 6480,
+            "text": "▁"
+          },
+          {
+            "start_ms": 6560,
+            "text": "n"
+          },
+          {
+            "start_ms": 6640,
+            "text": "e"
+          },
+          {
+            "start_ms": 6720,
+            "text": "t"
+          },
+          {
+            "start_ms": 6840,
+            "text": "▁"
+          },
+          {
+            "start_ms": 6960,
+            "text": "n"
+          },
+          {
+            "start_ms": 7080,
+            "text": "e"
+          },
+          {
+            "start_ms": 7160,
+            "text": "w"
+          },
+          {
+            "start_ms": 8160,
+            "text": "▁"
+          },
+          {
+            "start_ms": 8200,
+            "text": "w"
+          },
+          {
+            "start_ms": 8240,
+            "text": "h"
+          },
+          {
+            "start_ms": 8280,
+            "text": "a"
+          },
+          {
+            "start_ms": 8320,
+            "text": "t"
+          },
+          {
+            "start_ms": 8360,
+            "text": "▁"
+          },
+          {
+            "start_ms": 8400,
+            "text": "i"
+          },
+          {
+            "start_ms": 8480,
+            "text": "s"
+          },
+          {
+            "start_ms": 8520,
+            "text": "▁"
+          },
+          {
+            "start_ms": 8560,
+            "text": "t"
+          },
+          {
+            "start_ms": 8560,
+            "text": "h"
+          },
+          {
+            "start_ms": 8600,
+            "text": "e"
+          },
+          {
+            "start_ms": 8640,
+            "text": "▁"
+          },
+          {
+            "start_ms": 8680,
+            "text": "d"
+          },
+          {
+            "start_ms": 8720,
+            "text": "i"
+          },
+          {
+            "start_ms": 8760,
+            "text": "f"
+          },
+          {
+            "start_ms": 8800,
+            "text": "f"
+          },
+          {
+            "start_ms": 8880,
+            "text": "er"
+          },
+          {
+            "start_ms": 8960,
+            "text": "en"
+          },
+          {
+            "start_ms": 9040,
+            "text": "t"
+          },
+          {
+            "start_ms": 9040,
+            "text": "s"
+          },
+          {
+            "start_ms": 9120,
+            "text": "▁"
+          },
+          {
+            "start_ms": 9120,
+            "text": "b"
+          },
+          {
+            "start_ms": 9200,
+            "text": "e"
+          },
+          {
+            "start_ms": 9240,
+            "text": "t"
+          },
+          {
+            "start_ms": 9320,
+            "text": "w"
+          },
+          {
+            "start_ms": 9360,
+            "text": "e"
+          },
+          {
+            "start_ms": 9400,
+            "text": "en"
+          },
+          {
+            "start_ms": 9520,
+            "text": "▁"
+          },
+          {
+            "start_ms": 9560,
+            "text": "t"
+          },
+          {
+            "start_ms": 9600,
+            "text": "h"
+          },
+          {
+            "start_ms": 9640,
+            "text": "e"
+          },
+          {
+            "start_ms": 9680,
+            "text": "▁"
+          },
+          {
+            "start_ms": 9800,
+            "text": "o"
+          },
+          {
+            "start_ms": 9920,
+            "text": "l"
+          },
+          {
+            "start_ms": 10040,
+            "text": "d"
+          },
+          {
+            "start_ms": 10360,
+            "text": "▁"
+          },
+          {
+            "start_ms": 10480,
+            "text": "c"
+          },
+          {
+            "start_ms": 10600,
+            "text": "o"
+          },
+          {
+            "start_ms": 10720,
+            "text": "d"
+          },
+          {
+            "start_ms": 10800,
+            "text": "e"
+          },
+          {
+            "start_ms": 10880,
+            "text": "▁"
+          },
+          {
+            "start_ms": 10960,
+            "text": "an"
+          },
+          {
+            "start_ms": 11040,
+            "text": "d"
+          },
+          {
+            "start_ms": 11080,
+            "text": "▁"
+          },
+          {
+            "start_ms": 11120,
+            "text": "t"
+          },
+          {
+            "start_ms": 11160,
+            "text": "h"
+          },
+          {
+            "start_ms": 11160,
+            "text": "e"
+          },
+          {
+            "start_ms": 11200,
+            "text": "▁"
+          },
+          {
+            "start_ms": 11240,
+            "text": "n"
+          },
+          {
+            "start_ms": 11320,
+            "text": "e"
+          },
+          {
+            "start_ms": 11400,
+            "text": "t"
+          },
+          {
+            "start_ms": 11480,
+            "text": "▁"
+          },
+          {
+            "start_ms": 11520,
+            "text": "n"
+          },
+          {
+            "start_ms": 11600,
+            "text": "e"
+          },
+          {
+            "start_ms": 11640,
+            "text": "w"
+          },
+          {
+            "start_ms": 11720,
+            "text": "▁"
+          },
+          {
+            "start_ms": 11800,
+            "text": "c"
+          },
+          {
+            "start_ms": 11880,
+            "text": "o"
+          },
+          {
+            "start_ms": 12000,
+            "text": "d"
+          },
+          {
+            "start_ms": 12080,
+            "text": "e"
+          },
+          {
+            "start_ms": 12160,
+            "text": "."
+          },
+          {
+            "start_ms": 14160,
+            "text": "▁F"
+          },
+          {
+            "start_ms": 14240,
+            "text": "u"
+          },
+          {
+            "start_ms": 14280,
+            "text": "g"
+          },
+          {
+            "start_ms": 14480,
+            "text": "▁T"
+          },
+          {
+            "start_ms": 14520,
+            "text": "h"
+          },
+          {
+            "start_ms": 14560,
+            "text": "er"
+          },
+          {
+            "start_ms": 14680,
+            "text": "▁P"
+          },
+          {
+            "start_ms": 14760,
+            "text": "r"
+          },
+          {
+            "start_ms": 14800,
+            "text": "o"
+          },
+          {
+            "start_ms": 14840,
+            "text": "b"
+          },
+          {
+            "start_ms": 14920,
+            "text": "le"
+          },
+          {
+            "start_ms": 15040,
+            "text": "m"
+          },
+          {
+            "start_ms": 15120,
+            "text": "s"
+          },
+          {
+            "start_ms": 15200,
+            "text": "▁"
+          },
+          {
+            "start_ms": 15280,
+            "text": "an"
+          },
+          {
+            "start_ms": 15320,
+            "text": "d"
+          },
+          {
+            "start_ms": 15520,
+            "text": "▁"
+          },
+          {
+            "start_ms": 15560,
+            "text": "a"
+          },
+          {
+            "start_ms": 15680,
+            "text": "t"
+          },
+          {
+            "start_ms": 15960,
+            "text": "▁D"
+          },
+          {
+            "start_ms": 16080,
+            "text": "i"
+          },
+          {
+            "start_ms": 16160,
+            "text": "f"
+          },
+          {
+            "start_ms": 16240,
+            "text": "f"
+          },
+          {
+            "start_ms": 16320,
+            "text": "er"
+          },
+          {
+            "start_ms": 16440,
+            "text": "en"
+          },
+          {
+            "start_ms": 16560,
+            "text": "t"
+          },
+          {
+            "start_ms": 16640,
+            "text": "s"
+          }
+        ],
+        "wall_ms": 71
+      }
+    ],
+    "load": {
+      "result": {
+        "device": "Apple M4 Neural Engine (Core ML)",
+        "load_ms": 61,
+        "loaded": "gigaam"
+      },
+      "model": "gigaam"
+    },
+    "first": {
+      "tokens": [
+        {
+          "start_ms": 1320,
+          "text": "▁Де"
+        },
+        {
+          "start_ms": 1640,
+          "text": "ф"
+        },
+        {
+          "start_ms": 1920,
+          "text": "ми"
+        },
+        {
+          "start_ms": 2200,
+          "text": "н"
+        },
+        {
+          "start_ms": 2360,
+          "text": "с"
+        }
+      ],
+      "asr_ms": 38,
+      "queue_ms": 0,
+      "wall_ms": 40,
+      "audio_ms": 4000
+    },
+    "worker_restart": {
+      "old": 23609,
+      "new": 24561
+    },
+    "health": {
+      "ok": true,
+      "uptime_s": 379,
+      "memory": {
+        "rusage_ok": true,
+        "neural_bytes": 0,
+        "neural_lifetime_max_bytes": 0,
+        "phys_footprint_lifetime_max_bytes": 15680064,
+        "resident_bytes": 22757376,
+        "phys_footprint_bytes": 9208384,
+        "rusage_api": "RUSAGE_INFO_V6",
+        "pid": 23608,
+        "neural_interval_max_bytes": 0,
+        "compressed_bytes": 0,
+        "phys_footprint_interval_max_bytes": 15680064,
+        "task_vm_info_ok": true
+      },
+      "worker": {
+        "event_waiters": 0,
+        "retired_sessions": 0,
+        "restarts": 1,
+        "session_buffers": 0,
+        "models": [
+          {
+            "device": null,
+            "failed": 0,
+            "loaded": false,
+            "uptime_s": 0,
+            "model": "gigaam",
+            "done": 1,
+            "inflight": 0,
+            "queued_interactive": 0
+          },
+          {
+            "device": null,
+            "failed": 0,
+            "loaded": false,
+            "uptime_s": 0,
+            "model": "parakeet-ultra",
+            "done": 1,
+            "inflight": 0,
+            "queued_interactive": 0
+          }
+        ],
+        "sessions": 0,
+        "pending_replies": 0,
+        "generation": 2,
+        "pid": 24561
+      }
+    }
+  }
+}

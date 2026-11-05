@@ -39,7 +39,6 @@ public final class HTTPServer: @unchecked Sendable {
     private let listener: NWListener
     private let handler: @Sendable (HTTPRequest) async -> HTTPResponse
     private let queue = DispatchQueue(label: "speech-runtime.http", attributes: .concurrent)
-    private let maxBody = 256 * 1024 * 1024
 
     public init(port: UInt16, handler: @escaping @Sendable (HTTPRequest) async -> HTTPResponse) throws {
         let params = NWParameters.tcp
@@ -49,10 +48,24 @@ public final class HTTPServer: @unchecked Sendable {
         self.handler = handler
     }
 
+    /// Hard limits for one loopback request. Clients are few and trusted-ish, but a malformed or
+    /// hostile one must not make the daemon allocate without bound or hold a socket open forever.
+    enum Limits {
+        static let headerBytes = 32 * 1024
+        static let headerCount = 100
+        static let bodyBytes = 256 * 1024 * 1024
+        static let requestTimeout: TimeInterval = 30
+    }
+
     public func start() {
         listener.newConnectionHandler = { [weak self] connection in
             guard let self else { return }
             connection.start(queue: self.queue)
+            // A client that opened a socket and stalled would otherwise pin the connection (and
+            // its buffer) until the peer goes away. `cancel` on a finished connection is a no-op.
+            self.queue.asyncAfter(deadline: .now() + Limits.requestTimeout) {
+                connection.cancel()
+            }
             self.receive(on: connection, buffer: Data())
         }
         listener.start(queue: queue)
@@ -68,17 +81,20 @@ public final class HTTPServer: @unchecked Sendable {
             var buffer = buffer
             if let data { buffer.append(data) }
 
-            if let parsed = Self.parse(buffer), parsed.request.body.count >= parsed.contentLength {
+            switch Self.parse(buffer) {
+            case .ready(let parsed) where parsed.request.body.count >= parsed.contentLength:
                 let request = parsed.request
                 Task {
                     let response = await self.handler(request)
                     self.write(response, to: connection)
                 }
                 return
-            }
-            if buffer.count > self.maxBody {
-                self.write(.error("request too large", status: 413), to: connection)
+            case .rejected(let failure):
+                // Reject before the body arrives: an oversized or malformed declaration is enough.
+                self.write(.error(failure.message, status: failure.status), to: connection)
                 return
+            default:
+                break
             }
             if isComplete || error != nil {
                 connection.cancel()
@@ -113,9 +129,52 @@ public final class HTTPServer: @unchecked Sendable {
         case 404: return "Not Found"
         case 409: return "Conflict"
         case 413: return "Payload Too Large"
+        case 431: return "Request Header Fields Too Large"
         case 500: return "Internal Server Error"
         case 503: return "Service Unavailable"
         default: return "Status"
+        }
+    }
+
+    /// Parser verdicts. `incomplete` means "read more bytes"; the daemon never guesses a default
+    /// for a value the client declared, and never dispatches a request it could not fully frame.
+    enum ParseOutcome {
+        case incomplete
+        case ready(Parsed)
+        case rejected(ParseFailure)
+    }
+
+    /// Framing errors the client can be told about. They are answered before the body is read.
+    enum ParseFailure: Error, Equatable {
+        case malformedRequestLine
+        case malformedHeader
+        case duplicateContentLength
+        case invalidContentLength
+        case unsupportedTransferEncoding
+        case headersTooLarge
+        case tooManyHeaders
+        case bodyTooLarge
+
+        var status: Int {
+            switch self {
+            case .unsupportedTransferEncoding: return 501
+            case .bodyTooLarge: return 413
+            case .headersTooLarge, .tooManyHeaders: return 431
+            default: return 400
+            }
+        }
+
+        var message: String {
+            switch self {
+            case .unsupportedTransferEncoding: return "transfer-encoding is not supported"
+            case .bodyTooLarge: return "request body too large"
+            case .headersTooLarge: return "request headers too large"
+            case .tooManyHeaders: return "too many headers"
+            case .duplicateContentLength: return "conflicting content-length headers"
+            case .invalidContentLength: return "invalid content-length header"
+            case .malformedHeader: return "malformed header line"
+            case .malformedRequestLine: return "malformed request line"
+            }
         }
     }
 
@@ -124,16 +183,32 @@ public final class HTTPServer: @unchecked Sendable {
         var contentLength: Int
     }
 
-    static func parse(_ buffer: Data) -> Parsed? {
+    static func parse(_ buffer: Data) -> ParseOutcome {
         let separator = Data([13, 10, 13, 10])
-        guard let range = buffer.range(of: separator) else { return nil }
+        guard let range = buffer.range(of: separator) else {
+            // No header terminator yet: bounded so a client cannot grow the buffer forever.
+            return buffer.count > Limits.headerBytes ? .rejected(.headersTooLarge) : .incomplete
+        }
+        // A block that arrives *with* its terminator in one burst skips the unterminated-prefix
+        // check below, so the limit has to be applied to the framed head as well; otherwise an
+        // oversized header block is parsed and dispatched instead of answered with 431.
+        if buffer.distance(from: buffer.startIndex, to: range.lowerBound) > Limits.headerBytes {
+            return .rejected(.headersTooLarge)
+        }
         let headData = buffer[buffer.startIndex..<range.lowerBound]
-        guard let head = String(data: headData, encoding: .utf8) else { return nil }
+        guard let head = String(data: headData, encoding: .utf8) else {
+            return .rejected(.malformedRequestLine)
+        }
         var lines = head.components(separatedBy: "\r\n")
-        guard let requestLine = lines.first else { return nil }
+        guard let requestLine = lines.first, !requestLine.isEmpty else {
+            return .rejected(.malformedRequestLine)
+        }
         lines.removeFirst()
         let parts = requestLine.split(separator: " ")
-        guard parts.count >= 2 else { return nil }
+        guard parts.count >= 2 else { return .rejected(.malformedRequestLine) }
+        if parts.count >= 3, !parts[2].hasPrefix("HTTP/1.") {
+            return .rejected(.malformedRequestLine)
+        }
         let method = String(parts[0])
         let target = String(parts[1])
         let split = target.split(separator: "?", maxSplits: 1, omittingEmptySubsequences: false)
@@ -147,20 +222,41 @@ public final class HTTPServer: @unchecked Sendable {
                 query[key] = value
             }
         }
+        guard lines.count <= Limits.headerCount else { return .rejected(.tooManyHeaders) }
+
         var headers: [String: String] = [:]
+        var contentLength: Int?
         for line in lines where !line.isEmpty {
-            guard let colon = line.firstIndex(of: ":") else { continue }
+            // Obsolete line folding: continuation lines are ambiguous with the terminator.
+            if line.hasPrefix(" ") || line.hasPrefix("\t") { return .rejected(.malformedHeader) }
+            guard let colon = line.firstIndex(of: ":") else { return .rejected(.malformedHeader) }
             let key = line[..<colon].trimmingCharacters(in: .whitespaces).lowercased()
+            let isToken = !key.isEmpty && key.allSatisfy { char in
+                char.isASCII && (char.isLetter || char.isNumber || "-_".contains(char))
+            }
+            guard isToken else { return .rejected(.malformedHeader) }
             let value = line[line.index(after: colon)...].trimmingCharacters(in: .whitespaces)
+            // Chunked framing would need a different body reader; refuse instead of misreading it.
+            if key == "transfer-encoding" { return .rejected(.unsupportedTransferEncoding) }
+            if key == "content-length" {
+                // Digits only: `Int("+5")` and `Int(" 5")` would otherwise be accepted silently.
+                let digits = !value.isEmpty && value.allSatisfy { $0.isASCII && $0.isNumber }
+                guard digits, let declared = Int(value) else { return .rejected(.invalidContentLength) }
+                if let existing = contentLength, existing != declared {
+                    return .rejected(.duplicateContentLength)
+                }
+                contentLength = declared
+            }
             headers[key] = value
         }
-        let contentLength = Int(headers["content-length"] ?? "0") ?? 0
+        let length = contentLength ?? 0
+        guard length <= Limits.bodyBytes else { return .rejected(.bodyTooLarge) }
         let bodyStart = range.upperBound
         let available = buffer.distance(from: bodyStart, to: buffer.endIndex)
-        let body = available >= contentLength ? buffer[bodyStart..<buffer.index(bodyStart, offsetBy: contentLength)] : Data()
-        return Parsed(
+        let body = available >= length ? buffer[bodyStart..<buffer.index(bodyStart, offsetBy: length)] : Data()
+        return .ready(Parsed(
             request: HTTPRequest(method: method, path: path, query: query, headers: headers, body: Data(body)),
-            contentLength: contentLength
-        )
+            contentLength: length
+        ))
     }
 }

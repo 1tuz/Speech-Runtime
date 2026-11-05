@@ -1,0 +1,1495 @@
+{
+ "started": "2026-11-05T18:51:47",
+ "options": {
+  "mode": "M3",
+  "series": 3,
+  "rps": 20.0,
+  "seconds": 3.0,
+  "cooldown": 3.0,
+  "port": 8591,
+  "out": "/Users/antony/Documents/projects/Speech-Runtime/experiments/runtime_eval/results"
+ },
+ "epoch": {
+  "note": "each mode uses its own daemon process; series share one process"
+ },
+ "M3": {
+  "mode": "M3",
+  "path": "/health",
+  "series": [
+   {
+    "series": 1,
+    "load": {
+     "requests": 60,
+     "errors": {},
+     "seconds": 2.96,
+     "achieved_rps": 20.2,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": 6.2,
+     "rss_mib": 13.4,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": 4.1,
+     "rss_mib": 11.3,
+     "samples": 5
+    }
+   },
+   {
+    "series": 2,
+    "load": {
+     "requests": 60,
+     "errors": {},
+     "seconds": 2.96,
+     "achieved_rps": 20.2,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": 7.9,
+     "rss_mib": 15.1,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": 4.1,
+     "rss_mib": 11.3,
+     "samples": 5
+    }
+   },
+   {
+    "series": 3,
+    "load": {
+     "requests": 60,
+     "errors": {},
+     "seconds": 2.96,
+     "achieved_rps": 20.3,
+     "target": "20.0 rps x 3.0s (ask 60)"
+    },
+    "settled": {
+     "footprint_mib": 9.6,
+     "rss_mib": 16.8,
+     "samples": 4
+    },
+    "settled_baseline": {
+     "footprint_mib": 4.1,
+     "rss_mib": 11.3,
+     "samples": 5
+    },
+    "counters_final": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10109504,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10109504,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10109504,
+      "resident_bytes": 17678336,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "counters_samples": 30
+   }
+  ],
+  "rows": [
+   {
+    "t": 1793893910.8633149,
+    "label": "baseline",
+    "daemon": {
+     "ri_resident_size": 11599872,
+     "ri_physical_footprint_bytes": 4031040,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6635520,
+     "ri_physical_footprint_bytes": 2015736,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4145728,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4145728,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4145728,
+      "resident_bytes": 11714560,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893911.926429,
+    "label": "baseline",
+    "daemon": {
+     "ri_resident_size": 11763712,
+     "ri_physical_footprint_bytes": 4194880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6651904,
+     "ri_physical_footprint_bytes": 2032120,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4260416,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4260416,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4260416,
+      "resident_bytes": 11829248,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893912.985551,
+    "label": "baseline",
+    "daemon": {
+     "ri_resident_size": 11845632,
+     "ri_physical_footprint_bytes": 4276800,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6651904,
+     "ri_physical_footprint_bytes": 2032120,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4325952,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4325952,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4325952,
+      "resident_bytes": 11894784,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893914.0396218,
+    "label": "baseline",
+    "daemon": {
+     "ri_resident_size": 11911168,
+     "ri_physical_footprint_bytes": 4342336,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6651904,
+     "ri_physical_footprint_bytes": 2032120,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4391488,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4391488,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4391488,
+      "resident_bytes": 11960320,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893915.100357,
+    "label": "baseline",
+    "daemon": {
+     "ri_resident_size": 11960320,
+     "ri_physical_footprint_bytes": 4391488,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6668288,
+     "ri_physical_footprint_bytes": 2048504,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4457024,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4457024,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4457024,
+      "resident_bytes": 12025856,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893915.870809,
+    "label": "series1-load",
+    "daemon": {
+     "ri_resident_size": 12025856,
+     "ri_physical_footprint_bytes": 4457024,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6668288,
+     "ri_physical_footprint_bytes": 2048504,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4506176,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4506176,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4506176,
+      "resident_bytes": 12075008,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893915.923103,
+    "label": "series1-load",
+    "daemon": {
+     "ri_resident_size": 12140544,
+     "ri_physical_footprint_bytes": 4571712,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6684672,
+     "ri_physical_footprint_bytes": 2064888,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 4604480,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 4604480,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 4604480,
+      "resident_bytes": 12173312,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893916.953598,
+    "label": "series1-load",
+    "daemon": {
+     "ri_resident_size": 12894208,
+     "ri_physical_footprint_bytes": 5325376,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6848512,
+     "ri_physical_footprint_bytes": 2228728,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 5358144,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 5358144,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 5358144,
+      "resident_bytes": 12926976,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893918.014675,
+    "label": "series1-load",
+    "daemon": {
+     "ri_resident_size": 13533184,
+     "ri_physical_footprint_bytes": 5964352,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6864896,
+     "ri_physical_footprint_bytes": 2245112,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 5997120,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 5997120,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 5997120,
+      "resident_bytes": 13565952,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893918.886539,
+    "label": "series1-settle",
+    "daemon": {
+     "ri_resident_size": 14024704,
+     "ri_physical_footprint_bytes": 6455872,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6488640,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6488640,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6488640,
+      "resident_bytes": 14057472,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893918.93636,
+    "label": "series1-settle",
+    "daemon": {
+     "ri_resident_size": 14057472,
+     "ri_physical_footprint_bytes": 6488640,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6521408,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6521408,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6521408,
+      "resident_bytes": 14090240,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893919.971575,
+    "label": "series1-settle",
+    "daemon": {
+     "ri_resident_size": 14090240,
+     "ri_physical_footprint_bytes": 6521408,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6554176,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6554176,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6554176,
+      "resident_bytes": 14123008,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893921.027914,
+    "label": "series1-settle",
+    "daemon": {
+     "ri_resident_size": 14123008,
+     "ri_physical_footprint_bytes": 6554176,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6570560,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6570560,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6570560,
+      "resident_bytes": 14139392,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893921.94701,
+    "label": "series2-load",
+    "daemon": {
+     "ri_resident_size": 14139392,
+     "ri_physical_footprint_bytes": 6570560,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6586944,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6586944,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6586944,
+      "resident_bytes": 14155776,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893921.99981,
+    "label": "series2-load",
+    "daemon": {
+     "ri_resident_size": 14204928,
+     "ri_physical_footprint_bytes": 6636096,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 6652480,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 6652480,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 6652480,
+      "resident_bytes": 14221312,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893923.0356889,
+    "label": "series2-load",
+    "daemon": {
+     "ri_resident_size": 14745600,
+     "ri_physical_footprint_bytes": 7176768,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 7209536,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 7209536,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 7209536,
+      "resident_bytes": 14778368,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893924.100302,
+    "label": "series2-load",
+    "daemon": {
+     "ri_resident_size": 15302656,
+     "ri_physical_footprint_bytes": 7733824,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6881280,
+     "ri_physical_footprint_bytes": 2261496,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 7750208,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 7750208,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 7750208,
+      "resident_bytes": 15319040,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893924.964362,
+    "label": "series2-settle",
+    "daemon": {
+     "ri_resident_size": 15826944,
+     "ri_physical_footprint_bytes": 8258112,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8290880,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8290880,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8290880,
+      "resident_bytes": 15859712,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893925.0124202,
+    "label": "series2-settle",
+    "daemon": {
+     "ri_resident_size": 15859712,
+     "ri_physical_footprint_bytes": 8290880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8307264,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8307264,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8307264,
+      "resident_bytes": 15876096,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893926.048243,
+    "label": "series2-settle",
+    "daemon": {
+     "ri_resident_size": 15876096,
+     "ri_physical_footprint_bytes": 8307264,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8340032,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8340032,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8340032,
+      "resident_bytes": 15908864,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893927.111809,
+    "label": "series2-settle",
+    "daemon": {
+     "ri_resident_size": 15908864,
+     "ri_physical_footprint_bytes": 8340032,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8372800,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8372800,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8372800,
+      "resident_bytes": 15941632,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893928.022978,
+    "label": "series3-load",
+    "daemon": {
+     "ri_resident_size": 15941632,
+     "ri_physical_footprint_bytes": 8372800,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8389184,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8389184,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8389184,
+      "resident_bytes": 15958016,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893928.07266,
+    "label": "series3-load",
+    "daemon": {
+     "ri_resident_size": 16023552,
+     "ri_physical_footprint_bytes": 8454720,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 8471104,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 8471104,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 8471104,
+      "resident_bytes": 16039936,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893929.1080372,
+    "label": "series3-load",
+    "daemon": {
+     "ri_resident_size": 16531456,
+     "ri_physical_footprint_bytes": 8962624,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 9028160,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 9028160,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 9028160,
+      "resident_bytes": 16596992,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893930.169748,
+    "label": "series3-load",
+    "daemon": {
+     "ri_resident_size": 17121280,
+     "ri_physical_footprint_bytes": 9552448,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 9601600,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 9601600,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 9601600,
+      "resident_bytes": 17170432,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893931.0369291,
+    "label": "series3-settle",
+    "daemon": {
+     "ri_resident_size": 17596416,
+     "ri_physical_footprint_bytes": 10027584,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10060352,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10060352,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10060352,
+      "resident_bytes": 17629184,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893931.086736,
+    "label": "series3-settle",
+    "daemon": {
+     "ri_resident_size": 17629184,
+     "ri_physical_footprint_bytes": 10060352,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10093120,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10093120,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10093120,
+      "resident_bytes": 17661952,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893932.122504,
+    "label": "series3-settle",
+    "daemon": {
+     "ri_resident_size": 17661952,
+     "ri_physical_footprint_bytes": 10093120,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10109504,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10109504,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10109504,
+      "resident_bytes": 17678336,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893933.18474,
+    "label": "series3-settle",
+    "daemon": {
+     "ri_resident_size": 17629184,
+     "ri_physical_footprint_bytes": 10060352,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10109504,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10109504,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10076736,
+      "resident_bytes": 17645568,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": null,
+    "threads": null
+   },
+   {
+    "t": 1793893934.098061,
+    "label": "end",
+    "daemon": {
+     "ri_resident_size": 17661952,
+     "ri_physical_footprint_bytes": 10093120,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "worker_pid": 25322,
+    "worker": {
+     "ri_resident_size": 6897664,
+     "ri_physical_footprint_bytes": 2277880,
+     "ri_neural_footprint": 0,
+     "ri_lifetime_max_neural_footprint": 0,
+     "ri_interval_max_neural_footprint": 0
+    },
+    "counters": {
+     "worker": {
+      "pending_replies": 0,
+      "event_waiters": 0,
+      "session_buffers": 0,
+      "retired_sessions": 0,
+      "restarts": 0,
+      "sessions": 0
+     },
+     "streams": 0,
+     "memory": {
+      "neural_interval_max_bytes": 0,
+      "phys_footprint_lifetime_max_bytes": 10109504,
+      "task_vm_info_ok": true,
+      "pid": 25321,
+      "rusage_ok": true,
+      "neural_bytes": 0,
+      "phys_footprint_interval_max_bytes": 10109504,
+      "rusage_api": "RUSAGE_INFO_V6",
+      "compressed_bytes": 0,
+      "phys_footprint_bytes": 10109504,
+      "resident_bytes": 17678336,
+      "neural_lifetime_max_bytes": 0
+     }
+    },
+    "fds": 15,
+    "threads": null
+   }
+  ],
+  "verdict": {
+   "status": "PASS",
+   "delta_mib": 1.7,
+   "limit_mib": 32.0,
+   "detail": "settled footprint series2=7.9 MiB series3=9.6 MiB delta=1.7 MiB"
+  }
+ }
+}

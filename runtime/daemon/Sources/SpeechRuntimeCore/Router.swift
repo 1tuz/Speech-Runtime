@@ -57,10 +57,20 @@ public struct Router: Sendable {
             "pid": await worker.pid ?? -1,
             "restarts": await worker.restartCount,
         ]
+        let internals = await worker.internals()
+        workerState["pending_replies"] = internals.pendingReplies
+        workerState["event_waiters"] = internals.eventWaiters
+        workerState["session_buffers"] = internals.sessionBuffers
+        workerState["retired_sessions"] = internals.retiredSessions
         do {
             let stats = try await worker.stats()
             workerState["models"] = stats["models"] ?? []
             workerState["sessions"] = stats["sessions"] ?? 0
+            workerState["ending_sessions"] = stats["ending_sessions"] ?? 0
+            // The worker's own counters are reported by the worker: `task_vm_info` and
+            // `rusage` for its pid are not visible from the daemon without a task port, so
+            // copying them here is the only way `/health` can show the child's footprint.
+            workerState["memory"] = stats["memory"] ?? [:]
             workerState["generation"] = await worker.generation
         } catch {
             workerState["error"] = "\(error)"
@@ -71,6 +81,7 @@ public struct Router: Sendable {
             "ok": true,
             "version": "0.1.0",
             "uptime_s": Int(Date().timeIntervalSince(startedAt)),
+            "memory": MemoryReport.capture().json,
             "worker": workerState,
             "streams": await sessions.activeCount(),
         ])

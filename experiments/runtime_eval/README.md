@@ -19,6 +19,12 @@
 | `runtime_client.py` | stdlib HTTP-клиент контракта + CLI (`health`, `models`, `load`, `unload`, `transcribe`, `stream`) |
 | `pipeline_eval.py` | `make-audio` / `run` / `sweep` — сборка окна, прогон, скоринг, свип |
 | `tests/test_pipeline_eval.py` | офлайн-тесты чистых частей: `python3 -m unittest`, без демона и моделей |
+| `memprobe.py` | общий внешний сэмплер памяти процесса (обёртка над `tools/memory_probe`) |
+| `memory_matrix.py` | `M0` / `M1` / `M3` — матрица локализации роста памяти (§3.2 RESEARCH.md) |
+| `ane1.py` | ANE-последовательность: current vs lifetime/interval peak по своим процессам |
+| `protocol_checks.py` | негативные HTTP-проверки по raw-сокету + живучесть демона + приватность лога |
+| `environment.py` | артефакт `results/environment.json` (§3.1/§7: ОС, железо, тулчейны, commit, хэши) |
+| `soak.py` / `SOAK.md` | длительные и аварийные сценарии (см. `SOAK.md`) |
 
 Все команды выполняются из `experiments/`:
 
@@ -114,6 +120,73 @@ SHA-256 WAV, UTC-времена начала/конца, машина (`platform
 `baseline_per_utterance` (они — свойство аудио, а не конфига). Выход: JSON +
 markdown-таблица (`config | WER | CER | finals | refs | utt mean/p50 | asr | queue |
 e2e | boundary del/ins`) и базлайны под таблицей.
+
+## `protocol_checks.py`
+
+Негативные HTTP-проверки идут **по raw-сокету**, минуя клиентскую валидацию, поэтому
+под тестом оказывается сама разметка запроса: числа `Content-Length`
+(отрицательные, `+5`, `0x10`, нецифровые, конфликтующие дубликаты), `Transfer-Encoding`,
+сложение строк заголовков, число и размер заголовков, размер тела, отсутствие/подделка
+токена, неизвестный маршрут и метод, битая строка запроса и версия, медленное тело,
+pipelining и «пустой» сокет. Для каждого случая ожидается документированный статус
+(`400`/`401`/`404`/`413`/`431`/`501`), **ровно один** ответ на принятый запрос и
+закрытие соединения. После каждого случая проверяется, что демон жив (`/health`
+отвечает, тот же pid воркера, `restarts = 0`).
+
+Отдельно проверяется приватность: тело запроса содержит канарейку, которая не должна
+появиться в лог-файле демона; там же ищутся грубые маркеры сырых payload-ов
+(`{"`, `"text"`, `"model"`). Порог по заголовкам — граница, а не запрет: отдельный
+юнит-тест даёт блок ровно на лимите и ждёт успешный разбор.
+
+```bash
+python3 -m runtime_eval.protocol_checks                 # демон поднимается сам на 8592
+python3 -m runtime_eval.protocol_checks --include-slow  # + 30-секундный «молчащий» сокет
+```
+
+Артефакт — `results/protocol-checks-<stamp>.json` (кейсы, статусы, число ответов,
+живучесть, найденные маркеры лога, вердикт). Код выхода `0` — только если прошли все кейсы.
+
+## `memory_matrix.py`
+
+Матрица локализации памяти (§3.2 `RESEARCH.md`) на **одном** процессе демона: серия =
+нагрузка, затем тишина (она же охлаждение, её хвост даёт «стабилизированное» значение).
+Раз в секунду снимаются внешние счётчики процесса (rusage V6: current RSS/footprint,
+`neural_footprint`, lifetime/interval максимум) и, если включено, счётчики `/health`
+(`pending_replies`, `event_waiters`, `session_buffers`, `retired_sessions`, сессии).
+`M1` измеряется без `/health`, чтобы не добавлять тот IPC, который он же и исследует.
+
+```bash
+python3 -m runtime_eval.memory_matrix --mode all --series 3 --rps 50 --seconds 60 --cooldown 360
+python3 -m runtime_eval.memory_matrix --mode M1 --series 2 --seconds 20 --cooldown 5
+```
+
+Критерий (§6.3): стабилизированный footprint после второй и третьей одинаковых серий
+отличается **не более чем на 32 МиБ** (`PASS`/`FAIL`; при отсутствии данных — `UNMEASURED`,
+никогда `PASS`). `M0` — idle-контроль без серий: только дрейф. Артефакт —
+`results/memory-matrix-<stamp>.json` (+ `results/matrix-<mode>/`).
+
+## `ane1.py`
+
+ANE-последовательность из §4: загрузка модели, серии `transcribe`, выгрузка, выдержки
+простоя; на каждой точке — раздельно **текущий** `neural_footprint` и **максимумы**
+(lifetime / interval), а не подстановка пика вместо текущего значения. Пиковая величина
+используется только там, где названа пиковой (см. `visibility_boundary` в артефакте:
+виден учёт своих процессов, но не общесистемный ANE).
+
+```bash
+python3 -m runtime_eval.ane1 --quick
+python3 -m runtime_eval.ane1 --repeats 100 --idle 15,60,300
+```
+
+## `environment.py`
+
+`results/environment.json` — ОС и сборка, модель железа (без серийников), RAM, версии
+Swift/Rust/Clang/ffmpeg, режим сборки, commit (+ признак `dirty`), хэши собранных
+бинарников и моделей. Внешний ключ окружения вроде токенов не читается.
+
+```bash
+python3 -m runtime_eval.environment --skip-hashes   # быстро, без чтения многогигабайтных GGUF
+```
 
 ## Что измеряется, а что нет
 

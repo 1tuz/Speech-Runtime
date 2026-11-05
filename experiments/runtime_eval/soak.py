@@ -8,7 +8,9 @@ the end. Every other invocation only talks HTTP to an already-running daemon.
 - `long-session` — one stream held for N minutes, per-utterance latency stages,
   RSS/`phys_footprint` of daemon+worker sampled every 30 s.
 - `multiclient` — concurrent streams (+ optional batch loop); interactive
-  p50/p95, batch wall time, starvation check.
+  p50/p95, batch wall time, starvation check on `queue_ms`/`e2e_ms` p95 vs
+  a no-batch baseline phase over the same audio/clients, finals completeness,
+  `end_reason` counts. Assertion statuses: PASS / FAIL / UNMEASURED / BLOCKED.
 - `crash` — `kill -9` the worker mid-stream; daemon must stay up, the client
   must see an explicit error/ended, `health.restarts >= 1`, a new stream must
   work after the worker reloads.
@@ -128,24 +130,59 @@ def chunk_samples(samples, rate: int, chunk_ms: int):
 
 
 class Assertions:
-    """Named pass/fail collector; falsy `ok` fails the assertion."""
+    """Named status collector for scenario checks.
+
+    Statuses: `PASS`, `FAIL`, `UNMEASURED` (no data to judge, never a PASS),
+    `BLOCKED` (a prerequisite failed so the check could not run). `check()`
+    with `ok=None` records UNMEASURED; `check()` with a bool keeps the
+    historical PASS/FAIL behaviour, so existing callers are unaffected.
+    `all_passed` is true only when every result is PASS.
+    """
 
     def __init__(self) -> None:
         self.results: list[dict] = []
 
     def check(self, name: str, ok, detail=None) -> bool:
+        if ok is None:
+            return self.unmeasured(name, detail)
         passed = bool(ok)
         self.results.append(
-            {"name": name, "pass": passed, "detail": detail if detail is not None else ok}
+            {"name": name, "pass": passed, "status": "PASS" if passed else "FAIL",
+             "detail": detail if detail is not None else ok}
         )
         print(f"  [{'PASS' if passed else 'FAIL'}] {name}: {detail if detail is not None else ok}")
         return passed
 
     __call__ = check
 
+    def unmeasured(self, name: str, detail=None) -> bool:
+        """Record UNMEASURED: missing data must never look like a PASS."""
+        self.results.append(
+            {"name": name, "pass": False, "status": "UNMEASURED", "detail": detail}
+        )
+        print(f"  [UNMEASURED] {name}: {detail}")
+        return False
+
+    def blocked(self, name: str, detail=None) -> bool:
+        """Record BLOCKED: a prerequisite failed, the check could not run."""
+        self.results.append(
+            {"name": name, "pass": False, "status": "BLOCKED", "detail": detail}
+        )
+        print(f"  [BLOCKED] {name}: {detail}")
+        return False
+
     @property
     def all_passed(self) -> bool:
-        return bool(self.results) and all(r["pass"] for r in self.results)
+        return bool(self.results) and all(r["status"] == "PASS" for r in self.results)
+
+
+
+def status_of(result: dict) -> str:
+    """Assertion status string (`PASS`/`FAIL`/`UNMEASURED`/`BLOCKED`); old artifacts default to PASS/FAIL."""
+    status = result.get("status")
+    if status in ("PASS", "FAIL", "UNMEASURED", "BLOCKED"):
+        return status
+    return "PASS" if result.get("pass") else "FAIL"
 
 
 def machine_info() -> dict:
@@ -322,7 +359,8 @@ def run_feeder(
             data = event.get("data", {})
             if name == "final":
                 record = {key: data.get(key) for key in rc.FINAL_FIELDS}
-                record["text"] = data.get("text", "")
+                if "end_reason" in data:  # absent in old daemons -> stays unknown
+                    record["end_reason"] = data.get("end_reason")
                 last_voice_s = (data.get("last_voice_ms") or 0) / 1000.0
                 record["e2e_ms"] = int((time.monotonic() - wall_at(last_voice_s)) * 1000)
                 finals.append(record)
@@ -499,8 +537,103 @@ def _growth_ok(samples: list[dict], who: str, field: str, limit_mib: float) -> b
     return (max(values) - min(values)) <= limit_mib * 1024
 
 
+def _stage_stats(finals: list[dict]) -> dict:
+    """`{stage: percentile_stats}` for `asr_ms`, `queue_ms`, `e2e_ms`."""
+    return {
+        key: percentile_stats([f[key] for f in finals if f.get(key) is not None])
+        for key in ("asr_ms", "queue_ms", "e2e_ms")
+    }
+
+
+def _end_reason_counts(finals: list[dict]) -> dict:
+    """Count finals per `end_reason`; missing/unrecognised reasons count as `unknown`.
+
+    Recognised reasons: `silence`, `max_utterance`, `client_end`. Old runs whose
+    final events carry no `end_reason` field simply report everything as
+    `unknown` — they never fail.
+    """
+    counts: dict[str, int] = {"silence": 0, "max_utterance": 0, "client_end": 0, "unknown": 0}
+    for final in finals:
+        reason = final.get("end_reason")
+        counts[reason if reason in ("silence", "max_utterance", "client_end") else "unknown"] += 1
+    return counts
+
+
+def _finals_complete(results: dict, baseline: dict | None, clients: int) -> tuple[bool, str]:
+    """Every interactive client ended cleanly and produced >= baseline finals.
+
+    `baseline` maps client index -> finals count (or None when there was no
+    baseline phase). Returns (ok, detail).
+    """
+    problems = []
+    for index in range(clients):
+        result = results.get(index)
+        if result is None:
+            problems.append(f"client {index}: no result")
+            continue
+        if not result["ended"] or result["error"] is not None:
+            problems.append(f"client {index}: ended={result['ended']} error={result['error']}")
+        got = len(result["finals"])
+        want = None if baseline is None else baseline.get(index)
+        if want is not None and got < want:
+            problems.append(f"client {index}: finals {got} < baseline {want}")
+    if problems:
+        return False, "; ".join(problems)
+    if baseline is None:
+        return True, "no baseline counts to compare; all streams ended without error"
+    got = sum(len(r["finals"]) for r in results.values())
+    want = sum(baseline.values())
+    return True, f"all clients ended cleanly; finals {got} >= baseline {want}"
+
+
+def _starvation_verdict(
+    interactive: dict, baseline: dict, factor: float = 5.0, abs_ms: float = 2000.0,
+) -> tuple[str, str]:
+    """Starvation verdict for `queue_ms`/`e2e_ms` interactive stages vs baseline.
+
+    Compares interactive p95 `queue_ms`/`e2e_ms` against the SAME stages of the
+    baseline phase (same audio, same client count, no batch). `asr_ms` alone is
+    not a starvation signal: waiting in the queue or for the end-to-end result
+    is exactly what batch contention causes.
+
+    Returns `(status, detail)` where status is `PASS`, `FAIL` or `UNMEASURED`:
+    - FAIL  — some stage's p95 exceeds max(factor * baseline p95, baseline p95 + abs_ms).
+    - UNMEASURED — baseline or measurement stage p95 missing / not enough samples
+      (n < 2 on either side); missing data is never a PASS.
+    """
+    comparisons = []
+    statuses = []
+    for stage in ("queue_ms", "e2e_ms"):
+        meas = interactive.get(stage, {})
+        base = baseline.get(stage, {})
+        p95, base_p95 = meas.get("p95"), base.get("p95")
+        if p95 is None or base_p95 is None or meas.get("n", 0) < 2 or base.get("n", 0) < 2:
+            statuses.append("UNMEASURED")
+            comparisons.append(
+                f"{stage}: p95={p95} (n={meas.get('n')}) vs baseline p95={base_p95} (n={base.get('n')});"
+                " need n>=2 and both p95 present"
+            )
+            continue
+        limit = max(factor * base_p95, base_p95 + abs_ms)
+        verdict = "PASS" if p95 <= limit else "FAIL"
+        statuses.append(verdict)
+        comparisons.append(f"{stage}: p95={p95} vs baseline p95={base_p95} (limit {limit})")
+    if "FAIL" in statuses:
+        return "FAIL", "; ".join(comparisons)
+    if "UNMEASURED" in statuses:
+        return "UNMEASURED", "; ".join(comparisons)
+    return "PASS", "; ".join(comparisons)
+
+
 def scenario_multiclient(args, client: rc.RuntimeClient, samples, rate: int, check) -> dict:
-    """`--clients` concurrent streams; optional `--batch` loop in parallel."""
+    """`--clients` concurrent streams; optional `--batch` loop in parallel.
+
+    With `--batch` the scenario runs in two phases over the SAME audio and the
+    SAME client count: first the interactive streams alone (baseline phase),
+    then the interactive streams again while a batch loop runs (measurement
+    phase). Starvation is judged on `queue_ms`/`e2e_ms` p95 against the
+    baseline phase plus finals completeness — never on `asr_ms` alone.
+    """
     check("model_loaded", _ensure_loaded(client, args.model), args.model)
     baseline_streams = client.health().get("streams")
     results: dict[int, FeedResult] = {}
@@ -508,6 +641,9 @@ def scenario_multiclient(args, client: rc.RuntimeClient, samples, rate: int, che
     batch_stats: dict | None = None
     batch_stop = threading.Event()
     batch_thread: threading.Thread | None = None
+    baseline_results: dict[int, FeedResult] | None = None
+    baseline_stats: dict | None = None
+    baseline_wall_ms: int | None = None
 
     if args.batch:
         def batch_loop() -> None:
@@ -530,7 +666,6 @@ def scenario_multiclient(args, client: rc.RuntimeClient, samples, rate: int, che
             }
 
         batch_thread = threading.Thread(target=batch_loop, daemon=True)
-        batch_thread.start()
 
     def feed(index: int) -> None:
         try:
@@ -538,12 +673,38 @@ def scenario_multiclient(args, client: rc.RuntimeClient, samples, rate: int, che
         except rc.RuntimeError as exc:
             errors[index] = str(exc)
 
-    threads = [threading.Thread(target=feed, args=(i,)) for i in range(args.clients)]
+    def run_streams() -> None:
+        results.clear()
+        threads = [threading.Thread(target=feed, args=(i,)) for i in range(args.clients)]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+
+    def baseline_feed(index: int) -> None:
+        try:
+            baseline_results[index] = run_feeder(client, args.model, samples, rate, args.speed)
+        except rc.RuntimeError as exc:
+            errors[index] = str(exc)
+
+    if args.batch:
+        # Baseline phase: the same streams, the same audio, NO batch.
+        baseline_results = {}
+        threads = [threading.Thread(target=baseline_feed, args=(i,))
+                   for i in range(args.clients)]
+        base_started = time.monotonic()
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        baseline_wall_ms = int((time.monotonic() - base_started) * 1000)
+        for r in baseline_results.values():
+            cleanup_stream(client, r["stream"])
+
     started = time.monotonic()
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+    if args.batch:
+        batch_thread.start()
+    run_streams()
     batch_stop.set()
     if batch_thread is not None:
         batch_thread.join(timeout=120)
@@ -553,42 +714,84 @@ def scenario_multiclient(args, client: rc.RuntimeClient, samples, rate: int, che
     check("all_streams_ok", len(ok_streams) == args.clients,
           f"{len(ok_streams)}/{args.clients} ended without error; errors={errors or 'none'}")
     all_finals = [f for r in results.values() for f in r["finals"]]
-    check("finals_nonempty", len(all_finals) > 0, f"{len(all_finals)} finals")
-    interactive = {
-        key: percentile_stats([f[key] for f in all_finals if f.get(key) is not None])
-        for key in ("asr_ms", "queue_ms", "e2e_ms")
-    }
-    if batch_stats is not None:
-        check("batch_ran", batch_stats["count"] > 0, f"{batch_stats['count']} batch jobs")
-        check(
-            "no_starvation",
-            _no_starvation(interactive["asr_ms"], batch_stats["asr_ms"]),
-            f"interactive p95 asr={interactive['asr_ms']['p95']} ms vs "
-            f"batch p50 asr={batch_stats['asr_ms']['p50']} ms",
-        )
+    reason_counts = _end_reason_counts(all_finals)
+    check("finals_nonempty", len(all_finals) > 0,
+          f"{len(all_finals)} finals; end_reason={reason_counts}")
+    interactive = _stage_stats(all_finals)
+
+    if args.batch:
+        baseline_finals = None
+        if baseline_results is not None:
+            baseline_finals = [f for r in baseline_results.values() for f in r["finals"]]
+            baseline_stats = _stage_stats(baseline_finals)
+
+        baseline_counts = None
+        if baseline_results is not None:
+            baseline_counts = {i: len(r["finals"]) for i, r in baseline_results.items()}
+        complete, complete_detail = _finals_complete(results, baseline_counts, args.clients)
+        if baseline_results is None:
+            check("finals_complete", None,
+                  "no baseline phase results; completeness vs baseline UNMEASURED")
+        else:
+            check("finals_complete", complete, complete_detail)
+
+        check("batch_ran", batch_stats is not None and batch_stats["count"] > 0,
+              f"{(batch_stats or {}).get('count', 0)} batch jobs")
+        if baseline_stats is None or interactive["queue_ms"]["n"] == 0 or interactive["e2e_ms"]["n"] == 0:
+            check.unmeasured(
+                "no_starvation",
+                "baseline or measurement stages missing; starvation cannot be judged "
+                f"(baseline={baseline_stats is not None}, "
+                f"queue_n={interactive['queue_ms']['n']}, e2e_n={interactive['e2e_ms']['n']})",
+            )
+        else:
+            verdict, detail = _starvation_verdict(interactive, baseline_stats)
+            if verdict == "PASS":
+                check("no_starvation", True, detail)
+            elif verdict == "FAIL":
+                check("no_starvation", False, detail)
+            else:
+                check.unmeasured("no_starvation", detail)
+
     streams_after = client.health().get("streams")
     check("streams_back_to_baseline", streams_after == baseline_streams,
           f"{baseline_streams} -> {streams_after}")
     for r in results.values():
         cleanup_stream(client, r["stream"])
-    return {
+    report = {
         "clients": args.clients,
         "wall_ms": wall_ms,
         "per_client": {str(k): {"ended": v["ended"], "error": v["error"],
                                 "finals": len(v["finals"])} for k, v in sorted(results.items())},
         "interactive": interactive,
+        "end_reason_counts": reason_counts,
         "batch": batch_stats,
         "errors": errors,
         "assertions": check.results,
     }
+    if args.batch:
+        report["baseline"] = {
+            "wall_ms": baseline_wall_ms,
+            "interactive": baseline_stats,
+            "end_reason_counts": _end_reason_counts(baseline_finals or []),
+            "per_client": ({str(k): {"ended": v["ended"], "error": v["error"],
+                                     "finals": len(v["finals"])}
+                            for k, v in sorted(baseline_results.items())}
+                           if baseline_results is not None else None),
+        }
+    return report
 
 
-def _no_starvation(interactive_asr: dict, batch_asr: dict, factor: float = 5.0) -> bool:
-    p95 = interactive_asr.get("p95")
-    p50 = batch_asr.get("p50")
-    if p95 is None or p50 is None or p50 <= 0:
-        return True  # nothing measurable -> cannot claim starvation
-    return p95 <= max(factor * p50, p50 + 2000)
+def _no_starvation(interactive_stages: dict, baseline_stages: dict,
+                   factor: float = 5.0, abs_ms: float = 2000.0) -> bool | None:
+    """Deprecated bool wrapper around `_starvation_verdict` (kept for callers).
+
+    Returns True only when the queue/e2e verdict is PASS; False on FAIL;
+    None when it is UNMEASURED. Missing measurements are never True.
+    """
+    verdict, _ = _starvation_verdict(interactive_stages, baseline_stages, factor, abs_ms)
+    return {"PASS": True, "FAIL": False, "UNMEASURED": None}[verdict]
+
 
 
 def _wav_bytes(path: str) -> bytes:
@@ -985,7 +1188,7 @@ def main(argv=None) -> int:
     out = args.json or f"/tmp/soak-{args.scenario}.json"
     write_artifact(out, artifact)
     print(f"[{args.scenario}] assertions: "
-          + ", ".join(f"{r['name']}={'PASS' if r['pass'] else 'FAIL'}" for r in check_results_safe(artifact)))
+          + ", ".join(f"{r['name']}={status_of(r)}" for r in check_results_safe(artifact)))
     print(f"[{args.scenario}] artifact: {out} (exit {exit_code})")
     return exit_code
 

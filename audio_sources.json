@@ -1,0 +1,257 @@
+{
+  "version": "speech-runtime-real-audio-plan-v1",
+  "prepared_on": "2026-11-04",
+  "repository_baseline": "ff1c15b64f448c933f5a6fe285ac2169e508811e",
+  "purpose": "local evaluation of ASR, endpointing and continuous-runtime stability; not model training",
+  "important": [
+    "This is a verified source-page manifest, not a downloaded or human-transcribed corpus.",
+    "Verify acquisition permission locally; do not circumvent access controls.",
+    "Do not publish media or full transcripts unless redistribution rights are established.",
+    "Do not mix fragments, alternate uploads or the same speakers across dev and heldout test.",
+    "Keep natural pauses; no silence trimming or concatenation as the principal real-audio test.",
+    "Missing measurements are null/unsupported, never zero or PASS."
+  ],
+  "total_full_source_duration_seconds": 14768,
+  "sources": [
+    {
+      "id": "F1",
+      "publisher": "Флант",
+      "title": "Helm-чарт, шаблонизация и никакого хардкода | Курс K8s Zero to Hero 8/10",
+      "url": "https://rutube.ru/video/25ad667c178421765618ba492437e3c1/",
+      "duration_seconds_from_page": 351,
+      "published_date_from_page": "2026-02-04",
+      "format_from_description": "короткий практический урок",
+      "topics_from_description": [
+        "Helm",
+        "values.yaml",
+        "шаблоны",
+        "манифесты"
+      ],
+      "split_proposal": "dev",
+      "source_group": "flant-zero-to-hero-08",
+      "proposed_segments": [
+        {
+          "start_seconds": 0,
+          "end_seconds": 351,
+          "purpose": "dev, затем короткие регрессионные отрезки из этой же группы"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    },
+    {
+      "id": "F2",
+      "publisher": "Флант",
+      "title": "Мониторинг в DKP: от архитектуры до расследования инцидентов | Вебинар",
+      "url": "https://rutube.ru/video/e90f381faf0d6298596b2448b370e13b/",
+      "duration_seconds_from_page": 3430,
+      "published_date_from_page": "2025-12-04",
+      "format_from_description": "вебинар с демонстрацией и вопросами",
+      "topics_from_description": [
+        "Deckhouse",
+        "Kubernetes",
+        "Prometheus",
+        "VictoriaMetrics",
+        "мониторинг"
+      ],
+      "split_proposal": "dev",
+      "source_group": "flant-monitoring-dkp-2025",
+      "proposed_segments": [
+        {
+          "start_seconds": 1550,
+          "end_seconds": 2150,
+          "purpose": "dev, демонстрация"
+        },
+        {
+          "start_seconds": 3140,
+          "end_seconds": 3410,
+          "purpose": "dev, кандидат на вопросы и ответы"
+        },
+        {
+          "start_seconds": 0,
+          "end_seconds": 3430,
+          "purpose": "непрерывная нагрузка 1x, WER только на размеченной части"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    },
+    {
+      "id": "A1",
+      "publisher": "Positive Events",
+      "company_in_talk": "Альфа-Банк",
+      "title": "Multi-tenant Kubernetes. Сетевая изоляция. Опыт Альфа-Банка",
+      "url": "https://rutube.ru/video/056956cb78211bc7025c2589da366884/",
+      "duration_seconds_from_page": 1995,
+      "published_date_from_page": "2025-05-24",
+      "format_from_description": "конференционный доклад",
+      "topics_from_description": [
+        "Kubernetes",
+        "multi-tenant",
+        "сетевая изоляция",
+        "NetworkPolicy"
+      ],
+      "split_proposal": "heldout_test",
+      "source_group": "alfa-multitenant-positive-2025",
+      "proposed_segments": [
+        {
+          "start_seconds": 300,
+          "end_seconds": 1200,
+          "purpose": "независимая проверка WER; границы предварительные"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    },
+    {
+      "id": "S1",
+      "publisher": "DevOps Channel",
+      "company_in_talk": "Сбер",
+      "title": "Реализация Kerberos в Kubernetes/Istio Service mesh / Игорь Захарин (Сбер)",
+      "url": "https://rutube.ru/video/1b175d30b58690bb24151d5e9df2622d/",
+      "supporting_page": "https://devopsconf.io/moscow/2024/abstracts/11582",
+      "duration_seconds_from_page": 2354,
+      "published_date_from_page": "2025-02-24",
+      "event_year": 2024,
+      "format_from_description": "конференционный доклад",
+      "topics_from_description": [
+        "Kerberos",
+        "Kubernetes",
+        "Istio",
+        "Service Mesh",
+        "безопасность"
+      ],
+      "split_proposal": "heldout_test",
+      "source_group": "sber-kerberos-devopsconf-2024",
+      "proposed_segments": [
+        {
+          "start_seconds": 300,
+          "end_seconds": 1200,
+          "purpose": "независимая проверка WER; границы предварительные"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    },
+    {
+      "id": "T1",
+      "publisher": "Артур Крюков",
+      "title": "Kubernetes и внешний etcd [02] [2026]",
+      "url": "https://rutube.ru/video/a400e266c2027395d45399538c295df6/",
+      "author_linked_alternate_url": "https://youtu.be/2uaUd4mIY1M",
+      "duration_seconds_from_page": 1773,
+      "published_date_from_page": "2026-10-22",
+      "format_from_description": "практический урок",
+      "topics_from_description": [
+        "etcd",
+        "сертификаты",
+        "kube-apiserver",
+        "unit-файл",
+        "etcdctl"
+      ],
+      "verified_chapters": [
+        {
+          "time_seconds": 834,
+          "label": "Пример ручной установки кластера"
+        },
+        {
+          "time_seconds": 989,
+          "label": "Unit файл и параметры etcd"
+        },
+        {
+          "time_seconds": 1481,
+          "label": "Установка кластера при помощи скрипта"
+        }
+      ],
+      "split_proposal": "heldout_test",
+      "source_group": "kryukov-etcd-2026-02",
+      "proposed_segments": [
+        {
+          "start_seconds": 834,
+          "end_seconds": 1481,
+          "purpose": "независимая проверка WER, инструкции и команды"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    },
+    {
+      "id": "L1",
+      "publisher": "AM Live",
+      "title": "Безопасная разработка: почему инструменты не работают / DevSecOps, стандарты",
+      "url": "https://rutube.ru/video/d4735f6d41d59befc112d003be422276/",
+      "duration_seconds_from_page": 4865,
+      "published_date_from_page": "2026-03-10",
+      "format_from_description": "обсуждение с ведущим и двумя гостями",
+      "topics_from_description": [
+        "DevSecOps",
+        "контейнерная безопасность",
+        "Kubernetes"
+      ],
+      "split_proposal": "heldout_test",
+      "source_group": "amlive-devsecops-2026-03",
+      "proposed_segments": [
+        {
+          "start_seconds": 2492,
+          "end_seconds": 3092,
+          "purpose": "независимая проверка WER, разговорный формат"
+        },
+        {
+          "start_seconds": 336,
+          "end_seconds": 3936,
+          "purpose": "60 минут реального времени без зацикливания"
+        }
+      ],
+      "metadata_verified_on": "2026-11-04",
+      "metadata_basis": "public publisher page, title, description and duration metadata",
+      "audio_downloaded": false,
+      "audio_listened": false,
+      "download_tool_verified_on_this_url": false,
+      "audio_sha256": null,
+      "reference_status": "not_transcribed",
+      "rights_status": "public_page_no_open_dataset_license_verified",
+      "ranges_status": "proposed_not_listened; adjust to word boundaries before freezing",
+      "redistribute_audio": false
+    }
+  ]
+}

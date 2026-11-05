@@ -177,15 +177,215 @@ class GrowthAndStarvationTests(unittest.TestCase):
             soak._growth_ok([{"worker": {"rss_kib": None}}], "worker", "rss_kib", 1)
         )
 
-    def test_no_starvation(self):
-        interactive = {"p95": 300}
-        batch = {"p50": 100}
-        self.assertTrue(soak._no_starvation(interactive, batch))
-        self.assertFalse(soak._no_starvation({"p95": 5000}, {"p50": 100}))
-        # Unmeasurable sides never claim starvation.
-        self.assertTrue(soak._no_starvation({"p95": None}, {"p50": 100}))
-        self.assertTrue(soak._no_starvation({"p95": 5000}, {"p50": None}))
-        self.assertTrue(soak._no_starvation({"p95": 5000}, {"p50": 0}))
+    def test_no_starvation_wraps_verdict(self):
+        stages = {"queue_ms": {"p95": 300, "n": 10}, "e2e_ms": {"p95": 700, "n": 10}}
+        self.assertTrue(soak._no_starvation(stages, stages))
+        bad = {"queue_ms": {"p95": 60_000, "n": 10}, "e2e_ms": {"p95": 61_000, "n": 10}}
+        self.assertFalse(soak._no_starvation(bad, stages))
+        # Missing data is never a PASS.
+        self.assertIsNone(soak._no_starvation(stages, {"queue_ms": {"p95": None, "n": 0}, "e2e_ms": {"p95": None, "n": 0}}))
+
+
+def _stage(p95, n=10, p50=None):
+    return {"n": n, "mean": p95, "p50": p50 if p50 is not None else p95, "p95": p95}
+
+
+class StarvationCriterionTests(unittest.TestCase):
+    """queue/e2e-based starvation criterion (RESEARCH counterexample included)."""
+
+    def test_research_counterexample_60s_queue_with_fast_asr_fails(self):
+        # 60 s interactive queue/e2e p95 with fast ASR against a fast baseline:
+        # the old asr_ms-only criterion could PASS this; it must FAIL now.
+        baseline = {
+            "asr_ms": _stage(150),
+            "queue_ms": _stage(40),
+            "e2e_ms": _stage(600),
+        }
+        interactive = {
+            "asr_ms": _stage(200),       # fast ASR: old criterion passed
+            "queue_ms": _stage(60_000),  # 60 s waiting in the queue
+            "e2e_ms": _stage(60_500),    # 60 s end-to-end
+        }
+        verdict, detail = soak._starvation_verdict(interactive, baseline)
+        self.assertEqual(verdict, "FAIL")
+        self.assertIn("queue_ms", detail)
+        self.assertIn("e2e_ms", detail)
+        self.assertIs(soak._no_starvation(interactive, baseline), False)
+
+    def test_identical_to_baseline_passes(self):
+        stages = {"asr_ms": _stage(150), "queue_ms": _stage(40), "e2e_ms": _stage(600)}
+        verdict, _ = soak._starvation_verdict(stages, stages)
+        self.assertEqual(verdict, "PASS")
+
+    def test_no_baseline_or_empty_stages_never_passes(self):
+        stages = {"asr_ms": _stage(150), "queue_ms": _stage(40), "e2e_ms": _stage(600)}
+        empty = {"queue_ms": {"n": 0, "mean": None, "p50": None, "p95": None},
+                 "e2e_ms": {"n": 0, "mean": None, "p50": None, "p95": None}}
+        for baseline in ({}, empty, {"queue_ms": {"n": 0, "mean": None, "p50": None, "p95": None},
+                                      "e2e_ms": _stage(600)}):
+            verdict, _ = soak._starvation_verdict(stages, baseline)
+            self.assertIn(verdict, ("UNMEASURED", "FAIL"), msg=f"baseline={baseline}")
+            self.assertNotEqual(verdict, "PASS")
+            self.assertIsNone(soak._no_starvation(stages, baseline))
+        # Missing interactive measurement also never passes.
+        verdict, _ = soak._starvation_verdict(empty, stages)
+        self.assertEqual(verdict, "UNMEASURED")
+        self.assertIsNone(soak._no_starvation(empty, stages))
+
+    def test_too_few_samples_never_passes(self):
+        one_sample = {"queue_ms": _stage(40, n=1), "e2e_ms": _stage(600, n=1)}
+        plenty = {"queue_ms": _stage(40), "e2e_ms": _stage(600)}
+        for meas, base in ((one_sample, plenty), (plenty, one_sample)):
+            verdict, _ = soak._starvation_verdict(meas, base)
+            self.assertEqual(verdict, "UNMEASURED")
+            self.assertIsNone(soak._no_starvation(meas, base))
+
+    def test_one_stage_fails_overall_fails(self):
+        baseline = {"queue_ms": _stage(40), "e2e_ms": _stage(600)}
+        interactive = {"queue_ms": _stage(45), "e2e_ms": _stage(30_000)}
+        verdict, detail = soak._starvation_verdict(interactive, baseline)
+        self.assertEqual(verdict, "FAIL")
+        self.assertIn("e2e_ms", detail)
+
+    def test_unchanged_stage_passes_when_other_passes(self):
+        baseline = {"queue_ms": _stage(40), "e2e_ms": _stage(600)}
+        interactive = {"queue_ms": _stage(45), "e2e_ms": _stage(650)}
+        verdict, _ = soak._starvation_verdict(interactive, baseline)
+        self.assertEqual(verdict, "PASS")
+
+
+class FinalsCompletenessTests(unittest.TestCase):
+    @staticmethod
+    def _feed(finals=1, ended=True, error=None):
+        return {"ended": ended, "error": error, "finals": [{"utterance": i} for i in range(finals)]}
+
+    def test_complete_matches_baseline_passes(self):
+        results = {0: self._feed(3), 1: self._feed(2)}
+        baseline = {0: 3, 1: 2}
+        ok, detail = soak._finals_complete(results, baseline, 2)
+        self.assertTrue(ok)
+        self.assertIn("5", detail)
+
+    def test_more_finals_than_baseline_passes(self):
+        results = {0: self._feed(4), 1: self._feed(2)}
+        self.assertTrue(soak._finals_complete(results, {0: 3, 1: 2}, 2)[0])
+
+    def test_partial_finals_fails_with_counts(self):
+        results = {0: self._feed(3), 1: self._feed(1)}
+        ok, detail = soak._finals_complete(results, {0: 3, 1: 2}, 2)
+        self.assertFalse(ok)
+        self.assertIn("client 1", detail)
+        self.assertIn("1 < baseline 2", detail)
+
+    def test_stream_error_fails(self):
+        results = {0: self._feed(3), 1: self._feed(2, ended=False, error="boom")}
+        ok, detail = soak._finals_complete(results, {0: 3, 1: 2}, 2)
+        self.assertFalse(ok)
+        self.assertIn("error=boom", detail)
+
+    def test_missing_client_fails(self):
+        results = {0: self._feed(3)}
+        ok, detail = soak._finals_complete(results, {0: 3, 1: 2}, 2)
+        self.assertFalse(ok)
+        self.assertIn("client 1: no result", detail)
+
+    def test_no_baseline_still_requires_clean_streams(self):
+        ok, _ = soak._finals_complete({0: self._feed(1)}, None, 1)
+        self.assertTrue(ok)
+        ok, detail = soak._finals_complete({0: self._feed(1, ended=False)}, None, 1)
+        self.assertFalse(ok)
+
+
+class EndReasonCountsTests(unittest.TestCase):
+    def test_counts_all_known_reasons(self):
+        finals = [
+            {"end_reason": "silence"},
+            {"end_reason": "silence"},
+            {"end_reason": "max_utterance"},
+            {"end_reason": "client_end"},
+        ]
+        self.assertEqual(
+            soak._end_reason_counts(finals),
+            {"silence": 2, "max_utterance": 1, "client_end": 1, "unknown": 0},
+        )
+
+    def test_missing_or_unrecognised_counts_as_unknown(self):
+        finals = [{"text": "old run"}, {"end_reason": "silence"}, {"end_reason": "weird"}]
+        counts = soak._end_reason_counts(finals)
+        self.assertEqual(counts["unknown"], 2)
+        self.assertEqual(counts["silence"], 1)
+
+    def test_empty_finals(self):
+        counts = soak._end_reason_counts([])
+        self.assertEqual(counts, {"silence": 0, "max_utterance": 0, "client_end": 0, "unknown": 0})
+
+
+class AssertionStatusTests(unittest.TestCase):
+    def test_bool_callers_unchanged(self):
+        check = soak.Assertions()
+        self.assertTrue(check.check("ok", True, "yes"))
+        self.assertFalse(check.check("bad", False, "no"))
+        self.assertEqual(
+            [r["status"] for r in check.results], ["PASS", "FAIL"]
+        )
+        self.assertEqual([r["pass"] for r in check.results], [True, False])
+
+    def test_none_is_unmeasured_never_pass(self):
+        check = soak.Assertions()
+        check.check("missing", None, "no data")
+        self.assertEqual(check.results[0]["status"], "UNMEASURED")
+        self.assertFalse(check.results[0]["pass"])
+        self.assertFalse(check.all_passed)
+
+    def test_unmeasured_helper(self):
+        check = soak.Assertions()
+        check.unmeasured("no_starvation", "no baseline")
+        self.assertEqual(check.results[0]["status"], "UNMEASURED")
+        self.assertFalse(check.all_passed)
+
+    def test_blocked_helper(self):
+        check = soak.Assertions()
+        check.blocked("model_load", "worker down")
+        self.assertEqual(check.results[0]["status"], "BLOCKED")
+        self.assertFalse(check.all_passed)
+
+    def test_all_passed_requires_all_pass(self):
+        check = soak.Assertions()
+        check.check("a", True, "1")
+        check.unmeasured("b", "no data")
+        self.assertFalse(check.all_passed)
+
+    def test_status_of_reads_old_artifacts(self):
+        self.assertEqual(soak.status_of({"name": "x", "pass": True}), "PASS")
+        self.assertEqual(soak.status_of({"name": "x", "pass": False}), "FAIL")
+        self.assertEqual(soak.status_of({"name": "x", "pass": False, "status": "UNMEASURED"}), "UNMEASURED")
+        self.assertEqual(soak.status_of({"name": "x", "pass": False, "status": "BLOCKED"}), "BLOCKED")
+
+    def test_results_are_json_serialisable(self):
+        import json
+
+        check = soak.Assertions()
+        check.check("a", True, "detail")
+        check.unmeasured("b", None)
+        check.blocked("c", None)
+        json.dumps(check.results)
+
+
+class StageStatsTests(unittest.TestCase):
+    def test_stage_stats_over_finals(self):
+        finals = [
+            {"queue_ms": 10, "e2e_ms": 100, "asr_ms": 50},
+            {"queue_ms": 30, "e2e_ms": 300, "asr_ms": 150},
+        ]
+        stats = soak._stage_stats(finals)
+        self.assertEqual(stats["queue_ms"]["n"], 2)
+        self.assertEqual(stats["e2e_ms"]["p95"], 300.0)
+        self.assertEqual(stats["asr_ms"]["p50"], 50)
+
+    def test_stage_stats_missing_fields(self):
+        stats = soak._stage_stats([{"text": "no stages"}])
+        self.assertEqual(stats["queue_ms"]["n"], 0)
+        self.assertIsNone(stats["queue_ms"]["p95"])
 
 
 class ArtifactTests(unittest.TestCase):
