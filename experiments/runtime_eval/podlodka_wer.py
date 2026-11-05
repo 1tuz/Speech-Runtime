@@ -63,6 +63,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--language", default=None)
     parser.add_argument("--json", required=True, help="artifact output path")
     args = parser.parse_args(argv)
+    run_started = datetime.datetime.now(datetime.timezone.utc)
 
     entries = load_refs(args.refs)
     if not entries:
@@ -70,7 +71,11 @@ def main(argv: list[str] | None = None) -> int:
 
     client = rc.RuntimeClient(args.url, args.token)
     loaded = client.health().get("worker", {}).get("models") or []
-    names = {entry.get("model") for entry in loaded if isinstance(entry, dict)}
+    names = {
+        entry.get("model")
+        for entry in loaded
+        if isinstance(entry, dict) and entry.get("loaded")
+    }
     load_ms = None
     if args.model not in names:
         started = datetime.datetime.now()
@@ -116,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
     artifact = {
         "schema": "runtime-podlodka-wer-v1",
         "argv": list(argv if argv is not None else sys.argv[1:]),
-        "started_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
+        "started_utc": run_started.isoformat(),
         "machine": machine_info(),
         "model": args.model,
         "load_ms": load_ms,
