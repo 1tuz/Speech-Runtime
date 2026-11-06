@@ -1,0 +1,161 @@
+{
+ "schema": "runtime-soak-v1",
+ "command": "multiclient",
+ "argv": [
+  "multiclient",
+  "--clients",
+  "1",
+  "--speed",
+  "1",
+  "--batch",
+  "--wav",
+  "/tmp/measure-5min.wav",
+  "--model",
+  "gigaam",
+  "--url",
+  "http://127.0.0.1:8517",
+  "--json",
+  "runtime_eval/results/soak-multi-1-batch-sliced-1x.json"
+ ],
+ "started_utc": "2026-11-06T06:44:25.886084+00:00",
+ "finished_utc": "2026-11-06T06:50:25.370383+00:00",
+ "machine": {
+  "machine": "arm64",
+  "system": "Darwin",
+  "release": "27.2.0",
+  "processor": "arm",
+  "python": "3.15.2"
+ },
+ "clients": 1,
+ "wall_ms": 180052,
+ "per_client": {
+  "0": {
+   "ended": true,
+   "error": null,
+   "finals": 21
+  }
+ },
+ "interactive": {
+  "asr_ms": {
+   "n": 21,
+   "mean": 37.3,
+   "p50": 33.0,
+   "p95": 72.0
+  },
+  "queue_ms": {
+   "n": 21,
+   "mean": 26.0,
+   "p50": 27.0,
+   "p95": 39.0
+  },
+  "e2e_ms": {
+   "n": 21,
+   "mean": 459.2,
+   "p50": 488.0,
+   "p95": 584.0
+  }
+ },
+ "end_reason_counts": {
+  "silence": 19,
+  "max_utterance": 2,
+  "client_end": 0,
+  "unknown": 0
+ },
+ "batch": {
+  "count": 223,
+  "wall_ms": {
+   "n": 223,
+   "mean": 807.4,
+   "p50": 811.4,
+   "p95": 835.5
+  },
+  "asr_ms": {
+   "n": 223,
+   "mean": 675.5,
+   "p50": 682.0,
+   "p95": 696.0
+  }
+ },
+ "errors": {},
+ "assertions": [
+  {
+   "name": "model_loaded",
+   "pass": true,
+   "status": "PASS",
+   "detail": "gigaam"
+  },
+  {
+   "name": "all_streams_ok",
+   "pass": true,
+   "status": "PASS",
+   "detail": "1/1 ended without error; errors=none"
+  },
+  {
+   "name": "finals_nonempty",
+   "pass": true,
+   "status": "PASS",
+   "detail": "21 finals; end_reason={'silence': 19, 'max_utterance': 2, 'client_end': 0, 'unknown': 0}"
+  },
+  {
+   "name": "finals_complete",
+   "pass": true,
+   "status": "PASS",
+   "detail": "all clients ended cleanly; finals 21 >= baseline 21"
+  },
+  {
+   "name": "batch_ran",
+   "pass": true,
+   "status": "PASS",
+   "detail": "223 batch jobs"
+  },
+  {
+   "name": "no_starvation",
+   "pass": true,
+   "status": "PASS",
+   "detail": "queue_ms: p95=39.0 vs baseline p95=0.0 (limit 2000.0); e2e_ms: p95=584.0 vs baseline p95=501.0 (limit 2505.0)"
+  },
+  {
+   "name": "streams_back_to_baseline",
+   "pass": true,
+   "status": "PASS",
+   "detail": "0 -> 0"
+  }
+ ],
+ "baseline": {
+  "wall_ms": 179313,
+  "interactive": {
+   "asr_ms": {
+    "n": 21,
+    "mean": 59.6,
+    "p50": 54.0,
+    "p95": 121.0
+   },
+   "queue_ms": {
+    "n": 21,
+    "mean": 0.0,
+    "p50": 0.0,
+    "p95": 0.0
+   },
+   "e2e_ms": {
+    "n": 21,
+    "mean": 450.2,
+    "p50": 472.0,
+    "p95": 501.0
+   }
+  },
+  "end_reason_counts": {
+   "silence": 19,
+   "max_utterance": 2,
+   "client_end": 0,
+   "unknown": 0
+  },
+  "per_client": {
+   "0": {
+    "ended": true,
+    "error": null,
+    "finals": 21
+   }
+  }
+ },
+ "exit_code": 0
+}

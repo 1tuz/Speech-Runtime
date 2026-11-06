@@ -1,5 +1,6 @@
 //! Speech Runtime worker: models, queue and endpointing behind a line JSON protocol.
 
+pub mod batchsplit;
 pub mod endpoint;
 pub mod engine;
 pub mod mem;

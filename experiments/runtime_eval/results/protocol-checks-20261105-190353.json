@@ -305,7 +305,7 @@
   "oversized_headers_is_431"
  ],
  "log": {
-  "path": "/Users/antony/Documents/projects/Speech-Runtime/experiments/runtime_eval/.work/protocol-checks/daemon-8593.log",
+  "path": "experiments/runtime_eval/.work/protocol-checks/daemon-8593.log",
   "canary_hits": 0,
   "suspicious_markers": []
  },

@@ -25,7 +25,7 @@ import signal
 import subprocess
 import sys
 import threading
-import time
+import tempfile
 import urllib.error
 import urllib.request
 from dataclasses import dataclass, field
@@ -45,13 +45,20 @@ STABILIZE_MIB = 32.0
 
 
 class Daemon:
+    """Isolated daemon on its own port; the token file never lands in results/.
+
+    `workdir` holds only the daemon log; the bearer token is written in a
+    private TemporaryDirectory that is removed in `stop()`.
+    """
+
     def __init__(self, port: int, workdir: Path, quick_unload: bool = False) -> None:
         self.port = port
         self.workdir = workdir
         self.token = "matrix-token"
         self.out = ""
         workdir.mkdir(parents=True, exist_ok=True)
-        token_file = workdir / "token"
+        self.token_dir = tempfile.TemporaryDirectory(prefix=f"matrix-{port}-")
+        token_file = Path(self.token_dir.name) / "token"
         token_file.write_text(self.token)
         log = (workdir / f"daemon-{port}.log").open("w")
         self.proc = subprocess.Popen(
@@ -79,8 +86,7 @@ class Daemon:
     def request(self, path: str, method: str = "GET", body: bytes | None = None, timeout: float = 10):
         req = urllib.request.Request(
             f"http://127.0.0.1:{self.port}{path}",
-            data=body,
-            method=method,
+            data=body, method=method,
             headers={"Authorization": f"Bearer {self.token}", "Content-Type": "application/json"},
         )
         with urllib.request.urlopen(req, timeout=timeout) as response:
@@ -103,6 +109,8 @@ class Daemon:
         except subprocess.TimeoutExpired:
             self.proc.kill()
             self.proc.wait(timeout=5)
+        self.token_dir.cleanup()
+
 
 
 @dataclass

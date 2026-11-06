@@ -39,6 +39,10 @@ EXPERIMENTS_DIR = os.path.dirname(HERE)
 CORPUS_SIMPLE = os.path.join(
     EXPERIMENTS_DIR, "corpus", "local", "veche-prepared", "simple"
 )
+CORPUS_NATURAL = os.path.join(
+    EXPERIMENTS_DIR, "corpus", "local", "veche-bench", "data_simple"
+)
+NATURAL_RECORDINGS = ("2-one-to-one", "5-it-product", "7-bi-platform")
 ASR_EVAL_DIR = os.path.join(EXPERIMENTS_DIR, "asr_eval")
 
 # The scorer modules live in experiments/asr_eval and import each other by
@@ -405,6 +409,63 @@ def load_sidecar(path: str) -> list[dict]:
     return entries
 
 
+def natural_recording_dir(corpus_dir: str, recording: str) -> str:
+    """`<corpus>/<recording>/` with the `<recording>.wav` + `.json` pair."""
+    if recording not in NATURAL_RECORDINGS:
+        raise ValueError(
+            f"unknown recording {recording!r}; expected one of "
+            + ", ".join(NATURAL_RECORDINGS)
+        )
+    return os.path.join(corpus_dir, recording)
+
+
+def load_natural_entries(path: str, recording: str) -> list[dict]:
+    """Replica JSON of a natural recording -> scoring entries.
+
+    The sidecar-style entries keep `{"id", "reference"}`: `id` is
+    `f"{recording}-{replica_id}"` so every replica stays addressable, and the
+    `speaker_id` from the JSON is preserved for the artifact's speaker count.
+    A replica without a normalisable text is still an entry: the corpus is
+    `unverified` and must not be silently filtered.
+    """
+    with open(path, encoding="utf-8") as fh:
+        replicas = json.load(fh)
+    if not isinstance(replicas, list):
+        raise ValueError(f"{path}: expected a JSON list of replicas")
+    entries: list[dict] = []
+    for replica in replicas:
+        if not isinstance(replica, dict) or "replica_id" not in replica:
+            raise ValueError(f"{path}: replica without replica_id: {replica!r}")
+        entries.append(
+            {
+                "id": f"{recording}-{replica['replica_id']}",
+                "reference": (replica.get("text") or "").strip(),
+                "speaker_id": replica.get("speaker_id"),
+            }
+        )
+    return entries
+
+
+def premature_end_ratio(finals: list[dict]) -> dict:
+    """`end_reason=max_utterance` finals over all finals (never a guess).
+
+    A final cut by `max_utterance` before the speaker paused is the signature
+    of endpointing damage on natural audio; finals without the field count as
+    unknown, not as premature. `ratio` is None when there are no finals.
+    """
+    total = len(finals)
+    premature = sum(
+        1 for final in finals if final.get("end_reason") == "max_utterance"
+    )
+    unknown = sum(1 for final in finals if final.get("end_reason") is None)
+    return {
+        "finals": total,
+        "premature_end": premature,
+        "end_reason_missing": unknown,
+        "ratio": (premature / total) if total else None,
+    }
+
+
 def run_stream(
     client: rc.RuntimeClient,
     wav_path: str,
@@ -674,6 +735,178 @@ def cmd_run(argv: list[str]) -> int:
     return 0
 
 
+def evaluate_natural(
+    client: rc.RuntimeClient,
+    wav_path: str,
+    entries: list[dict],
+    model: str,
+    config: dict,
+    realtime: float,
+    language: str | None,
+    baselines: bool = True,
+) -> dict:
+    """Stream a natural recording whole (natural pauses, no re-cutting).
+
+    Unlike `evaluate_run` the audio is NOT re-assembled from per-utterance
+    files: the recording is streamed exactly as recorded, so the endpointing
+    faces real pauses and overlaps. Scoring is still concatenation-level
+    (`finals` join vs replica-texts join), because final splits need not
+    match replica boundaries; `premature_end_ratio` quantifies `max_utterance`
+    cuts. Per-utterance batch baselines are impossible here (there are no
+    per-utterance audio files), so only the whole-WAV batch baseline exists.
+    """
+    stream_result = run_stream(client, wav_path, model, config, realtime)
+    finals = stream_result["finals"]
+    reference = concatenated_reference(entries)
+    hypothesis = concatenated_hypothesis(finals)
+    stream_score = corpus_wer(
+        [{"id": "concat", "reference": reference, "hypothesis": hypothesis}]
+    )["per_utterance"][0]
+
+    result: dict = {
+        "model": model,
+        "config": config,
+        "realtime": realtime,
+        "reference_status": "unverified",
+        "audio": {
+            "path": wav_path,
+            "sha256": sha256_file(wav_path),
+            "audio_ms": stream_result["audio_ms"],
+            "wall_ms": stream_result["wall_ms"],
+            "utterances": len(entries),
+            "speakers": len({e.get("speaker_id") for e in entries} - {None}),
+        },
+        "stream": {
+            "finals": len(finals),
+            "ended": stream_result["ended"],
+            "wer": stream_score["errors"] / stream_score["words"]
+            if stream_score["words"]
+            else None,
+            "cer": stream_score["char_errors"] / stream_score["chars"]
+            if stream_score["chars"]
+            else None,
+            "per_final": finals,
+            "latency": latency_stats(finals),
+            "utterance_duration_ms": utterance_duration_stats(finals),
+            "premature_end": premature_end_ratio(finals),
+        },
+        "boundary": boundary_diagnostics(entries, finals),
+    }
+
+    if baselines:
+        with open(wav_path, "rb") as fh:
+            wav_bytes = fh.read()
+        batch_reply = batch_transcribe(client, wav_bytes, model, language)
+        batch_text = batch_reply.get("text", "")
+        batch_score = score_text(reference, batch_text)
+        result["batch_concat"] = {
+            "text": batch_text,
+            "asr_ms": batch_reply.get("asr_ms"),
+            "wall_ms": batch_reply.get("wall_ms"),
+            "audio_ms": batch_reply.get("audio_ms"),
+            "wer": batch_score["errors"] / batch_score["words"]
+            if batch_score["words"]
+            else None,
+            "cer": batch_score["char_errors"] / batch_score["chars"]
+            if batch_score["chars"]
+            else None,
+            "counts": {
+                "substitutions": batch_score["substitutions"],
+                "deletions": batch_score["deletions"],
+                "insertions": batch_score["insertions"],
+            },
+        }
+    return result
+
+
+def cmd_natural(argv: list[str]) -> int:
+    parser = argparse.ArgumentParser(
+        prog="pipeline_eval natural",
+        description="Stream a natural recording whole and score vs the batch baseline",
+    )
+    parser.add_argument(
+        "--corpus",
+        default=CORPUS_NATURAL,
+        help="root of data_simple/<recording>/ trees",
+    )
+    parser.add_argument(
+        "--recording",
+        required=True,
+        choices=NATURAL_RECORDINGS,
+        help="natural recording (16 kHz mono, real pauses, not re-cut)",
+    )
+    parser.add_argument("--model", required=True)
+    parser.add_argument("--realtime", type=float, default=8.0)
+    parser.add_argument("--language", default=None)
+    parser.add_argument(
+        "--config",
+        action="append",
+        default=[],
+        metavar="k=v",
+        help="stream config entry, e.g. --config min_silence_ms=700",
+    )
+    parser.add_argument(
+        "--no-baselines", action="store_true", help="skip the batch baseline"
+    )
+    parser.add_argument("--json", required=True, help="artifact output path")
+    parser.add_argument(
+        "--url", default=os.environ.get("SPEECH_RUNTIME_URL", rc.DEFAULT_BASE_URL)
+    )
+    parser.add_argument("--token", default=os.environ.get("SPEECH_RUNTIME_TOKEN"))
+
+    args = parser.parse_args(argv)
+    recording_dir = natural_recording_dir(args.corpus, args.recording)
+    wav_path = os.path.join(recording_dir, f"{args.recording}.wav")
+    json_path = os.path.join(recording_dir, f"{args.recording}.json")
+    for path in (wav_path, json_path):
+        if not os.path.isfile(path):
+            raise SystemExit(f"{path}: not found")
+    samples, rate, _ = read_wav_i16(wav_path)
+    if rate != SAMPLE_RATE:
+        raise SystemExit(f"{wav_path}: {rate} Hz, expected {SAMPLE_RATE} Hz mono")
+    entries = load_natural_entries(json_path, args.recording)
+    if not entries:
+        raise SystemExit(f"{json_path}: no replicas")
+
+    config = rc.parse_config(args.config)
+    if args.language:
+        config["language"] = args.language
+    client = rc.RuntimeClient(args.url, args.token)
+    artifact = artifact_header(argv, "natural")
+    artifact["recording"] = args.recording
+    artifact.update(
+        evaluate_natural(
+            client,
+            wav_path,
+            entries,
+            args.model,
+            config,
+            args.realtime,
+            args.language,
+            baselines=not args.no_baselines,
+        )
+    )
+    write_artifact(args.json, artifact)
+    stream = artifact["stream"]
+    batch = artifact.get("batch_concat", {})
+    premature = stream["premature_end"]
+    print(
+        f"natural {args.recording}: stream WER {fmt_pct(stream['wer'])} "
+        f"CER {fmt_pct(stream['cer'])} "
+        f"finals {stream['finals']}/{artifact['boundary']['references']} refs"
+    )
+    print(
+        f"premature_end {premature['premature_end']}/{premature['finals']} "
+        f"(ratio {fmt_pct(premature['ratio'])}, "
+        f"missing end_reason {premature['end_reason_missing']})"
+    )
+    if batch:
+        print(f"batch(concat) WER {fmt_pct(batch['wer'])} CER {fmt_pct(batch['cer'])}")
+    print(f"artifact: {args.json}")
+    return 0
+
+
+
 def fmt_pct(value: float | None) -> str:
     return "n/a" if value is None else f"{value * 100:.2f}%"
 
@@ -846,7 +1079,8 @@ def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
     if not argv:
         print(
-            "usage: python -m runtime_eval.pipeline_eval make-audio|run|sweep ...",
+            "usage: python -m runtime_eval.pipeline_eval "
+            "make-audio|run|sweep|natural ...",
             file=sys.stderr,
         )
         return 2
@@ -857,6 +1091,8 @@ def main(argv: list[str] | None = None) -> int:
         return cmd_run(rest)
     if command == "sweep":
         return cmd_sweep(rest)
+    if command == "natural":
+        return cmd_natural(rest)
     print(f"unknown command: {command}", file=sys.stderr)
     return 2
 

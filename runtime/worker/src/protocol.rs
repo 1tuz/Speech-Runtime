@@ -36,6 +36,9 @@ pub enum Request {
         language: Option<String>,
         #[serde(default)]
         window_ms: Option<u32>,
+        /// Batch-only: split audio longer than this into silence-aligned parts.
+        #[serde(default)]
+        max_chunk_ms: Option<u32>,
         #[serde(default)]
         priority: Option<String>,
     },

@@ -17,9 +17,11 @@ use wavo::{Backend, Model, Options};
 
 use crate::protocol::Priority;
 
-#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum Meta {
     Client(u64),
+    /// One slice of a split batch transcription; the router reassembles the
+    /// group and answers `request_id` once every part has answered.
+    BatchChunk { group: u64, seq: u64, total: u64, request_id: u64 },
     Session {
         session: String,
         utterance: u64,
@@ -210,6 +212,31 @@ impl ModelHandle {
         }
         cv.notify_one();
         Ok((id, cancelled))
+    }
+
+    /// Same as `submit`, but the caller supplies the cancel flag so several
+    /// jobs (the parts of one split batch request) can share a single flag:
+    /// cancelling the request discards every part at once.
+    pub fn submit_with_flag(
+        &self,
+        kind: Kind,
+        priority: Priority,
+        meta: Meta,
+        cancelled: Arc<AtomicBool>,
+    ) -> Result<u64, String> {
+        let id = self.next_id.fetch_add(1, Ordering::SeqCst);
+        let job = Job { id, cancelled, meta, kind, queued_at: Instant::now() };
+        let (lock, cv) = &*self.queues;
+        let mut q = lock.lock().unwrap();
+        if self.unloading.load(Ordering::SeqCst) {
+            return Err(format!("model {:?} is unloading", self.model));
+        }
+        match priority {
+            Priority::Interactive => q.interactive.push_back(job),
+            Priority::Batch => q.batch.push_back(job),
+        }
+        cv.notify_one();
+        Ok(id)
     }
 
     /// Requests an unload: under the queue lock refuses when jobs are queued or

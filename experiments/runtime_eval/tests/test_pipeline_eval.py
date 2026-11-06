@@ -436,5 +436,153 @@ class MakeAudioIntegrationTests(unittest.TestCase):
                 pe.select_window(dataset, "rec", start=5, count=2)
 
 
+
+class NaturalRecordingTests(unittest.TestCase):
+    """`natural` source loading and premature-end ratio (offline, no daemon)."""
+
+    def _write_replicas(self, tmp: str, replicas: list[dict]) -> str:
+        path = os.path.join(tmp, "replicas.json")
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(replicas, fh, ensure_ascii=False)
+        return path
+
+    def test_load_natural_entries_ids_and_references(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write_replicas(
+                tmp,
+                [
+                    {"text": "Илья, привет.", "speaker_id": 1, "replica_id": 0},
+                    {"text": "Привет, Алексей.", "speaker_id": 2, "replica_id": 1},
+                    {"text": "  Окей.  ", "speaker_id": 1, "replica_id": 2},
+                ],
+            )
+            entries = pe.load_natural_entries(path, "2-one-to-one")
+        self.assertEqual(
+            [e["id"] for e in entries],
+            ["2-one-to-one-0", "2-one-to-one-1", "2-one-to-one-2"],
+        )
+        self.assertEqual(
+            [e["reference"] for e in entries],
+            ["Илья, привет.", "Привет, Алексей.", "Окей."],
+        )
+        self.assertEqual([e["speaker_id"] for e in entries], [1, 2, 1])
+
+    def test_load_natural_entries_rejects_non_list(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = os.path.join(tmp, "bad.json")
+            with open(path, "w", encoding="utf-8") as fh:
+                fh.write('{"text": "not a list"}')
+            with self.assertRaises(ValueError):
+                pe.load_natural_entries(path, "rec")
+
+    def test_load_natural_entries_rejects_missing_replica_id(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write_replicas(tmp, [{"text": "без id"}])
+            with self.assertRaises(ValueError):
+                pe.load_natural_entries(path, "rec")
+
+    def test_load_natural_entries_empty_text_is_kept(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write_replicas(
+                tmp, [{"text": "", "speaker_id": 1, "replica_id": 0}]
+            )
+            entries = pe.load_natural_entries(path, "rec")
+        self.assertEqual(len(entries), 1)  # unverified corpus: no silent filtering
+        self.assertEqual(entries[0]["reference"], "")
+
+    def test_natural_recording_dir_validates_name(self):
+        self.assertEqual(
+            pe.natural_recording_dir("/corpus", "2-one-to-one"),
+            os.path.join("/corpus", "2-one-to-one"),
+        )
+        for bad in ("9-unknown", "", "../escape", "2-one-to-one.wav"):
+            with self.assertRaises(ValueError):
+                pe.natural_recording_dir("/corpus", bad)
+
+    def test_concatenated_reference_joins_natural_entries(self):
+        entries = pe.load_natural_entries.__wrapped__ if False else None
+        entries = [
+            {"id": "rec-0", "reference": "первая реплика", "speaker_id": 1},
+            {"id": "rec-1", "reference": "вторая", "speaker_id": 2},
+        ]
+        self.assertEqual(
+            pe.concatenated_reference(entries), "первая реплика вторая"
+        )
+
+
+class PrematureEndRatioTests(unittest.TestCase):
+    def test_counts_max_utterance_only(self):
+        finals = [
+            {"end_reason": "silence"},
+            {"end_reason": "max_utterance"},
+            {"end_reason": "silence"},
+            {"end_reason": "client_end"},
+            {"end_reason": "max_utterance"},
+        ]
+        self.assertEqual(
+            pe.premature_end_ratio(finals),
+            {
+                "finals": 5,
+                "premature_end": 2,
+                "end_reason_missing": 0,
+                "ratio": 0.4,
+            },
+        )
+
+    def test_missing_end_reason_is_unknown_not_premature(self):
+        finals = [{"text": "old daemon"}, {"end_reason": "silence"}]
+        result = pe.premature_end_ratio(finals)
+        self.assertEqual(result["premature_end"], 0)
+        self.assertEqual(result["end_reason_missing"], 1)
+        self.assertEqual(result["ratio"], 0.0)
+
+    def test_empty_finals_is_unmeasured(self):
+        self.assertEqual(
+            pe.premature_end_ratio([]),
+            {
+                "finals": 0,
+                "premature_end": 0,
+                "end_reason_missing": 0,
+                "ratio": None,
+            },
+        )
+
+    def test_all_premature(self):
+        finals = [{"end_reason": "max_utterance"}] * 3
+        result = pe.premature_end_ratio(finals)
+        self.assertEqual(result["ratio"], 1.0)
+
+
+class NaturalIntegrationTests(unittest.TestCase):
+    """`natural` CLI input validation up to (but excluding) the daemon call."""
+
+    def test_missing_wav_is_a_clean_error(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            corpus = os.path.join(tmp, "corpus")
+            recording_dir = os.path.join(corpus, "2-one-to-one")
+            os.makedirs(recording_dir, exist_ok=True)
+            with self.assertRaises(SystemExit) as ctx:
+                pe.cmd_natural(
+                    [
+                        "--corpus", corpus,
+                        "--recording", "2-one-to-one",
+                        "--model", "gigaam",
+                        "--json", os.path.join(tmp, "out.json"),
+                    ]
+                )
+            self.assertIn("not found", str(ctx.exception))
+
+    def test_bad_recording_name_is_rejected_by_choices(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaises(SystemExit):
+                pe.cmd_natural(
+                    [
+                        "--recording", "9-unknown",
+                        "--model", "gigaam",
+                        "--json", os.path.join(tmp, "out.json"),
+                    ]
+                )
+
+
 if __name__ == "__main__":
     unittest.main()

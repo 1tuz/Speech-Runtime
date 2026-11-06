@@ -1,0 +1,57 @@
+{
+ "schema": "runtime-batch-slice-eval-v1",
+ "command": "compare",
+ "argv": [
+  "--json-before",
+  "/tmp/smoke/before.json",
+  "--json-after",
+  "/tmp/smoke/after.json",
+  "--json",
+  "/tmp/smoke/compare.json"
+ ],
+ "started_utc": "2026-11-06T06:07:09.292707+00:00",
+ "finished_utc": "2026-11-06T06:07:09.379851+00:00",
+ "machine": {
+  "machine": "arm64",
+  "system": "Darwin",
+  "release": "27.2.0",
+  "processor": "arm",
+  "python": "3.15.2"
+ },
+ "git": {
+  "commit": "ae38f1c6272532e8a0d5fcdda83631d44092bd53",
+  "short": "ae38f1c",
+  "subject": "docs: итоговый отчёт проверки прототипа и пакет задания",
+  "committed_at": "2026-11-06T00:56:32+03:00",
+  "dirty": true,
+  "dirty_files": 22
+ },
+ "before": {
+  "path": "/tmp/smoke/before.json",
+  "model": "gigaam"
+ },
+ "after": {
+  "path": "/tmp/smoke/after.json",
+  "model": "gigaam"
+ },
+ "comparison": {
+  "before_sha256": null,
+  "after_sha256": null,
+  "same_audio": null,
+  "tokens": {
+   "before": 9737,
+   "after": 9737
+  },
+  "timing": {
+   "asr_ms": -95.0,
+   "wall_ms": -66.0,
+   "queue_ms": -99.0,
+   "note": "mean after minus mean before over the run repeats; None when unmeasured"
+  },
+  "text_lengths": {
+   "before": null,
+   "after": null
+  },
+  "text_identical": true
+ }
+}

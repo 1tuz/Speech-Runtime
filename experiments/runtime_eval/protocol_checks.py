@@ -27,7 +27,7 @@ from pathlib import Path
 
 from .memory_matrix import REPO, RESULTS, Daemon
 
-TOKEN = "matrix-token"  # Daemon() writes exactly this token into its workdir
+TOKEN = "matrix-token"  # the exact token Daemon() writes into its temp dir
 CANARY = "PROTOCOL-CANARY-7134f0a1-do-not-log"
 BAD_STATUSES = {400, 413, 431, 501}
 

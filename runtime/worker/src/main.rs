@@ -15,11 +15,15 @@ use std::thread;
 use earshot::Detector;
 use serde_json::json;
 
+use sr_worker::batchsplit;
 use sr_worker::endpoint::{Endpointer, Event, FRAME};
-use sr_worker::engine::{EngineMsg, Kind, Meta, ModelHandle, Response};
+use sr_worker::engine::{EngineMsg, Kind, Meta, ModelHandle, Response, TokenOut};
 use sr_worker::pcm;
 use sr_worker::protocol::{Priority, Reply, Request};
 use sr_worker::session::SessionJobs;
+/// Default split size for long batch transcriptions: ~1 s of inference per
+/// part, half of the 2 s interactive e2e budget under batch load.
+const DEFAULT_MAX_CHUNK_MS: u32 = 10_000;
 
 struct Session {
     model: String,
@@ -34,12 +38,83 @@ struct Session {
 
 struct Worker {
     models: HashMap<String, ModelHandle>,
-    /// Client request id -> cancel flag of its job.
+    /// Client request id -> cancel flag of its job (or of its part group).
     client_jobs: HashMap<u64, Arc<AtomicBool>>,
+    /// Split batch requests being reassembled: group id -> collected parts.
+    groups: HashMap<u64, GroupState>,
+    /// Next split group id.
+    next_group: AtomicU64,
     sessions: HashMap<String, Session>,
     results: Sender<EngineMsg>,
     out: Arc<Mutex<std::io::Stdout>>,
     next_job: AtomicU64,
+}
+
+/// Parts of one split batch request awaiting reassembly.
+struct GroupState {
+    /// Answered parts, indexed by `seq`.
+    parts: Vec<Option<Part>>,
+    /// Where each part sits in the original audio, ms (token offsets).
+    offsets_ms: Vec<u64>,
+    request_id: u64,
+}
+
+/// One answered part of a split batch request.
+#[derive(Clone)]
+struct Part {
+    text: String,
+    asr_ms: u64,
+    queue_ms: u64,
+    tokens: Vec<TokenOut>,
+}
+
+impl GroupState {
+    fn new(offsets_ms: Vec<u64>, request_id: u64) -> Self {
+        Self { parts: vec![None; offsets_ms.len()], offsets_ms, request_id }
+    }
+
+    /// Stores an answered part; true when the group is complete.
+    fn store(&mut self, seq: u64, part: Part) -> bool {
+        if let Some(slot) = self.parts.get_mut(seq as usize) {
+            *slot = Some(part);
+        }
+        self.parts.iter().all(|p| p.is_some())
+    }
+}
+
+/// The single reply for a fully answered group: texts joined with a space,
+/// token timestamps shifted by each part's offset, summed asr and the worst
+/// queue wait (parts run one at a time, so the max is the honest figure).
+fn group_reply(state: &GroupState) -> Reply {
+    let mut texts: Vec<String> = Vec::new();
+    let mut tokens = Vec::new();
+    let mut asr_ms = 0u64;
+    let mut queue_ms = 0u64;
+    let mut part_asr_ms = Vec::new();
+    for (index, slot) in state.parts.iter().enumerate() {
+        let part = slot.as_ref().expect("complete group");
+        if !part.text.is_empty() {
+            texts.push(part.text.clone());
+        }
+        asr_ms += part.asr_ms;
+        queue_ms = queue_ms.max(part.queue_ms);
+        part_asr_ms.push(part.asr_ms);
+        let offset = state.offsets_ms[index];
+        for token in &part.tokens {
+            tokens.push(json!({"text": token.text, "start_ms": token.start_ms as u64 + offset}));
+        }
+    }
+    Reply::Ok {
+        id: Some(state.request_id),
+        result: json!({
+            "text": texts.join(" "),
+            "asr_ms": asr_ms,
+            "queue_ms": queue_ms,
+            "tokens": tokens,
+            "parts": state.parts.len(),
+            "part_asr_ms": part_asr_ms,
+        }),
+    }
 }
 
 impl Worker {
@@ -110,22 +185,56 @@ impl Worker {
                     self.err(id, e);
                 }
             }
-            Request::Transcribe { id, model, pcm: data, language, window_ms, priority } => {
-                let Some(handle) = self.models.get(&model) else {
-                    self.err(id, format!("model {model:?} is not loaded; send load first"));
-                    return;
-                };
-                let pcm = match pcm::decode_f32(&data) {
-                    Ok(p) => p,
-                    Err(e) => return self.err(id, e),
-                };
-                if pcm.is_empty() {
-                    return self.err(id, "empty audio".to_string());
+            Request::Transcribe { id, model, pcm: data, language, window_ms, priority, max_chunk_ms } => {
+                if !self.models.contains_key(&model) {
+                    return self.err(id, format!("model {model:?} is not loaded; send load first"));
                 }
-                let request_id = id.unwrap_or_else(|| self.next_job.fetch_add(1, Ordering::SeqCst));
+                let (pcm, language, window_ms, priority, chunk_ms, request_id) = {
+                    let pcm = match pcm::decode_f32(&data) {
+                        Ok(p) => p,
+                        Err(e) => {
+                            self.err(id, e);
+                            return;
+                        }
+                    };
+                    if pcm.is_empty() {
+                        self.err(id, "empty audio".to_string());
+                        return;
+                    }
+                    (
+                        pcm,
+                        language,
+                        window_ms,
+                        Priority::parse(priority.as_deref()),
+                        max_chunk_ms.unwrap_or(DEFAULT_MAX_CHUNK_MS),
+                        id.unwrap_or_else(|| self.next_job.fetch_add(1, Ordering::SeqCst)),
+                    )
+                };
+                // Only long batch transcriptions are split: interactive jobs
+                // are short by nature and sessions own their own slicing.
+                // The parts are computed while `handle` still borrows `self`
+                // immutably; the borrow ends before `submit_group` takes the
+                // mutable one.
+                let parts = if priority == Priority::Batch
+                    && window_ms.is_none()
+                    && pcm.len() as u64 * 1000 / 16_000 > chunk_ms as u64
+                {
+                    batchsplit::split_batch_pcm(&pcm, chunk_ms)
+                } else {
+                    Vec::new()
+                };
+                if parts.len() > 1 {
+                    if let Err(e) = self.submit_group(&model, &parts, &language, request_id) {
+                        return self.err(id, e);
+                    }
+                    return;
+                }
+                let Some(handle) = self.models.get(&model) else {
+                    return self.err(id, format!("model {model:?} is not loaded"));
+                };
                 match handle.submit(
                     Kind::Transcribe { pcm, language, window_ms },
-                    Priority::parse(priority.as_deref()),
+                    priority,
                     Meta::Client(request_id),
                 ) {
                     Ok((_, flag)) => {
@@ -134,6 +243,8 @@ impl Worker {
                     Err(e) => self.err(id, e),
                 }
             }
+
+
             Request::Cancel { id, job } => {
                 let cancelled = self.client_jobs.remove(&job).map(|flag| {
                     flag.store(true, Ordering::SeqCst);
@@ -185,6 +296,47 @@ impl Worker {
                 self.ok(id, json!({"session_cancel": session}));
             }
         }
+    }
+
+    /// Submits the parts of one split batch request: one Batch job each, all
+    /// sharing one cancel flag, reassembled by the router into a single reply.
+    fn submit_group(
+        &mut self,
+        model: &str,
+        parts: &[batchsplit::Chunk],
+        language: &Option<String>,
+        request_id: u64,
+    ) -> Result<(), String> {
+        let Some(handle) = self.models.get(model) else {
+            return Err(format!("model {model:?} is not loaded"));
+        };
+        let group = self.next_group.fetch_add(1, Ordering::SeqCst);
+        let offsets_ms: Vec<u64> = parts
+            .iter()
+            .map(|p| p.offset_samples as u64 * 1000 / 16_000)
+            .collect();
+        let total = parts.len() as u64;
+        let flag = Arc::new(AtomicBool::new(false));
+        for (seq, part) in parts.iter().enumerate() {
+            handle.submit_with_flag(
+                Kind::Transcribe {
+                    pcm: part.pcm.clone(),
+                    language: language.clone(),
+                    window_ms: None,
+                },
+                Priority::Batch,
+                Meta::BatchChunk {
+                    group,
+                    seq: seq as u64,
+                    total,
+                    request_id,
+                },
+                Arc::clone(&flag),
+            )?;
+        }
+        self.groups.insert(group, GroupState::new(offsets_ms, request_id));
+        self.client_jobs.insert(request_id, flag);
+        Ok(())
     }
 
     fn load(&mut self, id: Option<u64>, model: String, path: String, backend: Option<String>) {
@@ -438,6 +590,8 @@ fn main() {
     let worker = Arc::new(Mutex::new(Worker {
         models: HashMap::new(),
         client_jobs: HashMap::new(),
+        groups: HashMap::new(),
+        next_group: AtomicU64::new(1),
         sessions: HashMap::new(),
         results: tx,
         out: Arc::clone(&out),
@@ -483,6 +637,43 @@ fn main() {
                             Response::Cancelled => w.send(&Reply::Error { id: Some(id), message: "cancelled".into() }),
                             Response::Failed { message } => w.send(&Reply::Error { id: Some(id), message }),
                             other => w.send(&Reply::Error { id: Some(id), message: format!("unexpected: {other:?}") }),
+                        }
+                    }
+                    Meta::BatchChunk { group, seq, request_id, .. } => {
+                        // Unknown group: every part of it already answered
+                        // (a failure retired it); drop the straggler.
+                        if let Some(state) = w.groups.get_mut(&group) {
+                            match msg.response {
+                                Response::Text { text, asr_ms, queue_ms, tokens } => {
+                                    let part = Part { text, asr_ms, queue_ms, tokens };
+                                    if state.store(seq, part) {
+                                        let reply = group_reply(state);
+                                        w.groups.remove(&group);
+                                        w.client_jobs.remove(&request_id);
+                                        w.send(&reply);
+                                    }
+                                }
+                                // First failure/cancel answers and retires the
+                                // group; stragglers are dropped by the unknown-
+                                // group check above (the shared cancel flag
+                                // turns them into Cancelled anyway).
+                                Response::Failed { message } => {
+                                    w.groups.remove(&group);
+                                    w.client_jobs.remove(&request_id);
+                                    w.send(&Reply::Error { id: Some(request_id), message });
+                                }
+                                Response::Cancelled => {
+                                    w.groups.remove(&group);
+                                    w.client_jobs.remove(&request_id);
+                                    w.send(&Reply::Error { id: Some(request_id), message: "cancelled".into() });
+                                }
+                                other => {
+                                    let message = format!("unexpected: {other:?}");
+                                    w.groups.remove(&group);
+                                    w.client_jobs.remove(&request_id);
+                                    w.send(&Reply::Error { id: Some(request_id), message });
+                                }
+                            }
                         }
                     }
                     Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms, end_reason } => {
@@ -669,5 +860,69 @@ mod tests {
             Response::Failed { message: "boom".into() },
         );
         assert!(dead.is_empty(), "untracked failures are silent");
+    }
+
+    fn part_text(text: &str, asr_ms: u64, queue_ms: u64, token_start: u32) -> Part {
+        Part {
+            text: text.into(),
+            asr_ms,
+            queue_ms,
+            tokens: vec![TokenOut { text: text.into(), start_ms: token_start }],
+        }
+    }
+
+    #[test]
+    fn group_reply_joins_parts_and_shifts_tokens() {
+        let mut state = GroupState::new(vec![0, 10_000], 7);
+        assert!(!state.store(1, part_text("world", 5, 40, 0)));
+        assert!(state.store(0, part_text("hello", 4, 30, 100)));
+        match group_reply(&state) {
+            Reply::Ok { id, result } => {
+                assert_eq!(id, Some(7));
+                assert_eq!(result["text"], "hello world");
+                assert_eq!(result["asr_ms"], 9);
+                // The max is the honest queue wait for a part group.
+                assert_eq!(result["queue_ms"], 40);
+                assert_eq!(result["parts"], 2);
+                assert_eq!(result["part_asr_ms"][0], 4);
+                assert_eq!(result["part_asr_ms"][1], 5);
+                let tokens = result["tokens"].as_array().unwrap();
+                assert_eq!(tokens[0]["text"], "hello");
+                assert_eq!(tokens[0]["start_ms"], 100);
+                // Token of the second part, shifted by the 10 s offset.
+                assert_eq!(tokens[1]["text"], "world");
+                assert_eq!(tokens[1]["start_ms"], 10_000);
+            }
+            other => panic!("expected ok, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn group_replies_only_once_all_parts_answered() {
+        let mut state = GroupState::new(vec![0, 5_000, 10_000], 3);
+        assert!(!state.store(0, part_text("a", 1, 0, 0)));
+        assert!(!state.store(2, part_text("c", 1, 0, 0)));
+        assert!(state.store(1, part_text("b", 1, 0, 0)));
+    }
+
+    #[test]
+    fn empty_part_text_does_not_double_spaces() {
+        let mut state = GroupState::new(vec![0, 5_000], 1);
+        state.store(0, Part { text: String::new(), asr_ms: 1, queue_ms: 0, tokens: Vec::new() });
+        state.store(1, part_text("word", 1, 0, 0));
+        match group_reply(&state) {
+            Reply::Ok { result, .. } => assert_eq!(result["text"], "word"),
+            other => panic!("expected ok, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn cancel_flag_is_shared_by_all_parts() {
+        // The router contract: one cancel of a group request must discard every
+        // still-queued part, which only holds if they share one flag.
+        let flag = Arc::new(AtomicBool::new(false));
+        let parts: Vec<Arc<AtomicBool>> = (0..3).map(|_| Arc::clone(&flag)).collect();
+        parts[2].store(true, Ordering::SeqCst);
+        assert!(parts.iter().all(|p| p.load(Ordering::SeqCst)));
     }
 }

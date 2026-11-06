@@ -17,7 +17,9 @@
 | Файл | Назначение |
 |---|---|
 | `runtime_client.py` | stdlib HTTP-клиент контракта + CLI (`health`, `models`, `load`, `unload`, `transcribe`, `stream`) |
-| `pipeline_eval.py` | `make-audio` / `run` / `sweep` — сборка окна, прогон, скоринг, свип |
+| `pipeline_eval.py` | `make-audio` / `run` / `sweep` / `natural` — сборка окна, прогон, скоринг, свип, естественные записи |
+| `batch_slice_eval.py` | `run` / `compare` — качество batch-разрезания: артефакт текст/токены/тайминги + офлайн-сравнение двух прогонов |
+| `tests/test_batch_slice_eval.py` | офлайн-тесты чистого сравнения `compare_batch_runs` |
 | `tests/test_pipeline_eval.py` | офлайн-тесты чистых частей: `python3 -m unittest`, без демона и моделей |
 | `podlodka_wer.py` | WER демона на локальных клипах Podlodka + ΔWER к файловому батч-базлайну |
 | `memprobe.py` | общий внешний сэмплер памяти процесса (обёртка над `tools/memory_probe`) |
@@ -136,6 +138,55 @@ SHA-256 WAV, UTC-времена начала/конца, машина (`platform
 markdown-таблица (`config | WER | CER | finals | refs | utt mean/p50 | asr | queue |
 e2e | boundary del/ins`) и базлайны под таблицей.
 
+### `natural`
+
+Стримит **целую** естественную запись из `experiments/corpus/local/veche-bench/
+data_simple/<name>/<name>.wav` (16 кГц mono 16-bit, настоящие паузы и перекрытия
+дикторов, аудио не пересобирается) и сравнивает конкатенацию финалов со склейкой
+реплик из `<name>.json` (`id = <recording>-<replica_id>`, reference = text).
+Скоринг тот же concat-уровень (norm-v2, `wer.corpus`); per-utterance метрики не
+выдумываются. Дополнительно: `boundary_diagnostics`, `latency_stats`,
+`utterance_duration_stats` и `premature_end` — доля финалов с
+`end_reason=max_utterance` (финалы без поля — `end_reason_missing`, не «premature»).
+Батч-базлайн — тот же WAV целиком (`batch_concat`); per-utterance базлайна нет,
+потому что отдельных аудиофайлов реплик не существует. Артефакт того же формата,
+что `run`, плюс `reference_status="unverified"` и число спикеров из JSON.
+
+```bash
+python3 -m runtime_eval.pipeline_eval natural \
+    --recording 2-one-to-one --model gigaam --realtime 8 \
+    --config min_silence_ms=700 --json /tmp/natural.json
+```
+
+## `batch_slice_eval.py`
+
+Харнесс качества batch-разрезания (`/v1/audio/transcriptions`, priority=batch):
+до/после изменения кода разрезания (batch-slicing) на одном WAV.
+
+- `run --wav ... --model ... --json out.json [--repeat N] [--language ru]` —
+  артефакт: текст, поток токенов (`text`, `start_ms`), `asr_ms`/`wall_ms`/
+  `queue_ms`, SHA-256 WAV, машина, git-состояние (как `environment.py`),
+  команда/argv. Повторы — список прогонов `runs`.
+- `compare --json-before a.json --json-after b.json --json out.json` — чистая
+  функция `compare_batch_runs(before, after)`: WER текста «после» против «до»
+  (asr_eval norm/wer, до-текст = reference), diff токенов через выравнивание
+  norm-токенов (deletions = потерянные слова, insertions = дубли/галлюцинации),
+  delta `asr_ms`/`wall_ms` (средние по повторам). Полностью офлайн.
+
+Латентность batch под нагрузкой меряет `soak.py multiclient --batch`; этот
+файл её не дублирует.
+
+```bash
+python3 -m runtime_eval.batch_slice_eval run \
+    --wav /tmp/window.wav --model gigaam --repeat 3 --json /tmp/batch-before.json
+# ... изменение batch-slicing в runtime/worker ...
+python3 -m runtime_eval.batch_slice_eval run \
+    --wav /tmp/window.wav --model gigaam --repeat 3 --json /tmp/batch-after.json
+python3 -m runtime_eval.batch_slice_eval compare \
+    --json-before /tmp/batch-before.json --json-after /tmp/batch-after.json \
+    --json /tmp/batch-diff.json
+```
+
 ## `podlodka_wer.py`
 
 Runtime- WER на тех же локальных клипах Podlodka, что в файловом батч-базлайне
@@ -214,7 +265,10 @@ python3 -m runtime_eval.ane1 --repeats 100 --idle 15,60,300
 
 `results/environment.json` — ОС и сборка, модель железа (без серийников), RAM, версии
 Swift/Rust/Clang/ffmpeg, режим сборки, commit (+ признак `dirty`), хэши собранных
-бинарников и моделей. Внешний ключ окружения вроде токенов не читается.
+бинарников и моделей. Внешний ключ окружения вроде токенов не читается. Пути
+обезличены: бинарники — относительно корня репозитория (например
+`runtime/daemon/.build/release/speech-runtime`), модели — только имя файла
+(`resolved_path` = basename); `machine_model` и host-поля остаются как есть.
 
 ```bash
 python3 -m runtime_eval.environment --skip-hashes   # быстро, без чтения многогигабайтных GGUF
@@ -238,8 +292,12 @@ python3 -m runtime_eval.environment --skip-hashes   # быстро, без чт�
 - Корпус veche — непроверенные транскрипты неизвестной лицензии
   (см. [`../asr_eval/README.md`](../asr_eval/README.md)): это девелоперский
   полигон для механики и латентности, не подтверждённый бенчмарк качества.
-- Паузы между высказываниями синтетические (чистая тишина); реальные совпадения
-  и перекрытия дикторов модель не видит.
+- Паузы между высказываниями в `make-audio`/`run`/`sweep` синтетические (чистая
+  тишина); реальные совпадения и перекрытия дикторов модель не видит. `natural`
+  этот предел снимает (целая запись как есть), но референсы там — `unverified`.
+- `premature_end` в `natural` не делится на высказывания и не знает, где на
+  самом деле заканчивалась фраза: это доля финалов, отрезанных `max_utterance`,
+  а не «число реально оборванных фраз».
 - `e2e_ms` включает клиентскую подачу и опрос событий; при `--realtime 8`
   доставка быстрее реального времени, но это всё ещё не продовая метрика
   продукта (ср. `runtime/README.md`).

@@ -244,6 +244,7 @@ public actor WorkerClient {
         model: String,
         language: String?,
         windowMs: Int?,
+        maxChunkMs: Int? = nil,
         priority: String
     ) async throws -> [String: Any] {
         var payload: [String: Any] = [
@@ -254,6 +255,7 @@ public actor WorkerClient {
         ]
         if let language { payload["language"] = language }
         if let windowMs { payload["window_ms"] = windowMs }
+        if let maxChunkMs { payload["max_chunk_ms"] = maxChunkMs }
         return try await request(payload, timeout: 300)
     }
 

@@ -66,7 +66,7 @@
       "name": "both_models_configured",
       "pass": true,
       "status": "PASS",
-      "detail": "missing from /Users/antony/Documents/projects/Speech-Runtime/runtime/models.json: none"
+      "detail": "missing from runtime/models.json: none"
     },
     {
       "name": "both_models_loaded",

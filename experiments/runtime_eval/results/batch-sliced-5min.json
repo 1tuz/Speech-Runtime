@@ -1,0 +1,51 @@
+{
+ "schema": "runtime-batch-slice-eval-v1",
+ "command": "run",
+ "argv": [
+  "--wav",
+  "/tmp/measure-5min.wav",
+  "--model",
+  "gigaam",
+  "--url",
+  "http://127.0.0.1:8517",
+  "--token",
+  "15d27dff895e20089351b4b5832bf345",
+  "--json",
+  "runtime_eval/results/batch-sliced-5min.json"
+ ],
+ "started_utc": "2026-11-06T08:05:36.111501+00:00",
+ "finished_utc": "2026-11-06T08:05:36.199371+00:00",
+ "machine": {
+  "machine": "arm64",
+  "system": "Darwin",
+  "release": "27.2.0",
+  "processor": "arm",
+  "python": "3.15.2"
+ },
+ "git": {
+  "commit": "ae38f1c6272532e8a0d5fcdda83631d44092bd53",
+  "short": "ae38f1c",
+  "subject": "docs: итоговый отчёт проверки прототипа и пакет задания",
+  "committed_at": "2026-11-06T00:56:32+03:00",
+  "dirty": true,
+  "dirty_files": 37
+ },
+ "model": "gigaam",
+ "language": null,
+ "repeat": 1,
+ "audio": {
+  "path": "/tmp/measure-5min.wav",
+  "sha256": "42d7d2c3ccecfbb9cfedcd1a7bdbd19078f69cc0bbbb0751bc682ebd62897799"
+ },
+ "runs": [
+  {
+   "repeat": 0,
+   "asr_ms": 653,
+   "wall_ms": 782,
+   "queue_ms": 627,
+   "audio_ms": 179305,
+   "text_chars": 2721,
+   "token_count": 1220
+  }
+ ]
+}

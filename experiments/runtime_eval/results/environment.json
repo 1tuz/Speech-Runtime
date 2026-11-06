@@ -1,6 +1,6 @@
 {
  "schema": "environment/1",
- "captured_at": "2026-11-05T19:08:52+0300",
+ "captured_at": "2026-11-06T11:04:20+0300",
  "reproduce": "python3 -m runtime_eval.environment",
  "host": {
   "os": "macOS-27.2-arm64-arm-64bit-Mach-O",
@@ -23,12 +23,12 @@
  },
  "build_mode": "release (swift build -c release, cargo build --release); debug binaries hashed separately",
  "git": {
-  "commit": "ff1c15b64f448c933f5a6fe285ac2169e508811e",
-  "short": "ff1c15b",
-  "subject": "fix: \u0443\u0447\u0451\u0442 \u0441\u0435\u0441\u0441\u0438\u0439 \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0430 \u043f\u0430\u043c\u044f\u0442\u0438 runtime",
-  "committed_at": "2026-11-04T22:17:14+03:00",
+  "commit": "ae38f1c6272532e8a0d5fcdda83631d44092bd53",
+  "short": "ae38f1c",
+  "subject": "docs: \u0438\u0442\u043e\u0433\u043e\u0432\u044b\u0439 \u043e\u0442\u0447\u0451\u0442 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u043f\u0440\u043e\u0442\u043e\u0442\u0438\u043f\u0430 \u0438 \u043f\u0430\u043a\u0435\u0442 \u0437\u0430\u0434\u0430\u043d\u0438\u044f",
+  "committed_at": "2026-11-06T00:56:32+03:00",
   "dirty": true,
-  "dirty_files": 25
+  "dirty_files": 36
  },
  "dependencies": {
   "cargo_lock_sha256": "525d8e80420b1aa6d0195240f1797cf3ac775ce2e12248582dbfdc273f28c849",
@@ -36,28 +36,28 @@
  },
  "binaries": {
   "daemon_release": {
-   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/daemon/.build/release/speech-runtime",
+   "path": "runtime/daemon/.build/out/Products/Release/speech-runtime",
    "exists": true,
-   "bytes": 736048,
-   "sha256": "1edf80204c2047acdcc3557698f658a45edecbacc45b3154dde87314117463e7",
+   "bytes": 697024,
+   "sha256": "c3d418dfb81f22715e8aa9088af08b7650f078f4f77ffe50b99f6eb7b90fa22c",
    "hash_seconds": 0.0
   },
   "daemon_debug": {
-   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/daemon/.build/debug/speech-runtime",
+   "path": "runtime/daemon/.build/out/Products/Debug/speech-runtime",
    "exists": true,
-   "bytes": 1024864,
-   "sha256": "ef5b5672cf854bf6c9d3c88747f07d70a448b822b30fdd932429d799fbf2ec81",
+   "bytes": 997952,
+   "sha256": "10deee2a37d3984945f70794de345c083b9cfa8475ef6ee8056fe59206ffd5be",
    "hash_seconds": 0.0
   },
   "worker_release": {
-   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/worker/target/release/sr-worker",
+   "path": "runtime/worker/target/release/sr-worker",
    "exists": true,
-   "bytes": 6857696,
-   "sha256": "a517b04797ff50c25d956b021fb2c6dba2d65ea319463017cd29896bfbad61cd",
-   "hash_seconds": 0.0
+   "bytes": 6877760,
+   "sha256": "0392f37d0960b5f99653a04ce46858a3cf66087757287dbaf0f5b29caeec3c28",
+   "hash_seconds": 0.01
   },
   "worker_debug": {
-   "path": "/Users/antony/Documents/projects/Speech-Runtime/runtime/worker/target/debug/sr-worker",
+   "path": "runtime/worker/target/debug/sr-worker",
    "exists": true,
    "bytes": 27462888,
    "sha256": "0758ad4c42e05b2d5a011f4c56f5e86fb99da267b68a8ca53ac1450d074a4bb5",
@@ -71,9 +71,10 @@
     "ru"
    ],
    "configured_path": "~/.cache/huggingface/hub/models--handy-computer--gigaam-v3-e2e-rnnt-gguf/snapshots/3efd5b39882ceadca5570a8fb9fa1a2c801d6d6d/gigaam-v3-e2e-rnnt-Q8_0.gguf",
-   "resolved_path": "/Users/antony/.cache/huggingface/hub/models--handy-computer--gigaam-v3-e2e-rnnt-gguf/snapshots/3efd5b39882ceadca5570a8fb9fa1a2c801d6d6d/gigaam-v3-e2e-rnnt-Q8_0.gguf",
+   "resolved_path": "gigaam-v3-e2e-rnnt-Q8_0.gguf",
    "exists": true,
-   "bytes": 273724832
+   "bytes": 273724832,
+   "sha256": "78d63b47723b7f8d78c6113a6ef983b5a86e2a86f6c273e1f5cb6967b1c4467a"
   },
   "parakeet-ultra": {
    "backend": "ane",
@@ -82,9 +83,10 @@
     "en"
    ],
    "configured_path": "~/.cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots/a1539be1b849ea7463b88343e5277b373d0c4ea9/parakeet-ultra-Q8_0.gguf",
-   "resolved_path": "/Users/antony/.cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots/a1539be1b849ea7463b88343e5277b373d0c4ea9/parakeet-ultra-Q8_0.gguf",
+   "resolved_path": "parakeet-ultra-Q8_0.gguf",
    "exists": true,
-   "bytes": 740363168
+   "bytes": 740363168,
+   "sha256": "007a59761e9258779f189df396b50d12b83bb5b79e66df4b955c230d2f2a0a59"
   }
  },
  "privacy": {

@@ -155,6 +155,9 @@ public struct Router: Sendable {
         guard !audio.samples.isEmpty else { throw RuntimeError.message("empty audio") }
         let priority = request.query["priority"] ?? "batch"
         let window = request.query["window_ms"].flatMap(Int.init)
+        // Only batch transcriptions are split, so only they carry the limit;
+        // interactive requests keep the single-job path.
+        let batchChunkMs: Int? = priority == "batch" ? config().batchChunkMs : nil
         let started = Date()
         await idle.touch(model)
         let result = try await worker.transcribe(
@@ -162,6 +165,7 @@ public struct Router: Sendable {
             model: model,
             language: request.query["language"],
             windowMs: window,
+            maxChunkMs: batchChunkMs,
             priority: priority
         )
         log("transcribe model=\(model) audio_ms=\(audio.samples.count * 1000 / 16_000) priority=\(priority)")

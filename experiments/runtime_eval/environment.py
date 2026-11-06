@@ -45,16 +45,30 @@ def run(*command: str) -> str:
 
 
 def sha256(path: Path) -> dict:
+    record = {"path": repo_relative(path), "exists": path.exists()}
     if not path.exists():
-        return {"path": str(path), "exists": False}
+        return record
     digest = hashlib.sha256()
     started = time.time()
     with path.open("rb") as handle:
         for block in iter(lambda: handle.read(1 << 22), b""):
             digest.update(block)
     stat = path.stat()
-    return {"path": str(path), "exists": True, "bytes": stat.st_size, "sha256": digest.hexdigest(),
-            "hash_seconds": round(time.time() - started, 2)}
+    record.update({"bytes": stat.st_size, "sha256": digest.hexdigest(),
+                   "hash_seconds": round(time.time() - started, 2)})
+    return record
+
+
+def repo_relative(path: Path) -> str:
+    """Path relative to the repo root when inside it; otherwise POSIX-absolute.
+
+    Anonymisation: `/Users/<name>/...` never reaches the artifact, while
+    `machine_model`/`host` stay as before (they identify hardware, not files).
+    """
+    try:
+        return str(path.resolve().relative_to(REPO))
+    except ValueError:
+        return path.as_posix()
 
 
 def git_state() -> dict:
@@ -77,7 +91,9 @@ def models(with_hashes: bool) -> dict:
     for name, entry in (config.get("models") or {}).items():
         path = Path(os.path.expanduser(entry.get("path", "")))
         record = {"backend": entry.get("backend"), "languages": entry.get("languages"),
-                  "configured_path": entry.get("path"), "resolved_path": str(path), "exists": path.exists()}
+                  "configured_path": entry.get("path"),
+                  # basename only: model weights live under private home paths
+                  "resolved_path": path.name, "exists": path.exists()}
         if path.exists():
             record["bytes"] = path.stat().st_size
             if with_hashes:

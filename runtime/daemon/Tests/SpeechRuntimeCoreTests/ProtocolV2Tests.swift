@@ -122,4 +122,26 @@ final class ProtocolV2Tests: XCTestCase {
         XCTAssertTrue(candidates.contains("dead-model"), "dead-generation stream must not pin the model")
         XCTAssertFalse(candidates.contains("live-model"), "live stream must keep its model busy")
     }
+
+    // MARK: - RuntimeConfig
+
+    private func tempConfig(_ json: String) throws -> URL {
+        let url = FileManager.default.temporaryDirectory
+            .appendingPathComponent("sr-config-\(UUID().uuidString).json")
+        try json.data(using: .utf8)!.write(to: url)
+        return url
+    }
+
+    func testConfigRejectsNonPositiveBatchChunkMs() throws {
+        let url = try tempConfig(#"{"models":{},"batchChunkMs":0}"#)
+        XCTAssertThrowsError(try RuntimeConfig.load(at: url))
+        try FileManager.default.removeItem(at: url)
+    }
+
+    func testConfigDefaultsBatchChunkMsToTenSeconds() throws {
+        let url = try tempConfig(#"{"models":{}}"#)
+        let config = try RuntimeConfig.load(at: url)
+        XCTAssertEqual(config.batchChunkMs, 10_000, "absent field keeps the default")
+        try FileManager.default.removeItem(at: url)
+    }
 }

@@ -35,7 +35,7 @@ import os
 import signal
 import subprocess
 import sys
-import time
+import tempfile
 import urllib.error
 import urllib.request
 import wave
@@ -101,12 +101,16 @@ class Daemon:
     def start(self) -> int:
         self.log_path.parent.mkdir(parents=True, exist_ok=True)
         self.log = open(self.log_path, "w")
+        # The token file lives in a private temp dir, not next to the results:
+        # the results tree must stay free of auth material.
+        self.token_dir = tempfile.TemporaryDirectory(prefix="ane1-")
+        token_path = Path(self.token_dir.name) / "token"
         self.process = subprocess.Popen(
             [str(DAEMON), "--port", str(PORT), "--config", str(CONFIG),
-             "--token-file", str(self.log_path.parent / "token"),
+             "--token-file", str(token_path),
              "--worker", str(WORKER), "--idle-unload", "99999"],
             stdout=self.log, stderr=subprocess.STDOUT)
-        (self.log_path.parent / "token").write_text(TOKEN)
+        token_path.write_text(TOKEN)
         for _ in range(120):
             try:
                 call("/health", timeout=2)
@@ -129,6 +133,9 @@ class Daemon:
                 self.process.kill()
         if getattr(self, "log", None):
             self.log.close()
+        if getattr(self, "token_dir", None):
+            self.token_dir.cleanup()
+
 
 
 # ---------------------------------------------------------------- sequence

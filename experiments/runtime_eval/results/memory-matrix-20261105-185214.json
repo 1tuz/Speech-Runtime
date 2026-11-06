@@ -7,7 +7,7 @@
   "seconds": 3.0,
   "cooldown": 3.0,
   "port": 8591,
-  "out": "/Users/antony/Documents/projects/Speech-Runtime/experiments/runtime_eval/results"
+  "out": "experiments/runtime_eval/results"
  },
  "epoch": {
   "note": "each mode uses its own daemon process; series share one process"

@@ -47,6 +47,8 @@ FINAL_FIELDS = (
     "end_ms",
     "last_voice_ms",
     "detected_ms",
+    "end_reason",
+    "tokens",
 )
 
 
