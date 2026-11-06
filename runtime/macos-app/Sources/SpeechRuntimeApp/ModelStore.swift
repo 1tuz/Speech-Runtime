@@ -17,7 +17,12 @@ final class ModelStore {
         let lfs: LFS?
         struct LFS: Decodable { let oid: String; let size: Int64? }
     }
-    var isInstalled: Bool { FileManager.default.fileExists(atPath: AppPaths.model.path) }
+    var isInstalled: Bool { Self.entryExists(AppPaths.model.path) }
+
+    /// `fileExists` follows symlinks: a broken link (left by copying the HF cache
+    /// layout, whose snapshot files are relative symlinks to blobs/) reports false
+    /// yet still blocks `copyItem`/`moveItem` with "object already exists".
+    static func entryExists(_ path: String) -> Bool { lstat(path, nil) == 0 }
 
     func ensureInstalled(progress: @escaping @Sendable (Double?) -> Void) async throws {
         try AppPaths.createDirectories()
@@ -37,9 +42,14 @@ final class ModelStore {
         let cached = FileManager.default.homeDirectoryForCurrentUser
             .appendingPathComponent(".cache/huggingface/hub/models--handy-computer--parakeet-ultra-gguf/snapshots")
             .appendingPathComponent(ModelSpec.revision).appendingPathComponent(ModelSpec.filename)
-        if !isInstalled, FileManager.default.fileExists(atPath: cached.path) {
+        // The HF snapshot entry is a relative symlink into blobs/; resolve it so the
+        // copy brings real bytes, not a link that is broken outside the cache.
+        let cachedResolved = (try? FileManager.default.destinationOfSymbolicLink(atPath: cached.path))
+            .map { link in URL(fileURLWithPath: link, relativeTo: cached.deletingLastPathComponent()) }
+            ?? cached
+        if !isInstalled, FileManager.default.fileExists(atPath: cachedResolved.path) {
             progress(nil)
-            try FileManager.default.copyItem(at: cached, to: AppPaths.model)
+            try FileManager.default.copyItem(at: cachedResolved, to: AppPaths.model)
         }
         if isInstalled {
             progress(nil)
@@ -48,6 +58,7 @@ final class ModelStore {
                 return
             }
             // An app-managed file that failed verification is never silently used.
+            // removeItem also clears a stale/broken symlink from an earlier attempt.
             try FileManager.default.removeItem(at: AppPaths.model)
         }
 
