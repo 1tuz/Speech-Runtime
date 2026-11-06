@@ -19,6 +19,7 @@ struct SpeechRuntimeApplication {
 final class MenuApplicationDelegate: NSObject, NSApplicationDelegate, NSPopoverDelegate {
     private let model = AppModel()
     private var item: NSStatusItem!
+    private var wizardController: SetupWizardController?
     private let popover = NSPopover()
     private var observation: AnyCancellable?
 
@@ -48,10 +49,22 @@ final class MenuApplicationDelegate: NSObject, NSApplicationDelegate, NSPopoverD
         let commands = NSMenu()
         let quit = NSMenuItem(title: L("quit.note"), action: #selector(quitOnlyUI), keyEquivalent: "q")
         quit.target = self
-        commands.addItem(quit); appMenu.submenu = commands; menu.addItem(appMenu)
+        let setup = NSMenuItem(title: L("menu.setup"), action: #selector(runSetup), keyEquivalent: "")
+        setup.target = self
+        commands.insertItem(setup, at: 0)
+        let separator = NSMenuItem.separator()
+        commands.insertItem(separator, at: 1)
         NSApp.mainMenu = menu
-        updateIcon()
+        // First run: present setup once; later runs keep the plain panel.
+        if UserDefaults.standard.object(forKey: "setupCompleted") == nil { runSetup() }
         model.launch()
+    }
+    @objc private func runSetup() {
+        if wizardController == nil { wizardController = SetupWizardController(model: model) }
+        wizardController?.show { [weak self] turnOn in
+            guard turnOn else { return }
+            self?.model.enable()
+        }
     }
     @objc private func togglePanel() {
         if popover.isShown { popover.performClose(nil) }

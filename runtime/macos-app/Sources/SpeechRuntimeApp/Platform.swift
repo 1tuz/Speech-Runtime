@@ -5,16 +5,47 @@ import Foundation
 import RuntimeUIModel
 
 private enum Localization {
-    static let bundle: Bundle = {
-        // SwiftPM's generated accessor uses the build path as a fallback. Never depend
-        // on that absolute path in an installed app.
+    // SwiftPM's generated accessor uses the build path as a fallback. Never depend
+    // on that absolute path in an installed app.
+    static let container: Bundle = {
         if Bundle.main.bundleURL.pathExtension == "app",
            let resource = Bundle.main.resourceURL?.appendingPathComponent("SpeechRuntimeMenu_SpeechRuntimeApp.bundle"),
            let bundle = Bundle(url: resource) { return bundle }
         return Bundle.module
     }()
+    /// Cached per-language bundle. Rebuilt when "appLanguage" changes so new L() calls
+    /// immediately reflect the user's choice. NotificationCenter drives the invalidation.
+    private static let lock = NSLock()
+    private static var cachedLanguage: AppLanguage?
+    private static var cachedBundle: Bundle?
+    static func bundle(for language: AppLanguage) -> Bundle {
+        lock.lock(); defer { lock.unlock() }
+        let lproj = language.lprojName(preferredLanguages: preferredLanguages)
+        // A localization-specific path keeps NSLocalizedString away from the process-wide
+        // AppleLanguages lookup, which would ignore the in-app preference.
+        if let path = container.path(forResource: "Localizable", ofType: "strings",
+                                     inDirectory: nil, forLocalization: lproj),
+           let bundle = Bundle(path: path) {
+            cachedLanguage = language; cachedBundle = bundle
+            return bundle
+        }
+        cachedLanguage = language; cachedBundle = container
+        return container
+    }
+    private static var preferredLanguages: [String] {
+        // "system" means follow the OS, not an AppleLanguages override that a user
+        // may have set in `defaults` for other apps; keep the lookup to locale data.
+        (Locale.preferredLanguages as [String])
+    }
 }
-func L(_ key: String) -> String { NSLocalizedString(key, bundle: Localization.bundle, comment: "") }
+func L(_ key: String) -> String {
+    NSLocalizedString(key, bundle: Localization.bundle(for: .storedValue()), comment: "")
+}
+
+extension Notification.Name {
+    /// Posted after "appLanguage" changes so cached localization strings rebuild.
+    static let appLanguageChanged = Notification.Name("AppLanguageChanged")
+}
 
 struct AppFailure: LocalizedError {
     let message: String

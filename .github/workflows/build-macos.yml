@@ -1,0 +1,99 @@
+name: build-macos
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+# Self-hosted Apple Silicon runner with the repository Rust toolchain and Xcode 26+.
+# Model weights and ANE compilation caches are NOT part of the build: only binaries and the DMG.
+jobs:
+  build:
+    runs-on: [self-hosted, macOS]
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Rust cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            runtime/worker/target
+          key: cargo-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('runtime/worker/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Swift cache (daemon)
+        uses: actions/cache@v4
+        with:
+          path: runtime/daemon/.build
+          key: swift-daemon-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('runtime/daemon/Package.swift') }}
+          restore-keys: swift-daemon-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Swift cache (macOS app)
+        uses: actions/cache@v4
+        with:
+          path: runtime/macos-app/.build
+          key: swift-app-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('runtime/macos-app/Package.swift') }}
+          restore-keys: swift-app-${{ runner.os }}-${{ runner.arch }}-
+
+      - name: Rust tests (worker)
+        working-directory: runtime/worker
+        run: cargo test --locked
+
+      - name: Swift tests (daemon)
+        working-directory: runtime/daemon
+        run: swift test
+
+      - name: Swift tests (macOS app)
+        working-directory: runtime/macos-app
+        run: swift test -q
+
+      - name: Build worker (release)
+        working-directory: runtime/worker
+        run: cargo build --release --locked
+
+      - name: Build model preparation example
+        working-directory: runtime/worker
+        run: cargo build --release --locked --example sr-model-prepare
+
+      - name: Build daemon (release)
+        working-directory: runtime/daemon
+        run: swift build -c release
+
+      - name: Build macOS app (release)
+        working-directory: runtime/macos-app
+        run: swift build -c release
+
+      - name: Package DMG (ad-hoc, no signing identity)
+        env:
+          SIGNING_IDENTITY: ""
+        run: bash runtime/macos-app/scripts/build-app.sh
+
+      - name: Compute checksums
+        run: |
+          cd dist
+          for f in *.dmg; do shasum -a 256 "$f" > "$f.sha256"; done
+          ls -l *.dmg *.sha256
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: speech-runtime-macos
+          path: |
+            dist/*.dmg
+            dist/*.sha256
+          if-no-files-found: error
+
+      - name: Release (tags only)
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "${GITHUB_REF_NAME}" \
+            --generate-notes \
+            dist/*.dmg dist/*.sha256

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<!-- ==================================================================
+     DIAGRAM · Speech Runtime unification contract (kami palette)
+     Two independent adapter sets: client-side (apps -> contract) and
+     compute-side (workers -> models). Nodes <= 9, one focal band.
+     ================================================================== -->
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech Runtime · Контракт унификации</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --parchment:  #f5f4ed;
+    --ivory:      #faf9f5;
+    --near-black: #141413;
+    --olive:      #504e49;
+    --stone:      #6b6a64;
+    --brand:      #1B365D;
+    --brand-tint: #EEF2F7;
+    --border:     #e8e6dc;
+
+    --serif: Charter, Georgia, Palatino, serif;
+    --sans: var(--serif);
+    --mono:  "JetBrains Mono", "SF Mono", Consolas, "TsangerJinKai02", "Source Han Serif SC", "Songti SC", monospace;
+  }
+
+  body {
+    font-family: var(--sans);
+    background: var(--parchment);
+    color: var(--near-black);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 2rem;
+  }
+
+  .frame { max-width: 1000px; width: 100%; }
+
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--stone);
+    margin-bottom: 0.5rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: 1.9rem;
+    font-weight: 500;
+    letter-spacing: -0.3pt;
+    line-height: 1.15;
+    margin-bottom: 1.6rem;
+  }
+
+  svg { width: 100%; min-width: 860px; display: block; }
+  @media print { svg { min-width: 0; } }
+
+  .caption {
+    font-family: var(--serif);
+    font-size: 0.95rem;
+    color: var(--olive);
+    margin-top: 1rem;
+    max-width: 60ch;
+  }
+</style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Speech Runtime</p>
+    <h1>Контракт унификации речевых задач</h1>
+
+    <svg viewBox="0 0 960 560" role="img" aria-labelledby="sr-title sr-desc" xmlns="http://www.w3.org/2000/svg">
+      <title id="sr-title">Speech Runtime: приложения подключаются к контракту, воркеры подключают модели</title>
+      <desc id="sr-desc">Диктовка, встречи и обработка записей говорят с контрактным входом (OpenAI-совместимый и полный API). Роутер демона ведёт сессии и приоритеты и соединяет их с воркерами, за которыми стоят подключаемые модели. Клиентский и вычислительный наборы адаптеров меняются независимо.</desc>
+      <defs>
+        <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="0.9" fill="#E3E2DC"/>
+        </pattern>
+        <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#504e49"/>
+        </marker>
+        <marker id="arrow-brand" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+          <polygon points="0 0, 8 3, 0 6" fill="#1B365D"/>
+        </marker>
+      </defs>
+
+      <rect width="100%" height="100%" fill="#f5f4ed"/>
+      <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
+
+      <!-- Boundary bands -->
+      <rect data-node="apps-band" x="40" y="52" width="180" height="300" rx="8" fill="none" stroke="#B2B1AC" stroke-width="1" stroke-dasharray="4 4"/>
+      <rect data-node="models-band" x="740" y="52" width="180" height="300" rx="8" fill="none" stroke="#B2B1AC" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="50" y="44" fill="#6b6a64" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.22em">КЛИЕНТСКИЕ АДАПТЕРЫ</text>
+      <text x="750" y="44" fill="#6b6a64" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.22em">ВЫЧИСЛИТЕЛЬНЫЕ АДАПТЕРЫ</text>
+
+      <!-- Edges (behind nodes) -->
+      <line data-edge="openai" data-from="apps-band" data-to="contract" x1="224" y1="180" x2="284" y2="180" stroke="#504e49" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line data-edge="full-api" data-from="apps-band" data-to="contract" x1="224" y1="260" x2="284" y2="260" stroke="#504e49" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <line data-edge="dispatch" data-from="router" data-to="worker" x1="588" y1="202" x2="676" y2="180" stroke="#1B365D" stroke-width="1.4" marker-end="url(#arrow-brand)"/>
+      <line data-edge="events" data-from="worker" data-to="router" x1="676" y1="260" x2="588" y2="238" stroke="#504e49" stroke-width="1" marker-end="url(#arrow)"/>
+      <line data-edge="load-model" data-from="worker" data-to="gigaam" x1="788" y1="170" x2="760" y2="170" stroke="#504e49" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+      <!-- Edge labels -->
+      <rect data-label-for="openai" x="228" y="160" width="52" height="12" rx="2" fill="#f5f4ed"/>
+      <text x="254" y="170" fill="#504e49" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.1em">OPENAI</text>
+
+      <rect data-label-for="full-api" x="228" y="240" width="48" height="12" rx="2" fill="#f5f4ed"/>
+      <text x="252" y="250" fill="#504e49" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.1em">STREAMS</text>
+
+      <rect data-label-for="dispatch" x="596" y="176" width="72" height="12" rx="2" fill="#f5f4ed"/>
+      <text x="632" y="186" fill="#1B365D" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.1em">ЗАДАЧИ</text>
+
+      <rect data-label-for="events" x="596" y="246" width="72" height="12" rx="2" fill="#f5f4ed"/>
+      <text x="632" y="256" fill="#504e49" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle" letter-spacing="0.1em">ФИНАЛЫ</text>
+
+      <!-- Contract node (focal) -->
+      <rect data-node="contract" x="288" y="148" width="176" height="144" rx="6" fill="#f5f4ed"/>
+      <rect x="292" y="152" width="168" height="136" rx="6" fill="#EEF2F7" stroke="#1B365D" stroke-width="1"/>
+      <text x="310" y="172" fill="#1B365D" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">КОНТРАКТ</text>
+      <text x="376" y="196" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Единый вход речевых задач</text>
+      <text x="376" y="218" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">models · capabilities</text>
+      <text x="376" y="234" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">batch · sessions · end</text>
+      <text x="376" y="250" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">finals · cancel</text>
+      <text x="376" y="272" fill="#504e49" font-size="8" font-family="'JetBrains Mono', monospace" text-anchor="middle">/v1/audio/transcriptions</text>
+
+      <!-- Router node (focal) -->
+      <rect data-node="router" x="488" y="148" width="104" height="144" rx="6" fill="#f5f4ed"/>
+      <rect x="492" y="152" width="96" height="136" rx="6" fill="#EEF2F7" stroke="#1B365D" stroke-width="1"/>
+      <text x="508" y="172" fill="#1B365D" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">RUNTIME</text>
+      <text x="540" y="196" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Демон Swift</text>
+      <text x="540" y="218" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">маршрутизация</text>
+      <text x="540" y="234" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">сессии · приоритеты</text>
+      <text x="540" y="250" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">idle · надзор</text>
+
+      <!-- Worker node -->
+      <rect data-node="worker" x="680" y="148" width="104" height="144" rx="6" fill="#f5f4ed"/>
+      <rect x="684" y="152" width="96" height="136" rx="6" fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+      <text x="700" y="172" fill="#141413" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">WORKER</text>
+      <text x="732" y="196" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Воркер Rust</text>
+      <text x="732" y="218" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">wavo · очереди</text>
+      <text x="732" y="234" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">earshot VAD</text>
+      <text x="732" y="250" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">batch-splitting</text>
+
+      <!-- Apps inside the client band -->
+      <rect data-node="dictation" x="52" y="116" width="156" height="60" rx="6" fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
+      <text x="68" y="134" fill="#6b6a64" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">ПРИЛОЖЕНИЕ</text>
+      <text x="130" y="154" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Диктовка</text>
+      <text x="130" y="170" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">сессии · финалы</text>
+
+      <rect data-node="meetings" x="52" y="186" width="156" height="60" rx="6" fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
+      <text x="68" y="204" fill="#6b6a64" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">ПРИЛОЖЕНИЕ</text>
+      <text x="130" y="224" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Встречи</text>
+      <text x="130" y="240" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">стриминг чанков</text>
+
+      <rect data-node="batchapp" x="52" y="256" width="156" height="60" rx="6" fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
+      <text x="68" y="274" fill="#6b6a64" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">ПРИЛОЖЕНИЕ</text>
+      <text x="130" y="294" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">Обработка записей</text>
+      <text x="130" y="310" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">батч-транскрипция</text>
+
+      <!-- Models inside the compute band -->
+      <rect data-node="gigaam" x="752" y="116" width="156" height="60" rx="6" fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+      <text x="768" y="134" fill="#141413" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">МОДЕЛЬ</text>
+      <text x="830" y="154" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">gigaam</text>
+      <text x="830" y="170" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">GGUF · ANE · ru</text>
+
+      <rect data-node="parakeet" x="752" y="256" width="156" height="60" rx="6" fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+      <text x="768" y="274" fill="#141413" font-size="7" font-family="'JetBrains Mono', monospace" letter-spacing="0.15em">МОДЕЛЬ</text>
+      <text x="830" y="294" fill="#141413" font-size="12" font-weight="500" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif" text-anchor="middle">parakeet-ultra</text>
+      <text x="830" y="310" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace" text-anchor="middle">GGUF · ANE · ru/en</text>
+
+      <!-- Criteria note -->
+      <text x="40" y="392" fill="#504e49" font-size="9" font-family="'JetBrains Mono', monospace">Новая модель подключается адаптером к воркеру; новое приложение адаптером к контракту. Ни одно не правит другое.</text>
+
+      <!-- Legend strip -->
+      <line x1="40" y1="440" x2="920" y2="440" stroke="#DEDED7" stroke-width="0.8"/>
+      <text x="40" y="456" fill="#504e49" font-size="8" font-family="'JetBrains Mono', monospace" letter-spacing="0.22em">LEGEND</text>
+
+      <rect x="40" y="472" width="14" height="10" rx="2" fill="#EEF2F7" stroke="#1B365D" stroke-width="1"/>
+      <text x="60" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Focal · контракт и демон</text>
+
+      <rect x="230" y="472" width="14" height="10" rx="2" fill="#faf9f5" stroke="#141413" stroke-width="1"/>
+      <text x="250" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Воркер · модели</text>
+
+      <rect x="370" y="472" width="14" height="10" rx="2" fill="#E9E8E1" stroke="#6b6a64" stroke-width="1"/>
+      <text x="390" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Приложения</text>
+
+      <rect x="490" y="472" width="14" height="10" rx="2" fill="none" stroke="#B2B1AC" stroke-width="1" stroke-dasharray="4 4"/>
+      <text x="510" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Граница адаптеров</text>
+
+      <line x1="640" y1="478" x2="670" y2="478" stroke="#1B365D" stroke-width="1.4" marker-end="url(#arrow-brand)"/>
+      <text x="678" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Основной путь</text>
+
+      <line x1="790" y1="478" x2="820" y2="478" stroke="#504e49" stroke-width="1.2" marker-end="url(#arrow)"/>
+      <text x="828" y="480" fill="#504e49" font-size="8.5" font-family="'TsangerJinKai02', 'Source Han Serif SC', 'Songti SC', Charter, Georgia, serif">Поток данных</text>
+    </svg>
+
+    <p class="caption">Клиентский и вычислительный наборы адаптеров независимы: приложения говорят только с контрактом, воркеры только с моделями. Добавление модели не требует изменений в приложениях, подключение нового приложения не требует изменений в вычислительных движках.</p>
+  </div>
+</body>
+</html>

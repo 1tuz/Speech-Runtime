@@ -87,6 +87,19 @@ public struct Router: Sendable {
         ])
     }
 
+    /// Honest capability set of every declared model. It describes what the runtime already
+    /// does, not a roadmap: batch one-shots and streaming sessions exist, finals arrive only
+    /// after the endpointer decides the utterance is over (no interim hypotheses), tokens
+    /// carry `start_ms`, and there is no diarization. Apps read this from the listing instead
+    /// of discovering the gaps by failure.
+    static let capabilities: [String: Any] = [
+        "batch_transcription": true,
+        "streaming_sessions": true,
+        "interim_results": false,
+        "word_timestamps": true,
+        "diarization": false,
+    ]
+
     private func models() async throws -> HTTPResponse {
         let configured = config().models
         let stats = (try? await worker.stats())?["models"] as? [[String: Any]] ?? []
@@ -101,6 +114,7 @@ public struct Router: Sendable {
                 "path": entry.path,
                 "backend": entry.backend ?? "auto",
                 "languages": entry.languages ?? [],
+                "capabilities": Self.capabilities,
             ]
             if let live = loadedBy[name] {
                 row["loaded"] = live["loaded"] ?? false

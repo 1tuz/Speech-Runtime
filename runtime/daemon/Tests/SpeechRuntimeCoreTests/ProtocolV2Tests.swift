@@ -144,4 +144,45 @@ final class ProtocolV2Tests: XCTestCase {
         XCTAssertEqual(config.batchChunkMs, 10_000, "absent field keeps the default")
         try FileManager.default.removeItem(at: url)
     }
+
+    // MARK: - Models capabilities
+
+    func testConfiguredModelsAdvertiseHonestCapabilities() async throws {
+        // A full round trip through the real Router: the capabilities block must ship with
+        // every model row of GET /v1/models, even when the worker is unreachable (the
+        // listing works without any model loaded).
+        let json = """
+        {"models":{"alpha":{"path":"/tmp/a.gguf","backend":"ane","languages":["ru"]}}}
+        """
+        let object = try XCTUnwrap(try JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: Any])
+        let router = Router(
+            token: AuthToken(value: "test-token"),
+            worker: WorkerClient(workerPath: "/nonexistent/sr-worker") { _ in },
+            config: { RuntimeConfig(jsonObject: object) },
+            idle: IdlePolicy(),
+            log: { _ in }
+        )
+        let request = HTTPRequest(
+            method: "GET",
+            path: "/v1/models",
+            query: [:],
+            headers: ["authorization": "Bearer test-token"],
+            body: Data()
+        )
+        let response = await router.handle(request)
+        let payload = try XCTUnwrap(
+            try JSONSerialization.jsonObject(with: response.body) as? [String: Any]
+        )
+        let models = try XCTUnwrap(payload["models"] as? [[String: Any]])
+        XCTAssertEqual(models.count, 1)
+        let row = try XCTUnwrap(models.first)
+        XCTAssertEqual(row["model"] as? String, "alpha")
+        let capabilities = try XCTUnwrap(row["capabilities"] as? [String: Bool])
+        XCTAssertEqual(capabilities.count, 5, "the contract advertises exactly these five fields")
+        XCTAssertEqual(capabilities["batch_transcription"], true)
+        XCTAssertEqual(capabilities["streaming_sessions"], true)
+        XCTAssertEqual(capabilities["interim_results"], false, "only finals after endpointing; no interim hypotheses")
+        XCTAssertEqual(capabilities["word_timestamps"], true, "tokens carry start_ms")
+        XCTAssertEqual(capabilities["diarization"], false)
+    }
 }

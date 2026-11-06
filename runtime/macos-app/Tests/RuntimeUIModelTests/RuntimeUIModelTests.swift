@@ -59,3 +59,76 @@ final class RuntimeUIModelTests: XCTestCase {
         XCTAssertFalse(ModelSpec.fileURL.absoluteString.contains("/main/"))
     }
 }
+
+final class SetupWizardTests: XCTestCase {
+    func testStepOrderWalksAllFiveSteps() {
+        var state = SetupWizardState()
+        XCTAssertEqual(state.step, .welcome)
+        XCTAssertEqual(state.stepNumber, 1)
+        XCTAssertEqual(state.totalSteps, 5)
+        XCTAssertTrue(state.isFirst)
+        for expected in [SetupWizardState.Step.login, .idle, .capabilities, .ready] {
+            state.next()
+            XCTAssertEqual(state.step, expected)
+        }
+        XCTAssertTrue(state.isLast)
+        state.next()  // last step: next is a no-op
+        XCTAssertEqual(state.step, .ready)
+    }
+    func testBackWalksReverseAndStopsAtFirst() {
+        var state = SetupWizardState(step: .ready)
+        state.back()
+        XCTAssertEqual(state.step, .capabilities)
+        state.back(); state.back(); state.back()
+        XCTAssertEqual(state.step, .welcome)
+        state.back()  // first step: back is a no-op
+        XCTAssertEqual(state.step, .welcome)
+        XCTAssertFalse(state.isLast)
+    }
+    func testWizardDefaultsMatchExistingPreferences() {
+        let state = SetupWizardState()
+        XCTAssertEqual(state.idleMinutes, 15)
+        XCTAssertEqual(state.language, .system)
+    }
+    func testCapabilitiesAreFixedPrototypeFacts() {
+        XCTAssertTrue(RuntimeCapabilities.streaming)
+        XCTAssertFalse(RuntimeCapabilities.interim)
+        XCTAssertTrue(RuntimeCapabilities.timestamps)
+        XCTAssertFalse(RuntimeCapabilities.diarization)
+    }
+}
+
+final class AppLanguageTests: XCTestCase {
+    override func tearDown() {
+        UserDefaults.standard.removeObject(forKey: "appLanguage")
+        super.tearDown()
+    }
+    func testMissingKeyMeansSystem() {
+        UserDefaults.standard.removeObject(forKey: "appLanguage")
+        XCTAssertEqual(AppLanguage.storedValue(), .system)
+        XCTAssertEqual(AppLanguage(rawValue: "system"), .system)
+    }
+    func testExplicitValuesRoundTrip() {
+        UserDefaults.standard.set("ru", forKey: "appLanguage")
+        XCTAssertEqual(AppLanguage.storedValue(), .ru)
+        UserDefaults.standard.set("en", forKey: "appLanguage")
+        XCTAssertEqual(AppLanguage.storedValue(), .en)
+        // Unknown stored value falls back to system, never crashes.
+        UserDefaults.standard.set("fr", forKey: "appLanguage")
+        XCTAssertEqual(AppLanguage.storedValue(), .system)
+    }
+    func testLprojSelectionForExplicitChoices() {
+        XCTAssertEqual(AppLanguage.en.lprojName(preferredLanguages: ["ru"]), "en")
+        XCTAssertEqual(AppLanguage.ru.lprojName(preferredLanguages: ["en"]), "ru")
+    }
+    func testSystemFollowsPreferredLanguages() {
+        XCTAssertEqual(AppLanguage.system.lprojName(preferredLanguages: ["ru-RU", "en-US"]), "ru")
+        XCTAssertEqual(AppLanguage.system.lprojName(preferredLanguages: ["en-US", "ru"]), "en")
+        XCTAssertEqual(AppLanguage.system.lprojName(preferredLanguages: ["de-DE"]), "en")
+        XCTAssertEqual(AppLanguage.system.lprojName(preferredLanguages: []), "en")
+    }
+    func testStorePersistsRawValue() {
+        AppLanguage.ru.store()
+        XCTAssertEqual(UserDefaults.standard.string(forKey: "appLanguage"), "ru")
+    }
+}

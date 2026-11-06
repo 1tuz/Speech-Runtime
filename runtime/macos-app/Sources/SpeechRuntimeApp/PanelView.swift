@@ -6,6 +6,8 @@ struct RuntimePanel: View {
     @ObservedObject var model: AppModel
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var languageSelection: AppLanguage = .storedValue()
+    @State private var languageVersion = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -52,6 +54,12 @@ struct RuntimePanel: View {
             }
             if model.settingsVisible {
                 VStack(alignment: .leading, spacing: 10) {
+                    Picker(L("language.title"), selection: languageBinding) {
+                        Text(L("language.system")).tag(AppLanguage.system)
+                        Text(L("language.english")).tag(AppLanguage.en)
+                        Text(L("language.russian")).tag(AppLanguage.ru)
+                    }
+                    Text(L("language.note")).font(.caption2).foregroundStyle(.secondary)
                     Picker(L("idle.title"), selection: $model.idleMinutes) {
                         ForEach([5, 15, 30, 60], id: \.self) { value in
                             Text(String(format: L("idle.minutes"), value)).tag(value)
@@ -59,6 +67,12 @@ struct RuntimePanel: View {
                     }
                     .onChange(of: model.idleMinutes) { _, _ in model.saveIdlePreference() }
                     Text(L("idle.note")).font(.caption2).foregroundStyle(.secondary)
+                    HStack {
+                        Text(L("capability.timestamps"))
+                        Spacer()
+                        Text(RuntimeCapabilities.timestamps ? L("capability.value.true") : L("capability.value.false"))
+                            .foregroundStyle(RuntimeCapabilities.timestamps ? .green : .secondary)
+                    }.font(.system(size: 11))
                     Button(L("files.open"), action: model.revealFiles).buttonStyle(.link)
                     Text("127.0.0.1:8477 \u{00B7} API v1")
                         .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
@@ -70,6 +84,22 @@ struct RuntimePanel: View {
         .frame(width: 356)
         .background(reduceTransparency ? Color(nsColor: .windowBackgroundColor) : .clear)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.16), value: model.settingsVisible)
+        // Re-render all localized strings when the stored language changes.
+        .id(languageVersion)
+        .onReceive(NotificationCenter.default.publisher(for: .appLanguageChanged)) { _ in
+            languageVersion += 1
+        }
+    }
+
+    private var languageBinding: Binding<AppLanguage> {
+        Binding(
+            get: { languageSelection },
+            set: { newValue in
+                languageSelection = newValue
+                newValue.store()
+                NotificationCenter.default.post(name: .appLanguageChanged, object: nil)
+            }
+        )
     }
 
     private var header: some View {
@@ -137,16 +167,31 @@ struct RuntimePanel: View {
         }.font(.system(size: 11))
     }
     private var footer: some View {
-        HStack(spacing: 14) {
-            Button { model.settingsVisible.toggle() } label: { Image(systemName: "gearshape") }
-                .help(L("settings")).accessibilityLabel(L("settings"))
-            Button(action: model.showLog) { Image(systemName: "doc.text.magnifyingglass") }
-                .help(L("log")).accessibilityLabel(L("log"))
+        HStack(spacing: 8) {
+            Button {
+                model.settingsVisible.toggle()
+            } label: {
+                Label(L("settings"), systemImage: "gearshape")
+            }
+            .help(L("settings")).accessibilityLabel(L("settings"))
+            Button(action: model.showLog) {
+                Label(L("log"), systemImage: "doc.text.magnifyingglass")
+            }
+            .help(L("log")).accessibilityLabel(L("log"))
             Spacer()
-            Text("LOCAL ASR").font(.system(size: 9, weight: .medium, design: .rounded)).foregroundStyle(.tertiary)
-            Button(action: model.quitUI) { Image(systemName: "xmark.circle") }
-                .help(L("quit.note")).accessibilityLabel(L("quit.note"))
-        }.buttonStyle(.borderless).foregroundStyle(.secondary)
+            Text("LOCAL ASR")
+                .font(.system(size: 9, weight: .medium, design: .rounded))
+                .foregroundStyle(.tertiary)
+            // The quit affordance must be readable, not a mystery icon: a labeled
+            // button stating what it does (UI quits, service stays).
+            Button(action: model.quitUI) {
+                Label(L("quit.title"), systemImage: "rectangle.portrait.and.arrow.forward")
+            }
+            .help(L("quit.note")).accessibilityLabel(L("quit.title"))
+        }
+        .buttonStyle(.borderless)
+        .font(.system(size: 11))
+        .foregroundStyle(.secondary)
     }
     private var statusColor: Color {
         if model.phase == .error { return .orange }

@@ -8,6 +8,35 @@ Speech Runtime — проект локального общего сервиса
 
 **Что нового (2026-11-04, модели):** Parakeet Ultra проверен на двух движках (FluidAudio CoreML и wavo GGUF: WER 10.42 % и 10.87 % на `dev`), на M4 ANE быстрее GPU в 1.7 раза; свип скользящего окна 0.5–11 с показал, что первый текст равен `chunk + right`, а задержка < 1 с возможна только при чанке 0.5 с ценой WER 35 %; `hypothesisChunkSeconds` в FluidAudio 0.17.7 не используется. Генеративный LoRA-корректор гипотез отклонён (WER 10.42 → 14.24 %). Пик памяти: ANE 40–58 МБ, GPU 770 МБ, CoreML 102 МБ. Разборы: [стриминг](experiments/pilot/STREAMING.md), [адаптация](experiments/pilot/ADAPTATION.md), [решения](docs/decisions.md).
 
+## Установка
+
+Прототип ставится одним скриптом (Apple Silicon, Xcode 26+, Rust-инструментарий репозитория):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/1tuz/Speech-Runtime/main/install.sh)
+```
+
+Скрипт собирает `sr-worker` (Rust) и демон `speech-runtime` (Swift), упаковывает меню-приложение
+`Speech Runtime.app` и кладёт CLI `sr` и `sr-model-prepare` в `~/.local/bin`. Веса моделей
+(gigaam, parakeet-ultra в GGUF) загружаются в кэш Hugging Face отдельно, по мере выбора
+конфигурации; для backend `ane` их нужно подготовить под Neural Engine — `sr-model-prepare`
+или `wavo pull gigaam-v3 parakeet-ultra`.
+
+Приложения подключаются к локальному сервису по HTTP: OpenAI-совместимый вход
+`POST /v1/audio/transcriptions` для батч-транскрипции и полный API (`GET /v1/models`,
+`POST /v1/streams` + `/audio` + `/end`, `DELETE /v1/streams`, `/v1/models/load`) для сессий
+с последовательной подачей и финалами. Токен — `~/Library/Application Support/SpeechRuntime/token`,
+порт по умолчанию 8477. Контракт и примеры запросов — [docs](docs/architecture.md) и
+[runtime/README](runtime/README.md).
+
+Проверка из терминала:
+
+```bash
+sr health
+sr models
+sr transcribe file.wav --model gigaam --priority batch
+```
+
 ## Документация
 
 - [Продукт и требования](docs/vision.md)
