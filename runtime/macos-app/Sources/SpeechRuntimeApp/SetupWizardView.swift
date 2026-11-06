@@ -18,19 +18,19 @@ struct SetupWizardView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            HStack {
+            HStack(spacing: 10) {
                 Image(systemName: "waveform").font(.system(size: 22, weight: .medium))
                     .foregroundStyle(Color.accentColor)
                 Text("Speech Runtime").font(.system(size: 17, weight: .semibold, design: .rounded))
-                switch state.step {
-                case .welcome: welcomeStep
-                case .login: loginStep
-                case .idle: idleStep
-                case .capabilities: capabilitiesStep
-                case .ready: readyStep
-                }
+                Spacer()
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            switch state.step {
+            case .welcome: welcomeStep
+            case .login: loginStep
+            case .idle: idleStep
+            case .capabilities: capabilitiesStep
+            case .ready: readyStep
+            }
             Spacer()
         }
         .padding(24)
@@ -47,11 +47,19 @@ struct SetupWizardView: View {
             Text(L("wizard.welcome.title")).font(.system(size: 15, weight: .semibold))
             Text(L("wizard.welcome.body")).font(.system(size: 12)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+            // The picker label is a header line, not an inline form label: the
+            // segmented control gets the full width so long localizations
+            // ("Как в системе") never truncate and the label never wraps mid-word.
+            Text(L("wizard.language.title"))
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.secondary)
             Picker(L("wizard.language.title"), selection: languageBinding) {
                 Text(L("language.system")).tag(AppLanguage.system)
                 Text(L("language.english")).tag(AppLanguage.en)
                 Text(L("language.russian")).tag(AppLanguage.ru)
-            }.pickerStyle(.segmented)
+            }
+            .pickerStyle(.segmented)
+            .labelsHidden()
             Text(L("language.note")).font(.caption2).foregroundStyle(.secondary)
         }
     }
@@ -81,11 +89,15 @@ struct SetupWizardView: View {
             Text(L("wizard.idle.title")).font(.system(size: 15, weight: .semibold))
             Text(L("wizard.idle.body")).font(.system(size: 12)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
+            Text(L("idle.title"))
+                .font(.system(size: 12, weight: .medium))
+                .foregroundStyle(.secondary)
             Picker(L("idle.title"), selection: $idleChoice) {
                 ForEach([5, 15, 30, 60], id: \.self) { value in
                     Text(String(format: L("idle.minutes"), value)).tag(value)
                 }
             }
+            .labelsHidden()
             .onChange(of: idleChoice) { _, _ in
                 model.idleMinutes = idleChoice
                 model.saveIdlePreference()
