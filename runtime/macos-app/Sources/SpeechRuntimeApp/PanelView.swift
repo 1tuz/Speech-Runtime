@@ -1,0 +1,181 @@
+#if os(macOS)
+import SwiftUI
+import RuntimeUIModel
+
+struct RuntimePanel: View {
+    @ObservedObject var model: AppModel
+    @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            header
+            power
+            if let message = model.failure {
+                Label(message, systemImage: "exclamationmark.triangle")
+                    .font(.caption).foregroundStyle(.orange)
+                    .textSelection(.enabled).lineLimit(6)
+                    .padding(10).frame(maxWidth: .infinity, alignment: .leading)
+                    .background(.orange.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+            }
+            if model.busy {
+                VStack(alignment: .leading, spacing: 8) {
+                    if let progress = model.downloadProgress, model.phase == .downloading {
+                        ProgressView(value: min(max(progress, 0), 1))
+                        Text(String(format: L("download.percent"), progress * 100))
+                            .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+                    } else { ProgressView().controlSize(.small) }
+                    if model.phase == .downloading || model.phase == .preparing {
+                        Button(L("cancel"), action: model.cancelSetup).buttonStyle(.borderless)
+                    }
+                }
+            }
+            modelCard
+            HStack(spacing: 10) {
+                metric(title: "CPU", value: model.cpuPercent.map { String(format: "%.1f %%", $0) } ?? "\u{2014}", icon: "cpu")
+                metric(title: "RAM", value: bytes(model.rssBytes), icon: "memorychip")
+            }
+            VStack(spacing: 9) {
+                detail(L("metric.ane"), bytes(model.neuralBytes))
+                detail(L("metric.sessions"), model.running ? "\(model.sessions)" : "\u{2014}")
+                detail(L("metric.queue"), model.queue.map(String.init) ?? "\u{2014}")
+            }
+            Text(L("metric.note")).font(.system(size: 10)).foregroundStyle(.tertiary).fixedSize(horizontal: false, vertical: true)
+            Divider()
+            Toggle(isOn: Binding(get: { model.loginEnabled }, set: model.setLogin)) {
+                Label(L("login.title"), systemImage: "sunrise")
+                    .font(.system(size: 12, weight: .medium))
+            }.toggleStyle(.switch).controlSize(.small)
+            if model.loginNeedsApproval {
+                Button(L("login.approval"), action: model.openLoginSettings)
+                    .font(.caption).buttonStyle(.link)
+            }
+            if model.settingsVisible {
+                VStack(alignment: .leading, spacing: 10) {
+                    Picker(L("idle.title"), selection: $model.idleMinutes) {
+                        ForEach([5, 15, 30, 60], id: \.self) { value in
+                            Text(String(format: L("idle.minutes"), value)).tag(value)
+                        }
+                    }
+                    .onChange(of: model.idleMinutes) { _, _ in model.saveIdlePreference() }
+                    Text(L("idle.note")).font(.caption2).foregroundStyle(.secondary)
+                    Button(L("files.open"), action: model.revealFiles).buttonStyle(.link)
+                    Text("127.0.0.1:8477 \u{00B7} API v1")
+                        .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
+                }.padding(12).background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
+            }
+            footer
+        }
+        .padding(20)
+        .frame(width: 356)
+        .background(reduceTransparency ? Color(nsColor: .windowBackgroundColor) : .clear)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.16), value: model.settingsVisible)
+    }
+
+    private var header: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "waveform").font(.system(size: 19, weight: .medium)).foregroundStyle(Color.accentColor)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Speech Runtime").font(.system(size: 16, weight: .semibold, design: .rounded))
+                Text(L("app.subtitle")).font(.system(size: 10, weight: .medium)).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Circle().fill(statusColor).frame(width: 7, height: 7)
+                .accessibilityLabel(model.statusText)
+        }
+    }
+    private var power: some View {
+        Button(action: model.togglePower) {
+            HStack(spacing: 13) {
+                Image(systemName: "power").font(.system(size: 24, weight: .medium))
+                    .frame(width: 34, height: 40)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(model.running ? L("power.off") : L("power.on"))
+                        .font(.system(size: 17, weight: .semibold, design: .rounded))
+                    Text(model.statusText).font(.system(size: 11)).foregroundStyle(.secondary)
+                }
+                Spacer()
+                if model.busy { ProgressView().controlSize(.small) }
+                else { Image(systemName: model.running ? "checkmark.circle.fill" : "chevron.right").font(.system(size: 16)) }
+            }
+            .padding(.horizontal, 16).padding(.vertical, 14)
+            .contentShape(RoundedRectangle(cornerRadius: 18))
+            .nativeGlass(active: model.running, reduceTransparency: reduceTransparency)
+        }
+        .buttonStyle(.plain)
+        .disabled(model.busy)
+        .accessibilityLabel(model.running ? L("power.off") : L("power.on"))
+        .accessibilityValue(model.statusText)
+    }
+    private var modelCard: some View {
+        HStack(alignment: .center, spacing: 10) {
+            Image(systemName: "waveform.badge.mic").font(.title3).foregroundStyle(.secondary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Parakeet Ultra").font(.system(size: 13, weight: .semibold))
+                Text("Q8_0 \u{00B7} Apple Neural Engine").font(.system(size: 10)).foregroundStyle(.secondary)
+            }
+            Spacer()
+            Text(model.snapshot?.modelLoaded == true ? L("model.loaded") : L("model.idle"))
+                .font(.system(size: 9, weight: .semibold))
+                .padding(.horizontal, 8).padding(.vertical, 5)
+                .background(Color.primary.opacity(0.055), in: Capsule())
+        }
+    }
+    private func metric(title: String, value: String, icon: String) -> some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Label(title, systemImage: icon).font(.system(size: 10, weight: .medium)).foregroundStyle(.secondary)
+            Text(value).font(.system(size: 21, weight: .medium, design: .rounded)).monospacedDigit()
+                .lineLimit(1).minimumScaleFactor(0.7)
+        }.frame(maxWidth: .infinity, alignment: .leading).padding(13)
+            .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 14))
+    }
+    private func detail(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label).foregroundStyle(.secondary)
+            Spacer()
+            Text(value).monospacedDigit()
+        }.font(.system(size: 11))
+    }
+    private var footer: some View {
+        HStack(spacing: 14) {
+            Button { model.settingsVisible.toggle() } label: { Image(systemName: "gearshape") }
+                .help(L("settings")).accessibilityLabel(L("settings"))
+            Button(action: model.showLog) { Image(systemName: "doc.text.magnifyingglass") }
+                .help(L("log")).accessibilityLabel(L("log"))
+            Spacer()
+            Text("LOCAL ASR").font(.system(size: 9, weight: .medium, design: .rounded)).foregroundStyle(.tertiary)
+            Button(action: model.quitUI) { Image(systemName: "xmark.circle") }
+                .help(L("quit.note")).accessibilityLabel(L("quit.note"))
+        }.buttonStyle(.borderless).foregroundStyle(.secondary)
+    }
+    private var statusColor: Color {
+        if model.phase == .error { return .orange }
+        return model.running ? .green : .secondary
+    }
+    private func bytes(_ value: UInt64?) -> String {
+        guard let value else { return "\u{2014}" }
+        return String(format: "%.0f MiB", Double(value) / 1_048_576)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func nativeGlass(active: Bool, reduceTransparency: Bool) -> some View {
+        if reduceTransparency {
+            self.background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: 18))
+        } else {
+            #if compiler(>=6.2)
+            if #available(macOS 26.0, *) {
+                self.glassEffect(.regular.tint(active ? Color.accentColor.opacity(0.16) : .clear).interactive(),
+                                 in: RoundedRectangle(cornerRadius: 18))
+            } else {
+                self.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+                    .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(Color.primary.opacity(0.08)))
+            }
+            #else
+            self.background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18))
+            #endif
+        }
+    }
+}
+#endif

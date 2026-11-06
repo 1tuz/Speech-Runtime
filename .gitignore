@@ -17,3 +17,6 @@ runtime/worker/target/
 # Experiment scratch and compiled probe binary
 experiments/runtime_eval/.work/
 tools/memory_probe/memory_probe_macos
+
+# macOS app bundle outputs
+dist/
