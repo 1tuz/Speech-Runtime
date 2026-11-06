@@ -132,3 +132,42 @@ final class AppLanguageTests: XCTestCase {
         XCTAssertEqual(UserDefaults.standard.string(forKey: "appLanguage"), "ru")
     }
 }
+
+// MARK: - Language bundle resolution (regression: switching language did nothing)
+
+final class LanguageBundleResolutionTests: XCTestCase {
+    func testLprojDirectoryIsLoadableAndDiffersFromContainer() throws {
+        // The bug: Bundle(path:) was given the .strings FILE path (not a bundle),
+        // returned nil, and L() silently fell back to the container bundle, which
+        // follows the process-wide AppleLanguages lookup — the in-app switch had
+        // no effect. The correct target is the .lproj directory.
+        let container = Bundle(for: LanguageBundleResolutionTests.self)
+        // The strings live in the app target's resource bundle; locate it
+        // next to the test bundle (same build products directory).
+        let testBundle = Bundle(for: LanguageBundleResolutionTests.self)
+        let productsURL = testBundle.bundleURL.deletingLastPathComponent()
+        let appResourceURL = productsURL
+            .appendingPathComponent("SpeechRuntimeMenu_SpeechRuntimeApp.bundle")
+        let moduleBundle = Bundle(url: appResourceURL) ?? testBundle
+        let enPath = moduleBundle.path(forResource: "Localizable", ofType: "strings",
+                                       inDirectory: nil, forLocalization: "en")
+        let ruPath = moduleBundle.path(forResource: "Localizable", ofType: "strings",
+                                       inDirectory: nil, forLocalization: "ru")
+        // In test context the module may be flattened; guard rather than skip so
+        // a packaging change that drops .lproj dirs fails loudly.
+        guard let enStrings = enPath, let ruStrings = ruPath else {
+            XCTFail("module bundle has no en/ru .lproj Localizable.strings; localization packaging is broken")
+            return
+        }
+        let enLproj = (enStrings as NSString).deletingLastPathComponent
+        let ruLproj = (ruStrings as NSString).deletingLastPathComponent
+        let en = try XCTUnwrap(Bundle(path: enLproj), "en.lproj directory must be loadable as a bundle")
+        let ru = try XCTUnwrap(Bundle(path: ruLproj), "ru.lproj directory must be loadable as a bundle")
+        XCTAssertNotEqual(
+            en.localizedString(forKey: "power.on", value: "?", table: nil),
+            ru.localizedString(forKey: "power.on", value: "?", table: nil),
+            "en and ru bundles must return different strings; otherwise switching is invisible"
+        )
+        _ = container
+    }
+}

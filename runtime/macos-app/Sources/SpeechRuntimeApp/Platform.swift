@@ -21,13 +21,18 @@ private enum Localization {
     static func bundle(for language: AppLanguage) -> Bundle {
         lock.lock(); defer { lock.unlock() }
         let lproj = language.lprojName(preferredLanguages: preferredLanguages)
-        // A localization-specific path keeps NSLocalizedString away from the process-wide
-        // AppleLanguages lookup, which would ignore the in-app preference.
-        if let path = container.path(forResource: "Localizable", ofType: "strings",
-                                     inDirectory: nil, forLocalization: lproj),
-           let bundle = Bundle(path: path) {
-            cachedLanguage = language; cachedBundle = bundle
-            return bundle
+        // The localization-specific path must point at the .lproj DIRECTORY: a
+        // .strings file is not a loadable bundle, Bundle(path:) on it returns nil
+        // and the old code silently fell back to the container bundle, which
+        // resolves through the process-wide AppleLanguages lookup and ignores
+        // the in-app preference. That is why switching language did nothing.
+        if let stringsPath = container.path(forResource: "Localizable", ofType: "strings",
+                                            inDirectory: nil, forLocalization: lproj) {
+            let lprojPath = (stringsPath as NSString).deletingLastPathComponent
+            if let bundle = Bundle(path: lprojPath) {
+                cachedLanguage = language; cachedBundle = bundle
+                return bundle
+            }
         }
         cachedLanguage = language; cachedBundle = container
         return container

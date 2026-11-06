@@ -17,33 +17,43 @@ struct SetupWizardView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            HStack(spacing: 10) {
-                Image(systemName: "waveform").font(.system(size: 22, weight: .medium))
+        VStack(alignment: .leading, spacing: 0) {
+            // Brand header: the same waveform + rounded type the panel uses,
+            // so the wizard reads as the same product, not a stray utility.
+            HStack(spacing: 12) {
+                Image(systemName: "waveform")
+                    .font(.system(size: 24, weight: .medium))
                     .foregroundStyle(Color.accentColor)
-                Text("Speech Runtime").font(.system(size: 17, weight: .semibold, design: .rounded))
+                    .frame(width: 40, height: 40)
+                    .background(Color.accentColor.opacity(0.12), in: RoundedRectangle(cornerRadius: 10))
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Speech Runtime")
+                        .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    Text(L("app.subtitle"))
+                        .font(.system(size: 9, weight: .medium))
+                        .foregroundStyle(.secondary)
+                }
                 Spacer()
+                stepDots
             }
-            switch state.step {
-            case .welcome: welcomeStep
-            case .login: loginStep
-            case .idle: idleStep
-            case .capabilities: capabilitiesStep
-            case .ready: readyStep
+            .padding(.bottom, 18)
+
+            Group {
+                switch state.step {
+                case .welcome: welcomeStep
+                case .login: loginStep
+                case .idle: idleStep
+                case .capabilities: capabilitiesStep
+                case .ready: readyStep
+                }
             }
-            Spacer()
-            Divider()
-            // Progress + navigation are always visible: a wizard step without a
-            // visible "Continue" reads as a dead end.
-            HStack {
-                Text("\(state.stepNumber)/\(state.totalSteps)")
-                    .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
-                Spacer()
-            }
-            controls
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+
+            Divider().padding(.top, 12)
+            controls.padding(.top, 12)
         }
-        .padding(24)
-        .frame(width: 480, height: 380)
+        .padding(28)
+        .frame(width: 500, height: 420)
         .id(languageVersion)
         .onReceive(NotificationCenter.default.publisher(for: .appLanguageChanged)) { _ in
             languageVersion += 1
@@ -51,10 +61,23 @@ struct SetupWizardView: View {
         .onAppear { loginToggle = model.loginEnabled }
     }
 
+    /// Step dots: compact progress that needs no localization.
+    private var stepDots: some View {
+        HStack(spacing: 6) {
+            ForEach(SetupWizardState.Step.allCases, id: \.rawValue) { step in
+                Capsule()
+                    .fill(step == state.step ? Color.accentColor : Color.secondary.opacity(0.3))
+                    .frame(width: step == state.step ? 18 : 6, height: 6)
+            }
+        }
+        .accessibilityLabel("\(state.stepNumber)/\(state.totalSteps)")
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.18), value: state.step)
+    }
+
     private var welcomeStep: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(L("wizard.welcome.title")).font(.system(size: 15, weight: .semibold))
-            Text(L("wizard.welcome.body")).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(L("wizard.welcome.title")).font(.system(size: 20, weight: .semibold))
+            Text(L("wizard.welcome.body")).font(.system(size: 13)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             // The picker label is a header line, not an inline form label: the
             // segmented control gets the full width so long localizations
@@ -75,8 +98,8 @@ struct SetupWizardView: View {
 
     private var loginStep: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(L("wizard.login.title")).font(.system(size: 15, weight: .semibold))
-            Text(L("wizard.login.body")).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(L("wizard.login.title")).font(.system(size: 20, weight: .semibold))
+            Text(L("wizard.login.body")).font(.system(size: 13)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             Toggle(L("wizard.login.toggle"), isOn: $loginToggle)
                 .toggleStyle(.switch).controlSize(.small)
@@ -95,8 +118,8 @@ struct SetupWizardView: View {
 
     private var idleStep: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(L("wizard.idle.title")).font(.system(size: 15, weight: .semibold))
-            Text(L("wizard.idle.body")).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(L("wizard.idle.title")).font(.system(size: 20, weight: .semibold))
+            Text(L("wizard.idle.body")).font(.system(size: 13)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             Text(L("idle.title"))
                 .font(.system(size: 12, weight: .medium))
@@ -116,8 +139,8 @@ struct SetupWizardView: View {
 
     private var capabilitiesStep: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(L("wizard.capabilities.title")).font(.system(size: 15, weight: .semibold))
-            Text(L("wizard.capabilities.body")).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(L("wizard.capabilities.title")).font(.system(size: 20, weight: .semibold))
+            Text(L("wizard.capabilities.body")).font(.system(size: 13)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
             capabilityRow(L("capability.streaming"), RuntimeCapabilities.streaming)
             capabilityRow(L("capability.interim"), RuntimeCapabilities.interim)
@@ -127,20 +150,22 @@ struct SetupWizardView: View {
     }
 
     private func capabilityRow(_ label: String, _ value: Bool) -> some View {
-        HStack {
+        HStack(spacing: 10) {
             Image(systemName: value ? "checkmark.circle" : "minus.circle")
                 .foregroundStyle(value ? .green : .secondary)
-            Text(label).font(.system(size: 12))
+            Text(label).font(.system(size: 13))
             Spacer()
             Text(value ? L("capability.value.true") : L("capability.value.false"))
                 .font(.caption).foregroundStyle(.secondary)
         }
+        .padding(.horizontal, 12).padding(.vertical, 8)
+        .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 10))
     }
 
     private var readyStep: some View {
         VStack(alignment: .leading, spacing: 14) {
-            Text(L("wizard.ready.title")).font(.system(size: 15, weight: .semibold))
-            Text(L("wizard.ready.body")).font(.system(size: 12)).foregroundStyle(.secondary)
+            Text(L("wizard.ready.title")).font(.system(size: 20, weight: .semibold))
+            Text(L("wizard.ready.body")).font(.system(size: 13)).foregroundStyle(.secondary)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -200,6 +225,9 @@ final class SetupWizardController: NSObject, NSWindowDelegate {
         let window = NSWindow(contentViewController: hosting)
         window.title = "Speech Runtime Setup"
         window.styleMask = [.titled, .closable]
+        window.titlebarAppearsTransparent = true
+        window.backgroundColor = .windowBackgroundColor
+        window.isMovableByWindowBackground = true
         window.center()
         window.isReleasedWhenClosed = false
         window.level = .floating
