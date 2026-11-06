@@ -32,6 +32,15 @@ struct SetupWizardView: View {
             case .ready: readyStep
             }
             Spacer()
+            Divider()
+            // Progress + navigation are always visible: a wizard step without a
+            // visible "Continue" reads as a dead end.
+            HStack {
+                Text("\(state.stepNumber)/\(state.totalSteps)")
+                    .font(.caption.monospacedDigit()).foregroundStyle(.tertiary)
+                Spacer()
+            }
+            controls
         }
         .padding(24)
         .frame(width: 480, height: 380)
