@@ -19,6 +19,10 @@ struct CLI {
             case "unload": try await unload(arguments)
             case "transcribe": try await transcribe(arguments)
             case "stream": try await stream(arguments)
+            case "sessions": try await sessions()
+            case "end": try await endStream(arguments)
+            case "cancel": try await cancelStream(arguments)
+            case "status": try await status()
             case "help", "--help", "-h": usage()
             default:
                 FileHandle.standardError.write(Data("unknown command \(command)\n".utf8))
@@ -42,6 +46,10 @@ struct CLI {
           transcribe <file.wav> --model <name> [--language ru] [--window-ms N] [--priority batch|interactive]
           stream <file.wav> --model <name> [--realtime N] [--language ru] [--config k=v]... [--json]
                                          feed a file as a live stream; prints finals with latencies
+          status                         one-line machine-readable state for scripts
+          sessions                       active stream ids
+          end <stream>                   flush trailing audio and wait for the final
+          cancel <stream>                drop the stream and its queued work
         """)
     }
 
@@ -49,6 +57,11 @@ struct CLI {
         var client = try RuntimeClient.local()
         if let base = ProcessInfo.processInfo.environment["SPEECH_RUNTIME_URL"], let url = URL(string: base) {
             client.baseURL = url
+        }
+        // The token stays on disk by default; the env override exists for agents
+        // and scripts that run against an isolated daemon with its own token file.
+        if let token = ProcessInfo.processInfo.environment["SPEECH_RUNTIME_TOKEN"], !token.isEmpty {
+            client.token = token
         }
         return client
     }
@@ -76,6 +89,47 @@ struct CLI {
                 print("loaded: \(model["model"] ?? "?") on \(model["device"] ?? "?")")
             }
         }
+    }
+
+    /// One stable line, exit code reflects health: for scripts, cron and agents.
+    static func status() async throws {
+        do {
+            let result = try await client().health()
+            let worker = result["worker"] as? [String: Any] ?? [:]
+            let loaded = (worker["models"] as? [[String: Any]] ?? [])
+                .filter { ($0["loaded"] as? Bool) == true }
+                .compactMap { $0["model"] as? String }
+                .sorted()
+                .joined(separator: ",")
+            print("ok streams=\(result["streams"] ?? 0) models=\(loaded.isEmpty ? "none" : loaded) uptime=\(result["uptime_s"] ?? 0)")
+        } catch {
+            print("down unreachable")
+            exit(1)
+        }
+    }
+
+    static func sessions() async throws {
+        let result = try await client().health()
+        let streams = result["streams"] as? Int ?? 0
+        if streams == 0 { print("no active streams") }
+        else { print("streams: \(streams) (ids are held by the clients that opened them)") }
+    }
+
+    static func endStream(_ arguments: [String]) async throws {
+        guard let stream = arguments.first, !stream.hasPrefix("--") else {
+            throw RuntimeError.message("usage: sr end <stream>")
+        }
+        let result = try await client().endStream(stream)
+        let pending = result["pending"] as? Int
+        print("ended \(stream)\(pending.map { ", pending \($0)" } ?? "")")
+    }
+
+    static func cancelStream(_ arguments: [String]) async throws {
+        guard let stream = arguments.first, !stream.hasPrefix("--") else {
+            throw RuntimeError.message("usage: sr cancel <stream>")
+        }
+        _ = try await client().cancelStream(stream)
+        print("cancelled \(stream)")
     }
 
     static func models() async throws {
