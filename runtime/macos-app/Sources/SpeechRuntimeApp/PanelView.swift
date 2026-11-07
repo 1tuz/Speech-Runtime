@@ -13,6 +13,7 @@ struct RuntimePanel: View {
         VStack(alignment: .leading, spacing: 16) {
             header
             power
+            updateBanner
             if let message = model.failure {
                 Label(message, systemImage: "exclamationmark.triangle")
                     .font(.caption).foregroundStyle(.orange)
@@ -67,6 +68,27 @@ struct RuntimePanel: View {
                     }
                     .onChange(of: model.idleMinutes) { _, _ in model.saveIdlePreference() }
                     Text(L("idle.note")).font(.caption2).foregroundStyle(.secondary)
+                    Divider()
+                    // Permissions: the one OS approval the app participates in.
+                    Toggle(isOn: Binding(get: { model.loginEnabled }, set: model.setLogin)) {
+                        Text(L("permissions.login.title")).font(.system(size: 12, weight: .medium))
+                    }.toggleStyle(.switch).controlSize(.small)
+                    HStack {
+                        Text(L("permissions.login.note"))
+                            .font(.caption2).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Spacer()
+                        Button(L("permissions.openSettings"), action: model.openLoginSettings)
+                            .font(.caption2).buttonStyle(.link)
+                    }
+                    Divider()
+                    // Updates: silent check at launch when enabled; manual from
+                    // the right-click menu at any time.
+                    Toggle(isOn: Binding(get: { model.autoUpdate }, set: { model.autoUpdate = $0 })) {
+                        Text(L("update.auto")).font(.system(size: 12, weight: .medium))
+                    }.toggleStyle(.switch).controlSize(.small)
+                    Text(L("update.note")).font(.caption2).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                     HStack {
                         Text(L("capability.timestamps"))
                         Spacer()
@@ -100,6 +122,44 @@ struct RuntimePanel: View {
                 NotificationCenter.default.post(name: .appLanguageChanged, object: nil)
             }
         )
+    }
+
+    /// New-version banner: appears only when a newer GitHub release exists.
+    private var updateBanner: some View {
+        Group {
+            if model.updating {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(L("update.downloading")).font(.caption).foregroundStyle(.secondary)
+                    if let progress = model.updateProgress {
+                        ProgressView(value: min(max(progress, 0), 1))
+                    } else {
+                        ProgressView().controlSize(.small)
+                    }
+                }
+                .padding(10)
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+            } else if let tag = model.updateAvailableVersion {
+                HStack {
+                    Label(String(format: L("update.available"), tag), systemImage: "arrow.down.circle")
+                        .font(.caption).foregroundStyle(.blue)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer()
+                    Button(L("update.install"), action: model.installUpdate)
+                        .controlSize(.small)
+                }
+                .padding(10)
+                .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
+            } else if let message = model.updateMessage {
+                HStack {
+                    Text(message).font(.caption).foregroundStyle(.secondary)
+                    Spacer()
+                    Button("✕") { model.dismissUpdateMessage() }
+                        .buttonStyle(.borderless).controlSize(.mini)
+                }
+                .padding(8)
+                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
+            }
+        }
     }
 
     private var header: some View {

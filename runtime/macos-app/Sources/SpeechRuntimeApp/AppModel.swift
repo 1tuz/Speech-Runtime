@@ -21,7 +21,15 @@ final class AppModel: ObservableObject {
     @Published private(set) var loginNeedsApproval = false
     @Published var settingsVisible = false
     @Published var idleMinutes: Int = UserDefaults.standard.object(forKey: "idleMinutes") as? Int ?? 15
-
+    // Update state: availability banner, install progress, in-flight check.
+    @Published private(set) var updateAvailableVersion: String?
+    @Published private(set) var updateMessage: String?
+    @Published private(set) var updating = false
+    @Published private(set) var updateProgress: Double?
+    var autoUpdate: Bool {
+        get { UpdateChecker.autoUpdateEnabled }
+        set { UpdateChecker.autoUpdateEnabled = newValue }
+    }
     let api = RuntimeAPI()
     private let agent = AgentManager()
     private let models = ModelStore()
@@ -46,10 +54,81 @@ final class AppModel: ObservableObject {
     func launch() {
         refreshLogin()
         beginMonitoring()
+        autoUpdateCheck()
         Task {
             await refresh()
             if desiredEnabled && !running { enable() }
         }
+    }
+
+    // MARK: - Updates
+
+    /// Manual check: always notifies, including "you are up to date".
+    func checkForUpdates(manual: Bool) {
+        guard updateCheckTask == nil else { return }
+        updateCheckTask = Task { [weak self] in
+            defer { self?.updateCheckTask = nil }
+            do {
+                let release = try await UpdateChecker.latestRelease()
+                guard let self else { return }
+                if UpdateChecker.isTagNewer(release.tag_name, than: UpdateChecker.currentVersion()) {
+                    self.updateAvailableVersion = release.tag_name
+                    if manual { self.updateMessage = String(format: L("update.available"), release.tag_name) }
+                } else if manual {
+                    self.updateMessage = L("update.latest")
+                    self.updateAvailableVersion = nil
+                }
+            } catch {
+                guard let self, manual else { return }
+                self.updateMessage = L("update.error.network")
+            }
+        }
+    }
+    private var updateCheckTask: Task<Void, Never>?
+
+    /// Silently checks once at launch when auto-update is on (Settings toggle).
+    private func autoUpdateCheck() {
+        guard autoUpdate else { return }
+        checkForUpdates(manual: false)
+    }
+
+    /// Installs the pending update: download + verify + replace, then relaunch.
+    func installUpdate() {
+        guard !updating, let tag = updateAvailableVersion else { return }
+        updating = true
+        updateProgress = nil
+        updateMessage = nil
+        updateTask = Task { [weak self] in
+            do {
+                let release = try await UpdateChecker.latestRelease()
+                guard release.tag_name == tag else { throw AppFailure(L("update.error.network")) }
+                try await UpdateChecker.install(from: release) { [weak self] progress in
+                    Task { @MainActor in self?.updateProgress = progress }
+                }
+                guard let self else { return }
+                self.updating = false
+                self.updateAvailableVersion = nil
+                self.relaunchApp()
+            } catch {
+                guard let self else { return }
+                self.updating = false
+                self.updateProgress = nil
+                self.updateMessage = error.localizedDescription
+            }
+        }
+    }
+    private var updateTask: Task<Void, Never>?
+
+    func dismissUpdateMessage() { updateMessage = nil }
+
+    private func relaunchApp() {
+        let bundle = Bundle.main.bundleURL
+        monitor?.cancel()
+        let task = Process()
+        task.executableURL = URL(fileURLWithPath: "/usr/bin/open")
+        task.arguments = ["-n", bundle.path]
+        try? task.run()
+        NSApp.terminate(nil)
     }
     func visibilityChanged(_ visible: Bool) {
         panelVisible = visible

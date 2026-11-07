@@ -33,7 +33,8 @@ final class MenuApplicationDelegate: NSObject, NSApplicationDelegate, NSPopoverD
         }
         item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
         item.button?.target = self
-        item.button?.action = #selector(togglePanel)
+        item.button?.action = #selector(statusItemAction(_:))
+        item.button?.sendAction(on: [.leftMouseUp, .rightMouseUp])
         item.button?.toolTip = "Speech Runtime"
         popover.behavior = .transient
         popover.animates = !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
@@ -66,6 +67,49 @@ final class MenuApplicationDelegate: NSObject, NSApplicationDelegate, NSPopoverD
             self?.model.enable()
         }
     }
+    /// Left click toggles the panel; right click opens a full context menu with
+    /// the most common actions, so the status icon is usable without the popover.
+    @objc private func statusItemAction(_ sender: NSStatusBarButton?) {
+        if let event = NSApp.currentEvent, event.type == .rightMouseUp {
+            statusMenu(for: sender).popUp(positioning: nil, at: .zero, in: sender)
+        } else {
+            togglePanel()
+        }
+    }
+
+    private func statusMenu(for button: NSView?) -> NSMenu {
+        let menu = NSMenu()
+        let open = NSMenuItem(title: L("menu.openPanel"), action: #selector(togglePanel), keyEquivalent: "")
+        open.target = self
+        menu.addItem(open)
+        menu.addItem(.separator())
+        let onOff = NSMenuItem(
+            title: model.running ? L("power.off") : L("power.on"),
+            action: #selector(powerToggled),
+            keyEquivalent: ""
+        )
+        onOff.target = self
+        menu.addItem(onOff)
+        let setup = NSMenuItem(title: L("menu.setup"), action: #selector(runSetup), keyEquivalent: "")
+        setup.target = self
+        menu.addItem(setup)
+        let log = NSMenuItem(title: L("log"), action: #selector(openLog), keyEquivalent: "")
+        log.target = self
+        menu.addItem(log)
+        menu.addItem(.separator())
+        let check = NSMenuItem(title: L("update.check"), action: #selector(checkForUpdates), keyEquivalent: "")
+        check.target = self
+        menu.addItem(check)
+        menu.addItem(.separator())
+        let quit = NSMenuItem(title: L("quit.title"), action: #selector(quitOnlyUI), keyEquivalent: "q")
+        quit.target = self
+        menu.addItem(quit)
+        return menu
+    }
+    @objc private func powerToggled() { model.togglePower() }
+    @objc private func openLog() { model.showLog() }
+    @objc private func checkForUpdates() { model.checkForUpdates(manual: true) }
+
     @objc private func togglePanel() {
         if popover.isShown { popover.performClose(nil) }
         else if let button = item.button {

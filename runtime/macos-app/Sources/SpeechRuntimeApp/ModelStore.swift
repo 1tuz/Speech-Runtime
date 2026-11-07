@@ -22,7 +22,12 @@ final class ModelStore {
     /// `fileExists` follows symlinks: a broken link (left by copying the HF cache
     /// layout, whose snapshot files are relative symlinks to blobs/) reports false
     /// yet still blocks `copyItem`/`moveItem` with "object already exists".
-    static func entryExists(_ path: String) -> Bool { lstat(path, nil) == 0 }
+    static func entryExists(_ path: String) -> Bool {
+        // lstat needs a real stat buffer; passing nil fails with EFAULT even
+        // for existing files (found live: entryExists was always false).
+        var st = stat()
+        return lstat(path, &st) == 0
+    }
 
     func ensureInstalled(progress: @escaping @Sendable (Double?) -> Void) async throws {
         try AppPaths.createDirectories()

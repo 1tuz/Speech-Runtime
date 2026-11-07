@@ -52,3 +52,22 @@ public enum RuntimeCapabilities: Sendable, Equatable {
     /// No speaker diarization in this prototype.
     public static let diarization = false
 }
+
+public enum UpdateVersioning {
+    /// True when a release tag is strictly newer than the running version
+    /// (numeric, dotted; anything unparseable counts as not newer).
+    public static func isTagNewer(_ tag: String, than current: String) -> Bool {
+        func parts(_ s: String) -> [Int] {
+            s.trimmingCharacters(in: CharacterSet(charactersIn: "v"))
+                .split(separator: ".").compactMap { Int($0) }
+        }
+        let a = parts(tag), b = parts(current)
+        guard !a.isEmpty, !b.isEmpty else { return false }
+        for i in 0..<max(a.count, b.count) {
+            let x = i < a.count ? a[i] : 0
+            let y = i < b.count ? b[i] : 0
+            if x != y { return x > y }
+        }
+        return false
+    }
+}

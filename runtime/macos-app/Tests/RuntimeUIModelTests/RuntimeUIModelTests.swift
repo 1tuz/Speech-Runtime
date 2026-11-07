@@ -171,3 +171,22 @@ final class LanguageBundleResolutionTests: XCTestCase {
         _ = container
     }
 }
+
+// MARK: - Update version comparison
+
+final class UpdateVersionTests: XCTestCase {
+    func testNewerTagIsDetected() {
+        XCTAssertTrue(UpdateVersioning.isTagNewer("v0.3.0", than: "0.2.0"))
+        XCTAssertTrue(UpdateVersioning.isTagNewer("v0.2.1", than: "0.2.0"))
+        XCTAssertTrue(UpdateVersioning.isTagNewer("v1.0", than: "0.9.9"))
+    }
+    func testSameOrOlderTagIsNotNewer() {
+        XCTAssertFalse(UpdateVersioning.isTagNewer("v0.2.0", than: "0.2.0"))
+        XCTAssertFalse(UpdateVersioning.isTagNewer("v0.1.9", than: "0.2.0"))
+        XCTAssertTrue(UpdateVersioning.isTagNewer("v0.2.10", than: "0.2.9"))
+    }
+    func testGarbageTagsAreNotNewer() {
+        XCTAssertFalse(UpdateVersioning.isTagNewer("latest", than: "0.2.0"))
+        XCTAssertFalse(UpdateVersioning.isTagNewer("", than: "0.2.0"))
+    }
+}
