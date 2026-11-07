@@ -25,7 +25,9 @@ command -v curl >/dev/null 2>&1 || die "curl is required but not found."
 
 echo "Fetching the latest release from GitHub..."
 API_JSON="$TMP_DIR/release.json"
-if ! curl --fail --silent --show-error --location \
+# api.github.com connections get reset intermittently on some networks; retry
+# with backoff so a one-off reset does not fail the whole install.
+if ! curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors \
      "https://api.github.com/repos/${REPO}/releases/latest" -o "$API_JSON"; then
     die "Could not reach the GitHub API. Check your network access to api.github.com and retry."
 fi
@@ -42,7 +44,7 @@ DMG_PATH="$TMP_DIR/$DMG_NAME"
 SHA_PATH="$TMP_DIR/$DMG_NAME.sha256"
 
 echo "Downloading $DMG_NAME..."
-if ! curl --fail --silent --show-error --location "$DMG_URL" -o "$DMG_PATH"; then
+if ! curl --fail --silent --show-error --location --retry 4 --retry-delay 2 --retry-all-errors "$DMG_URL" -o "$DMG_PATH"; then
     die "Download failed. No file was installed."
 fi
 
@@ -61,7 +63,24 @@ fi
 echo "Checksum OK."
 
 echo "Mounting the disk image..."
-MOUNT_POINT="$(hdiutil attach "$DMG_PATH" -nobrowse -readonly | tail -n1 | awk '{ for (i = NF; i > 0; i--) if ($i ~ /^\//) { print $i; exit } }')"
+# A stale mount from an interrupted run makes the new one land as
+# "Speech Runtime 1" and can wedge attach; detach leftovers first.
+# grep exits 1 when there is nothing to clean; that must not kill the script.
+hdiutil info | grep -o '/Volumes/Speech Runtime[ 0-9]*' | while read -r STALE; do
+    hdiutil detach "$STALE" -quiet >/dev/null 2>&1 || true
+done || true
+# -plist output is parsed with PlistBuddy instead of scraping the human-readable
+# table (whose deprecation noise broke tail/awk) or single-line grep (the plist
+# writes key and value on separate lines).
+PLIST="$(hdiutil attach "$DMG_PATH" -nobrowse -readonly -plist 2>/dev/null)" || true
+[ -n "$PLIST" ] || die "Could not mount the DMG."
+MOUNT_POINT=""
+for INDEX in 0 1 2 3 4; do
+    # PlistBuddy exits 2 on a missing key; that is the loop's skip condition,
+    # not a failure — neutralize it or set -e kills the script at INDEX=0.
+    CANDIDATE="$(printf '%s' "$PLIST" | { /usr/libexec/PlistBuddy -c "Print :system-entities:$INDEX:mount-point" /dev/stdin 2>/dev/null || true; })"
+    if [ -n "$CANDIDATE" ]; then MOUNT_POINT="$CANDIDATE"; break; fi
+done
 [ -n "$MOUNT_POINT" ] || die "Could not mount the DMG."
 [ -d "$MOUNT_POINT/$APP_NAME" ] || die "The DMG does not contain '$APP_NAME'."
 
