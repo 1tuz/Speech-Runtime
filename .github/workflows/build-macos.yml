@@ -43,6 +43,10 @@ jobs:
         working-directory: runtime/worker
         run: cargo test --locked
 
+      - name: Build worker (debug, for daemon integration tests)
+        working-directory: runtime/worker
+        run: cargo build --locked
+
       - name: Swift tests (daemon)
         working-directory: runtime/daemon
         run: swift test
