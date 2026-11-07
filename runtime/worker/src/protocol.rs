@@ -90,6 +90,8 @@ pub struct SessionConfig {
     pub max_utterance_ms: u32,
     /// Language hint for the model.
     pub language: Option<String>,
+    /// Client-defined channel tag echoed back in session events ("system" or "mic").
+    pub source: Option<String>,
 }
 
 impl Default for SessionConfig {
@@ -102,6 +104,7 @@ impl Default for SessionConfig {
             min_silence_ms: 320,
             max_utterance_ms: 20_000,
             language: None,
+            source: None,
         }
     }
 }
@@ -126,5 +129,37 @@ impl Priority {
             Some("batch") => Self::Batch,
             _ => Self::Interactive,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn session_config_deserializes_source() {
+        let req: Request = serde_json::from_str(
+            r#"{"op":"session_open","session":"s","model":"m","config":{"source":"system"}}"#,
+        )
+        .expect("valid request");
+        match req {
+            Request::SessionOpen { config, .. } => {
+                let cfg = config.unwrap_or_default();
+                assert_eq!(cfg.source.as_deref(), Some("system"));
+                // A config without `source` still parses and defaults to None.
+                let bare: SessionConfig =
+                    serde_json::from_str(r#"{"enter_threshold":0.5}"#).expect("bare config");
+                assert!(bare.source.is_none());
+            }
+            other => panic!("expected session_open, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn session_config_without_source_uses_default() {
+        let cfg: SessionConfig = serde_json::from_str(r#"{}"#).expect("empty config object");
+        assert!(cfg.source.is_none());
+        assert_eq!(cfg.enter_threshold, SessionConfig::default().enter_threshold);
+        assert_eq!(cfg.max_utterance_ms, SessionConfig::default().max_utterance_ms);
     }
 }

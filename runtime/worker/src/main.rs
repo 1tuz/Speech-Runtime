@@ -27,6 +27,8 @@ const DEFAULT_MAX_CHUNK_MS: u32 = 10_000;
 
 struct Session {
     model: String,
+    /// Client channel tag from SessionConfig, echoed back in session events.
+    source: Option<String>,
     endpointer: Endpointer,
     detector: Box<Detector>,
     /// Samples that did not fill a 256-sample frame yet.
@@ -258,8 +260,10 @@ impl Worker {
                     return;
                 }
                 let cfg = config.unwrap_or_default();
+                let source = cfg.source.clone();
                 self.sessions.insert(session.clone(), Session {
                     model,
+                    source,
                     endpointer: Endpointer::new(cfg),
                     detector: Detector::default_boxed(),
                     carry: Vec::new(),
@@ -375,7 +379,7 @@ impl Worker {
             return false;
         }
         let mut events = Vec::new();
-        let (mut utterance, model, language);
+        let (mut utterance, model, language, source);
         {
             let mut buf = Vec::with_capacity(session.carry.len() + pcm.len());
             buf.extend_from_slice(&session.carry);
@@ -392,6 +396,7 @@ impl Worker {
             utterance = session.utterance;
             model = session.model.clone();
             language = session.endpointer.config().language.clone();
+            source = session.source.clone();
         }
 
         for event in events {
@@ -416,6 +421,7 @@ impl Worker {
                                 detected_ms,
                                 audio_ms,
                                 end_reason,
+                                source: source.clone(),
                             },
                         ),
                         None => Err(format!("model {model:?} not loaded")),
@@ -493,10 +499,11 @@ impl Worker {
         }
         entry.detector.reset();
         entry.jobs.set_ending();
-        let (mut utterance, model, language) = (
+        let (mut utterance, model, language, source) = (
             entry.utterance,
             entry.model.clone(),
             entry.endpointer.config().language.clone(),
+            entry.source.clone(),
         );
         // One request gets one reply: if a tail job cannot be queued, the client is told
         // through the error reply below and must not also receive the success ack.
@@ -519,6 +526,7 @@ impl Worker {
                         detected_ms,
                         audio_ms,
                         end_reason,
+                        source: source.clone(),
                     },
                 ),
                 None => Err(format!("model {model:?} not loaded")),
@@ -625,7 +633,7 @@ fn main() {
                     Meta::Client(id) => {
                         w.client_jobs.remove(&id);
                         match msg.response {
-                            Response::Text { text, asr_ms, queue_ms, tokens } => w.send(&Reply::Ok {
+                            Response::Text { text, asr_ms, queue_ms, tokens, .. } => w.send(&Reply::Ok {
                                 id: Some(id),
                                 result: json!({
                                     "text": text,
@@ -644,7 +652,7 @@ fn main() {
                         // (a failure retired it); drop the straggler.
                         if let Some(state) = w.groups.get_mut(&group) {
                             match msg.response {
-                                Response::Text { text, asr_ms, queue_ms, tokens } => {
+                                Response::Text { text, asr_ms, queue_ms, tokens, .. } => {
                                     let part = Part { text, asr_ms, queue_ms, tokens };
                                     if state.store(seq, part) {
                                         let reply = group_reply(state);
@@ -676,7 +684,7 @@ fn main() {
                             }
                         }
                     }
-                    Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms, end_reason } => {
+                    Meta::Session { session, utterance, last_voice_ms, start_ms, end_ms, detected_ms, audio_ms, end_reason, source } => {
                         // A job whose session was cancelled/removed, or that
                         // is no longer tracked, must not produce a late final.
                         let job_tracked = w
@@ -696,6 +704,7 @@ fn main() {
                             detected_ms,
                             audio_ms,
                             end_reason,
+                            &source,
                             msg.response.clone(),
                         ) {
                             w.send(&reply);
@@ -751,6 +760,7 @@ fn session_replies(
     detected_ms: u64,
     audio_ms: u64,
     end_reason: &str,
+    source: &Option<String>,
     response: Response,
 ) -> Vec<Reply> {
     if !session_present || !job_tracked {
@@ -758,11 +768,12 @@ fn session_replies(
     }
     let mut replies = Vec::with_capacity(1);
     match response {
-        Response::Text { text, asr_ms, queue_ms, tokens } => replies.push(Reply::Event {
+        Response::Text { text, asr_ms, queue_ms, tokens, confidence, no_speech_prob } => replies.push(Reply::Event {
             session: session.to_string(),
             event: "final".into(),
             data: json!({
                 "utterance": utterance,
+                "source": source,
                 "text": text,
                 "asr_ms": asr_ms,
                 "queue_ms": queue_ms,
@@ -772,18 +783,20 @@ fn session_replies(
                 "last_voice_ms": last_voice_ms,
                 "detected_ms": detected_ms,
                 "end_reason": end_reason,
+                "confidence": confidence,
+                "no_speech_prob": no_speech_prob,
                 "tokens": tokens.iter().map(|t| json!({"text": t.text, "start_ms": t.start_ms})).collect::<Vec<_>>(),
             }),
         }),
         Response::Cancelled => replies.push(Reply::Event {
             session: session.to_string(),
             event: "cancelled".into(),
-            data: json!({"utterance": utterance}),
+            data: json!({"utterance": utterance, "source": source}),
         }),
         Response::Failed { message } => replies.push(Reply::Event {
             session: session.to_string(),
             event: "error".into(),
-            data: json!({"utterance": utterance, "message": message}),
+            data: json!({"utterance": utterance, "source": source, "message": message}),
         }),
         other => replies.push(Reply::Event {
             session: session.to_string(),
@@ -799,13 +812,25 @@ mod tests {
     use super::*;
 
     fn text_response() -> Response {
-        Response::Text { text: "hi".into(), asr_ms: 1, queue_ms: 0, tokens: Vec::new() }
+        Response::Text {
+            text: "hi".into(),
+            asr_ms: 1,
+            queue_ms: 0,
+            tokens: Vec::new(),
+            confidence: None,
+            no_speech_prob: None,
+        }
+    }
+
+    /// A "mic" channel tag to pass as the source argument.
+    fn mic() -> Option<String> {
+        Some("mic".into())
     }
 
     #[test]
     fn untracked_job_produces_no_replies() {
         let replies = session_replies(
-            true, false, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+            true, false, "s", 1, 100, 0, 100, 100, 100, "silence", &None, text_response(),
         );
         assert!(replies.is_empty(), "no late final for an untracked job");
     }
@@ -813,7 +838,7 @@ mod tests {
     #[test]
     fn removed_session_produces_no_replies() {
         let replies = session_replies(
-            false, true, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+            false, true, "s", 1, 100, 0, 100, 100, 100, "silence", &None, text_response(),
         );
         assert!(replies.is_empty(), "no late final for a removed session");
     }
@@ -821,7 +846,7 @@ mod tests {
     #[test]
     fn tracked_job_gets_final_with_end_reason() {
         let replies = session_replies(
-            true, true, "s", 1, 100, 0, 100, 100, 100, "silence", text_response(),
+            true, true, "s", 1, 100, 0, 100, 100, 100, "silence", &None, text_response(),
         );
         assert_eq!(replies.len(), 1);
         match &replies[0] {
@@ -835,9 +860,68 @@ mod tests {
     }
 
     #[test]
+    fn final_carries_source_and_null_confidence_fields() {
+        let source = mic();
+        let replies = session_replies(
+            true, true, "s", 1, 100, 0, 100, 100, 100, "silence", &source, text_response(),
+        );
+        match &replies[0] {
+            Reply::Event { event, data, .. } => {
+                assert_eq!(event, "final");
+                assert_eq!(data["source"], "mic");
+                // wavo does not expose confidence; the fields must still be present as null.
+                assert!(data["confidence"].is_null(), "confidence must serialize as null");
+                assert!(data["no_speech_prob"].is_null(), "no_speech_prob must serialize as null");
+            }
+            other => panic!("expected final event, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn final_without_source_serializes_null_source() {
+        let replies = session_replies(
+            true, true, "s", 1, 100, 0, 100, 100, 100, "silence", &None, text_response(),
+        );
+        match &replies[0] {
+            Reply::Event { event, data, .. } => {
+                assert_eq!(event, "final");
+                assert!(data["source"].is_null(), "absent source must serialize as null");
+            }
+            other => panic!("expected final event, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn cancelled_and_error_carry_source() {
+        let source = mic();
+        let cancelled = session_replies(
+            true, true, "s", 2, 100, 0, 100, 100, 100, "silence", &source, Response::Cancelled,
+        );
+        match &cancelled[0] {
+            Reply::Event { event, data, .. } => {
+                assert_eq!(event, "cancelled");
+                assert_eq!(data["source"], "mic");
+            }
+            other => panic!("expected cancelled event, got {other:?}"),
+        }
+
+        let failed = session_replies(
+            true, true, "s", 3, 100, 0, 100, 100, 100, "silence", &source,
+            Response::Failed { message: "boom".into() },
+        );
+        match &failed[0] {
+            Reply::Event { event, data, .. } => {
+                assert_eq!(event, "error");
+                assert_eq!(data["source"], "mic");
+            }
+            other => panic!("expected error event, got {other:?}"),
+        }
+    }
+
+    #[test]
     fn cancelled_and_failed_report_only_when_tracked() {
         let cancelled = session_replies(
-            true, true, "s", 2, 100, 0, 100, 100, 100, "silence", Response::Cancelled,
+            true, true, "s", 2, 100, 0, 100, 100, 100, "silence", &None, Response::Cancelled,
         );
         assert_eq!(cancelled.len(), 1);
         assert!(matches!(
@@ -846,7 +930,7 @@ mod tests {
         ));
 
         let failed = session_replies(
-            true, true, "s", 3, 100, 0, 100, 100, 100, "silence",
+            true, true, "s", 3, 100, 0, 100, 100, 100, "silence", &None,
             Response::Failed { message: "boom".into() },
         );
         assert_eq!(failed.len(), 1);
@@ -856,11 +940,12 @@ mod tests {
         ));
 
         let dead = session_replies(
-            true, false, "s", 4, 100, 0, 100, 100, 100, "silence",
+            true, false, "s", 4, 100, 0, 100, 100, 100, "silence", &None,
             Response::Failed { message: "boom".into() },
         );
         assert!(dead.is_empty(), "untracked failures are silent");
     }
+
 
     fn part_text(text: &str, asr_ms: u64, queue_ms: u64, token_start: u32) -> Part {
         Part {

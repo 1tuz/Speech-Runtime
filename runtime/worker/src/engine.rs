@@ -25,6 +25,8 @@ pub enum Meta {
     Session {
         session: String,
         utterance: u64,
+        /// Client channel tag to echo back in final/cancelled/error events.
+        source: Option<String>,
         last_voice_ms: u64,
         start_ms: u64,
         end_ms: u64,
@@ -34,12 +36,20 @@ pub enum Meta {
         end_reason: &'static str,
     },
 }
-
 #[derive(Debug, Clone)]
 pub enum Response {
     Loaded { model: String, device: String, load_ms: u64 },
     Unloaded { model: String },
-    Text { text: String, asr_ms: u64, queue_ms: u64, tokens: Vec<TokenOut> },
+    Text {
+        text: String,
+        asr_ms: u64,
+        queue_ms: u64,
+        tokens: Vec<TokenOut>,
+        /// Mean token probability of the transcript; None when the engine does not report it.
+        confidence: Option<f32>,
+        /// Probability the segment held no speech (Whisper); None when not available.
+        no_speech_prob: Option<f32>,
+    },
     Failed { message: String },
     Cancelled,
 }
@@ -362,6 +372,10 @@ fn run(
                             .iter()
                             .map(|tok| TokenOut { text: tok.piece.clone(), start_ms: tok.start_ms })
                             .collect(),
+                        // wavo's Transcript exposes neither per-token logprobs nor the
+                        // no-speech probability, so both stay null (see TODO.md).
+                        confidence: None,
+                        no_speech_prob: None,
                     }
                 }
                 Err(message) => {
@@ -406,7 +420,7 @@ mod tests {
     use super::*;
 
     fn text() -> Response {
-        Response::Text { text: "hi".into(), asr_ms: 1, queue_ms: 0, tokens: Vec::new() }
+        Response::Text { text: "hi".into(), asr_ms: 1, queue_ms: 0, tokens: Vec::new(), confidence: None, no_speech_prob: None }
     }
 
     #[test]
@@ -450,6 +464,8 @@ mod tests {
             asr_ms: 1,
             queue_ms: 0,
             tokens: Vec::new(),
+            confidence: None,
+            no_speech_prob: None,
         };
         match finalize_response(false, response) {
             Response::Text { text, .. } => assert_eq!(text, "hi"),

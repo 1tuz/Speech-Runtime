@@ -202,6 +202,9 @@ public struct Router: Sendable {
         var config: [String: Any] = [:]
         for (key, value) in (body["config"] as? [String: Any]) ?? [:] { config[key] = value }
         if let language = body["language"] as? String { config["language"] = language }
+        // Client channel tag ("system"/"mic"): stored once at open, echoed by the
+        // worker in every final/cancelled/error event of this session.
+        if let source = body["source"] as? String { config["source"] = source }
         let id = UUID().uuidString
         let result = try await worker.openSession(id: id, model: model, config: config)
         let generation = await worker.generation

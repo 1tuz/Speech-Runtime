@@ -38,6 +38,12 @@ sr transcribe file.wav --model gigaam --priority batch
 sr stream file.wav --model gigaam --realtime 1   # подача в темпе реального времени
 ```
 
+Протокол сессий: `POST /v1/streams` принимает необязательное поле `source` (`"system"`/`"mic"`,
+или `config.source`) — тег канала, который воркер возвращает в событиях `final`, `cancelled`
+и `error` как поле `source` (клиент без тега получает `null`). Событие `final` также несёт
+`confidence` и `no_speech_prob` — всегда `null`, пока движок (`wavo 0.4`) не отдаёт вероятности;
+подробности и статус — в `../TODO.md`.
+
 ## Измерения
 
 Apple M4, 16 ГБ, macOS 27.2, GigaAM v3 e2e-RNNT Q8_0 на ANE. Дата указана там, где значение
