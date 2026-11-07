@@ -6,8 +6,12 @@ on:
     tags: ["v*"]
   workflow_dispatch:
 
+# The tag build publishes a GitHub Release with the DMG; the default
+# GITHUB_TOKEN needs contents:write for `gh release create`.
+permissions:
+  contents: write
+
 # Self-hosted Apple Silicon runner with the repository Rust toolchain and Xcode 26+.
-# Model weights and ANE compilation caches are NOT part of the build: only binaries and the DMG.
 jobs:
   build:
     runs-on: [self-hosted, macOS]
