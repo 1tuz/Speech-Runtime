@@ -154,3 +154,29 @@ No rerun of existing audio benchmarks is a prerequisite for this UI patch.
 
 The implementation is supplied as source, not as a claimed tested macOS binary.
 See `SOURCES.md` for the ready-made APIs/components evaluated. No Keepresso source is copied.
+
+## Optional models in Wizard and Settings (asset management only)
+
+The optional-models step and Settings section let users install, verify, cancel and remove
+**two pinned ONNX weight files** without enabling them in the inference pipeline:
+
+- Smart Turn v3.2 CPU, 8,679,182 bytes, SHA-256 `2bb026316b14a660486a75b1733cd3fbab8c2fd0314dc9af7be49f8cca967e4f`.
+- WeSpeaker ResNet34-LM, 26,530,309 bytes, SHA-256 `7bb2f06e9df17cdf1ef14ee8a15ab08ed28e8d0ef5054ee135741560df2ec068`.
+
+Assets go to `~/Library/Application Support/SpeechRuntime/OptionalModels/`, distinct
+from the Parakeet model and its receipt. Downloads use the existing URLSession
+streaming downloader; a temporary file is hash-checked before being moved into place.
+An interrupted download never becomes an installed model. Opening Settings verifies
+previously installed files asynchronously. Deletion only removes that optional file.
+
+**Important:** The current daemon/worker has **no** Smart Turn or WeSpeaker inference
+implementation or API capability. The UI does not claim otherwise. LocalVQE,
+LS-EEND and forced alignment are listed with their intended purpose but their
+install controls remain disabled until a complete runtime backend, full set of
+assets, integrity manifest and lifecycle have been implemented. Simply downloading
+weights is not enough to enable the capability. No optional models are auto-loaded
+into RAM/ANE in this patch. The existing 15-minute ASR idle-unload is unchanged.
+
+The installer still ships no optional weights; no extra ONNX/CoreML runtime is
+bundled. Inference integration must add negotiated per-session capabilities and
+on-demand loading/unloading separately, without slowing down existing dictation.

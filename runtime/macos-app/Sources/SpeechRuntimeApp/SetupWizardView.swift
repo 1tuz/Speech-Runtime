@@ -44,6 +44,7 @@ struct SetupWizardView: View {
                 case .login: loginStep
                 case .idle: idleStep
                 case .capabilities: capabilitiesStep
+                case .optionalModels: optionalModelsStep
                 case .ready: readyStep
                 }
             }
@@ -53,7 +54,7 @@ struct SetupWizardView: View {
             controls.padding(.top, 12)
         }
         .padding(28)
-        .frame(width: 500, height: 420)
+        .frame(width: 530, height: 540)
         .id(languageVersion)
         .onReceive(NotificationCenter.default.publisher(for: .appLanguageChanged)) { _ in
             languageVersion += 1
@@ -149,6 +150,18 @@ struct SetupWizardView: View {
         }
     }
 
+    private var optionalModelsStep: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(L("wizard.optional.title")).font(.system(size: 20, weight: .semibold))
+                Text(L("wizard.optional.body"))
+                    .font(.system(size: 12)).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                OptionalComponentsSection(store: model.optionalModels)
+            }
+        }
+    }
+
     private func capabilityRow(_ label: String, _ value: Bool) -> some View {
         HStack(spacing: 10) {
             Image(systemName: value ? "checkmark.circle" : "minus.circle")
@@ -182,7 +195,7 @@ struct SetupWizardView: View {
                 Button(L("wizard.turnOnNow")) { finish(turnOn: true) }
                     .buttonStyle(.borderedProminent)
             } else {
-                Button(state.step == .capabilities ? L("wizard.finish") : L("wizard.next")) { state.next() }
+                Button(L("wizard.next")) { state.next() }
                     .buttonStyle(.borderedProminent)
             }
         }

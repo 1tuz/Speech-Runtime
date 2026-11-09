@@ -8,7 +8,8 @@ public struct SetupWizardState: Sendable, Equatable {
         case login = 1
         case idle = 2
         case capabilities = 3
-        case ready = 4
+        case optionalModels = 4
+        case ready = 5
     }
 
     public private(set) var step: Step = .welcome

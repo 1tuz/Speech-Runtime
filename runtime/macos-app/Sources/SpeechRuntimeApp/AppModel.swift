@@ -26,6 +26,7 @@ final class AppModel: ObservableObject {
     @Published private(set) var updateMessage: String?
     @Published private(set) var updating = false
     @Published private(set) var updateProgress: Double?
+    @Published private(set) var checkingUpdates = false
     var autoUpdate: Bool {
         get { UpdateChecker.autoUpdateEnabled }
         set { UpdateChecker.autoUpdateEnabled = newValue }
@@ -33,6 +34,7 @@ final class AppModel: ObservableObject {
     let api = RuntimeAPI()
     private let agent = AgentManager()
     private let models = ModelStore()
+    let optionalModels = OptionalComponentsStore()
     private var operation: Task<Void, Never>?
     private var monitor: Task<Void, Never>?
     private var panelVisible = false
@@ -66,17 +68,21 @@ final class AppModel: ObservableObject {
     /// Manual check: always notifies, including "you are up to date".
     func checkForUpdates(manual: Bool) {
         guard updateCheckTask == nil else { return }
+        if manual { updateMessage = nil; checkingUpdates = true }
         updateCheckTask = Task { [weak self] in
-            defer { self?.updateCheckTask = nil }
+            defer {
+                self?.updateCheckTask = nil
+                self?.checkingUpdates = false
+            }
             do {
                 let release = try await UpdateChecker.latestRelease()
                 guard let self else { return }
                 if UpdateChecker.isTagNewer(release.tag_name, than: UpdateChecker.currentVersion()) {
+                    // The actionable banner carries the version; no duplicate text.
                     self.updateAvailableVersion = release.tag_name
-                    if manual { self.updateMessage = String(format: L("update.available"), release.tag_name) }
                 } else if manual {
-                    self.updateMessage = L("update.latest")
                     self.updateAvailableVersion = nil
+                    self.updateMessage = L("update.latest")
                 }
             } catch {
                 guard let self, manual else { return }

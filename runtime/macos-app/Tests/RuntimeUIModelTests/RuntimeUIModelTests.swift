@@ -61,13 +61,13 @@ final class RuntimeUIModelTests: XCTestCase {
 }
 
 final class SetupWizardTests: XCTestCase {
-    func testStepOrderWalksAllFiveSteps() {
+    func testStepOrderWalksAllSixSteps() {
         var state = SetupWizardState()
         XCTAssertEqual(state.step, .welcome)
         XCTAssertEqual(state.stepNumber, 1)
-        XCTAssertEqual(state.totalSteps, 5)
+        XCTAssertEqual(state.totalSteps, 6)
         XCTAssertTrue(state.isFirst)
-        for expected in [SetupWizardState.Step.login, .idle, .capabilities, .ready] {
+        for expected in [SetupWizardState.Step.login, .idle, .capabilities, .optionalModels, .ready] {
             state.next()
             XCTAssertEqual(state.step, expected)
         }
@@ -78,12 +78,27 @@ final class SetupWizardTests: XCTestCase {
     func testBackWalksReverseAndStopsAtFirst() {
         var state = SetupWizardState(step: .ready)
         state.back()
+        XCTAssertEqual(state.step, .optionalModels)
+        state.back()
         XCTAssertEqual(state.step, .capabilities)
         state.back(); state.back(); state.back()
         XCTAssertEqual(state.step, .welcome)
         state.back()  // first step: back is a no-op
         XCTAssertEqual(state.step, .welcome)
         XCTAssertFalse(state.isLast)
+    }
+    func testOptionalAssetsHavePinnedIntegrityMetadata() {
+        XCTAssertEqual(OptionalComponent.allCases.count, 5)
+        for component in [OptionalComponent.smartTurn, .weSpeaker] {
+            guard let asset = component.asset else { XCTFail("missing asset \(component)"); continue }
+            XCTAssertTrue(asset.isValid)
+            XCTAssertEqual(asset.sha256.count, 64)
+        }
+        XCTAssertEqual(OptionalComponent.smartTurn.asset?.bytes, 8_679_182)
+        XCTAssertEqual(OptionalComponent.weSpeaker.asset?.bytes, 26_530_309)
+        XCTAssertNil(OptionalComponent.localVQE.asset)
+        XCTAssertNil(OptionalComponent.lsEEND.asset)
+        XCTAssertNil(OptionalComponent.forcedAlignment.asset)
     }
     func testWizardDefaultsMatchExistingPreferences() {
         let state = SetupWizardState()

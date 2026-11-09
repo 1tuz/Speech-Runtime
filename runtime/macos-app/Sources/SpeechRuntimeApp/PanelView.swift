@@ -43,10 +43,11 @@ struct RuntimePanel: View {
                 detail(L("metric.sessions"), model.running ? "\(model.sessions)" : "\u{2014}")
                 detail(L("metric.queue"), model.queue.map(String.init) ?? "\u{2014}")
             }
-            Text(L("metric.note")).font(.system(size: 10)).foregroundStyle(.tertiary).fixedSize(horizontal: false, vertical: true)
             Divider()
+            settingsDisclosure
             if model.settingsVisible {
-                VStack(alignment: .leading, spacing: 10) {
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 10) {
                     Picker(L("language.title"), selection: languageBinding) {
                         Text(L("language.system")).tag(AppLanguage.system)
                         Text(L("language.english")).tag(AppLanguage.en)
@@ -65,20 +66,36 @@ struct RuntimePanel: View {
                     Toggle(isOn: Binding(get: { model.loginEnabled }, set: model.setLogin)) {
                         Text(L("permissions.login.title")).font(.system(size: 12, weight: .medium))
                     }.toggleStyle(.switch).controlSize(.small)
-                    HStack {
-                        Text(L("permissions.login.note"))
-                            .font(.caption2).foregroundStyle(.secondary)
-                            .fixedSize(horizontal: false, vertical: true)
-                        Spacer()
-                        Button(L("permissions.openSettings"), action: model.openLoginSettings)
-                            .font(.caption2).buttonStyle(.link)
-                    }
+                    Text(L("permissions.login.note"))
+                        .font(.caption2).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Button(L("permissions.openSettings"), action: model.openLoginSettings)
+                        .font(.caption2).buttonStyle(.link)
                     Divider()
-                    // Updates: silent check at launch when enabled; manual from
-                    // the right-click menu at any time.
+                    // Updates: silent check at launch when enabled; the manual
+                    // check reports right where it is pressed, not in a top banner.
                     Toggle(isOn: Binding(get: { model.autoUpdate }, set: { model.autoUpdate = $0 })) {
                         Text(L("update.auto")).font(.system(size: 12, weight: .medium))
                     }.toggleStyle(.switch).controlSize(.small)
+                    HStack(spacing: 8) {
+                        Button(L("update.check"), action: { model.checkForUpdates(manual: true) })
+                            .controlSize(.small)
+                            .disabled(model.checkingUpdates)
+                        if model.checkingUpdates { ProgressView().controlSize(.mini) }
+                        Spacer(minLength: 0)
+                    }
+                    if let message = model.updateMessage {
+                        HStack(alignment: .top, spacing: 6) {
+                            Text(message).font(.caption2).foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Spacer(minLength: 4)
+                            Button(action: model.dismissUpdateMessage) {
+                                Image(systemName: "xmark")
+                            }
+                            .buttonStyle(.borderless).controlSize(.mini)
+                            .help(L("dismiss")).accessibilityLabel(L("dismiss"))
+                        }
+                    }
                     Text(L("update.note")).font(.caption2).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                     HStack {
@@ -87,10 +104,17 @@ struct RuntimePanel: View {
                         Text(RuntimeCapabilities.timestamps ? L("capability.value.true") : L("capability.value.false"))
                             .foregroundStyle(RuntimeCapabilities.timestamps ? .green : .secondary)
                     }.font(.system(size: 11))
+                    Divider()
+                    OptionalComponentsSection(store: model.optionalModels)
+                    Divider()
                     Button(L("files.open"), action: model.revealFiles).buttonStyle(.link)
                     Text("127.0.0.1:8477 \u{00B7} API v1")
                         .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
-                }.padding(12).background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
+                    }
+                    .padding(12)
+                    .background(Color.primary.opacity(0.035), in: RoundedRectangle(cornerRadius: 12))
+                }
+                .frame(height: 300)
             }
             footer
         }
@@ -141,15 +165,6 @@ struct RuntimePanel: View {
                 }
                 .padding(10)
                 .background(Color.accentColor.opacity(0.08), in: RoundedRectangle(cornerRadius: 12))
-            } else if let message = model.updateMessage {
-                HStack {
-                    Text(message).font(.caption).foregroundStyle(.secondary)
-                    Spacer()
-                    Button("✕") { model.dismissUpdateMessage() }
-                        .buttonStyle(.borderless).controlSize(.mini)
-                }
-                .padding(8)
-                .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 12))
             }
         }
     }
@@ -224,22 +239,38 @@ struct RuntimePanel: View {
             Text(value).monospacedDigit()
         }.font(.system(size: 11))
     }
-    private var footer: some View {
-        HStack(spacing: 8) {
-            Button {
-                model.settingsVisible.toggle()
-            } label: {
-                Label(L("settings"), systemImage: "gearshape")
+    /// Extended settings are one disclosure row, not a separate mode: the panel
+    /// stays compact and the list expands in place behind a rotating chevron.
+    private var settingsDisclosure: some View {
+        Button {
+            model.settingsVisible.toggle()
+        } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "gearshape").font(.system(size: 12))
+                Text(L("settings")).font(.system(size: 12, weight: .medium))
+                Spacer(minLength: 6)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 10, weight: .semibold))
+                    .rotationEffect(.degrees(model.settingsVisible ? 90 : 0))
             }
-            .help(L("settings")).accessibilityLabel(L("settings"))
+            .padding(.horizontal, 10).padding(.vertical, 8)
+            .contentShape(RoundedRectangle(cornerRadius: 10))
+            .background(Color.primary.opacity(0.04), in: RoundedRectangle(cornerRadius: 10))
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(.secondary)
+        .accessibilityLabel(L("settings"))
+        .accessibilityValue(model.settingsVisible ? L("settings.collapse") : L("settings.expand"))
+        .help(model.settingsVisible ? L("settings.collapse") : L("settings.expand"))
+    }
+    private var footer: some View {
+        // Two short, single-line actions. Longer labels previously wrapped
+        // mid-word in this narrow popover; the update check lives in Settings.
+        HStack(spacing: 8) {
             Button(action: model.showLog) {
-                Label(L("log"), systemImage: "doc.text.magnifyingglass")
+                Label(L("log.short"), systemImage: "doc.text.magnifyingglass")
             }
             .help(L("log")).accessibilityLabel(L("log"))
-            Button(action: { model.checkForUpdates(manual: true) }) {
-                Label(L("update.check.short"), systemImage: "arrow.down.circle")
-            }
-            .help(L("update.check")).accessibilityLabel(L("update.check"))
             Spacer()
             // The quit affordance must be readable, not a mystery icon: a labeled
             // button stating what it does (UI quits, service stays).
@@ -251,6 +282,7 @@ struct RuntimePanel: View {
         .buttonStyle(.borderless)
         .font(.system(size: 11))
         .foregroundStyle(.secondary)
+        .lineLimit(1)
     }
     private var statusColor: Color {
         if model.phase == .error { return .orange }

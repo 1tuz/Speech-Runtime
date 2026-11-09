@@ -153,15 +153,17 @@ final class ModelStore {
 }
 
 /// Streaming download: no 740 MB Data buffer. Serial delegate callbacks, exactly one continuation.
-private final class ModelDownload: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
+final class ModelDownload: NSObject, URLSessionDownloadDelegate, @unchecked Sendable {
     private let lock = NSLock()
     private var continuation: CheckedContinuation<Void, Error>?
     private var session: URLSession?
     private var cancelled = false
     private let destination: URL
+    private let expectedBytes: Int64
     private let progress: @Sendable (Double?) -> Void
-    init(destination: URL, progress: @escaping @Sendable (Double?) -> Void) {
-        self.destination = destination; self.progress = progress
+    init(destination: URL, expectedBytes: Int64 = ModelSpec.expectedBytes,
+         progress: @escaping @Sendable (Double?) -> Void) {
+        self.destination = destination; self.expectedBytes = expectedBytes; self.progress = progress
     }
     func fetch(_ url: URL) async throws {
         try await withTaskCancellationHandler {
@@ -191,7 +193,7 @@ private final class ModelDownload: NSObject, URLSessionDownloadDelegate, @unchec
     }
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask,
                     didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
-        progress(Double(totalBytesWritten) / Double(ModelSpec.expectedBytes))
+        progress(Double(totalBytesWritten) / Double(expectedBytes))
     }
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         do {
