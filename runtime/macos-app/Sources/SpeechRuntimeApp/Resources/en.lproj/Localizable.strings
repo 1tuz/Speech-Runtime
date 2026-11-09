@@ -80,6 +80,7 @@
 "wizard.ready.body" = "You are ready to turn on Speech Runtime. The service downloads the model on first use.";
 "menu.openPanel" = "Open panel";
 "update.check" = "Check for Updates...";
+"update.check.short" = "Updates";
 "update.available" = "Version %@ is available.";
 "update.latest" = "You are up to date.";
 "update.install" = "Update Now";

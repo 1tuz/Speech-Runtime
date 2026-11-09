@@ -80,6 +80,7 @@
 "wizard.ready.body" = "Всё готово к включению Speech Runtime. Модель скачивается при первом запуске.";
 "menu.openPanel" = "Открыть панель";
 "update.check" = "Проверить обновления...";
+"update.check.short" = "Обновления";
 "update.available" = "Доступна версия %@.";
 "update.latest" = "У вас последняя версия.";
 "update.install" = "Обновить сейчас";

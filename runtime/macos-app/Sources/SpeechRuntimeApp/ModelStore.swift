@@ -34,8 +34,18 @@ final class ModelStore {
         if try cachedReceiptIsValid() { return }
         // Metadata and media are pinned to the same immutable HF commit.
         // Never trust a filename or a locally calculated hash as publisher verification.
-        let (metadata, response) = try await URLSession.shared.data(from: ModelSpec.metadataURL)
-        guard (response as? HTTPURLResponse)?.statusCode == 200 else { throw AppFailure(L("error.metadata")) }
+        let (metadata, response): (Data, URLResponse)
+        do {
+            (metadata, response) = try await Self.fetchWithRetry(ModelSpec.metadataURL)
+        } catch let error as URLError {
+            throw AppFailure(L("error.metadata") + " (" + error.localizedDescription + ")")
+        }
+        guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+            if let statusCode = (response as? HTTPURLResponse)?.statusCode {
+                throw AppFailure(L("error.metadata") + " (HTTP \(statusCode))")
+            }
+            throw AppFailure(L("error.metadata"))
+        }
         let files = try JSONDecoder().decode([RemoteEntry].self, from: metadata)
         guard let file = files.first(where: { $0.path == ModelSpec.filename }),
               let digest = file.lfs?.oid.lowercased(), digest.count == 64,
@@ -102,6 +112,27 @@ final class ModelStore {
             modification: date.timeIntervalSince1970)
         try AppPaths.writePrivate(JSONEncoder().encode(receipt), to: AppPaths.receipt)
     }
+
+    /// Metadata fetch with bounded retry: 3 attempts, backoff 1s/3s.
+    /// Cancellation is never retried or delayed.
+    private static func fetchWithRetry(_ url: URL) async throws -> (Data, URLResponse) {
+        let delays: [UInt64] = [1_000_000_000, 3_000_000_000]
+        var lastError: Error?
+        for attempt in 0...delays.count {
+            do {
+                return try await URLSession.shared.data(from: url)
+            } catch is CancellationError {
+                throw CancellationError()
+            } catch {
+                lastError = error
+            }
+            if attempt < delays.count {
+                try? await Task.sleep(nanoseconds: delays[attempt])
+                if Task.isCancelled { throw CancellationError() }
+            }
+        }
+        throw lastError ?? AppFailure(L("error.metadata"))
+    }
     private func verify(_ file: URL, expectedHash: String) async throws -> Bool {
         let task = Task.detached(priority: .utility) {
             let attributes = try FileManager.default.attributesOfItem(atPath: file.path)
@@ -145,7 +176,7 @@ private final class ModelDownload: NSObject, URLSessionDownloadDelegate, @unchec
             if cancelled { lock.unlock(); continuation.resume(throwing: CancellationError()); return }
             self.continuation = continuation
             let config = URLSessionConfiguration.ephemeral
-            config.timeoutIntervalForRequest = 60
+            config.timeoutIntervalForRequest = 120
             config.timeoutIntervalForResource = 3600
             let queue = OperationQueue(); queue.maxConcurrentOperationCount = 1
             let session = URLSession(configuration: config, delegate: self, delegateQueue: queue)
@@ -164,7 +195,10 @@ private final class ModelDownload: NSObject, URLSessionDownloadDelegate, @unchec
     }
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         do {
-            guard (downloadTask.response as? HTTPURLResponse)?.statusCode == 200 else {
+            guard let http = downloadTask.response as? HTTPURLResponse, http.statusCode == 200 else {
+                if let http = downloadTask.response as? HTTPURLResponse {
+                    throw AppFailure(L("error.download") + " (HTTP \(http.statusCode))")
+                }
                 throw AppFailure(L("error.download"))
             }
             try FileManager.default.moveItem(at: location, to: destination)

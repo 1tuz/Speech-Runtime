@@ -45,14 +45,6 @@ struct RuntimePanel: View {
             }
             Text(L("metric.note")).font(.system(size: 10)).foregroundStyle(.tertiary).fixedSize(horizontal: false, vertical: true)
             Divider()
-            Toggle(isOn: Binding(get: { model.loginEnabled }, set: model.setLogin)) {
-                Label(L("login.title"), systemImage: "sunrise")
-                    .font(.system(size: 12, weight: .medium))
-            }.toggleStyle(.switch).controlSize(.small)
-            if model.loginNeedsApproval {
-                Button(L("login.approval"), action: model.openLoginSettings)
-                    .font(.caption).buttonStyle(.link)
-            }
             if model.settingsVisible {
                 VStack(alignment: .leading, spacing: 10) {
                     Picker(L("language.title"), selection: languageBinding) {
@@ -198,11 +190,17 @@ struct RuntimePanel: View {
         .accessibilityValue(model.statusText)
     }
     private var modelCard: some View {
-        HStack(alignment: .center, spacing: 10) {
+        let deviceLabel: String = {
+            guard let device = model.snapshot?.selectedModel?.device else { return "Apple Neural Engine" }
+            return device.lowercased().contains("ane") ? "Apple Neural Engine" : device
+        }()
+        return HStack(alignment: .center, spacing: 10) {
             Image(systemName: "waveform.badge.mic").font(.title3).foregroundStyle(.secondary)
             VStack(alignment: .leading, spacing: 4) {
-                Text("Parakeet Ultra").font(.system(size: 13, weight: .semibold))
-                Text("Q8_0 \u{00B7} Apple Neural Engine").font(.system(size: 10)).foregroundStyle(.secondary)
+                Text(model.snapshot?.selectedModel?.model ?? "Parakeet Ultra")
+                    .font(.system(size: 13, weight: .semibold))
+                Text("Q8_0 \u{00B7} \(deviceLabel)")
+                    .font(.system(size: 10)).foregroundStyle(.secondary)
             }
             Spacer()
             Text(model.snapshot?.modelLoaded == true ? L("model.loaded") : L("model.idle"))
@@ -238,10 +236,11 @@ struct RuntimePanel: View {
                 Label(L("log"), systemImage: "doc.text.magnifyingglass")
             }
             .help(L("log")).accessibilityLabel(L("log"))
+            Button(action: { model.checkForUpdates(manual: true) }) {
+                Label(L("update.check.short"), systemImage: "arrow.down.circle")
+            }
+            .help(L("update.check")).accessibilityLabel(L("update.check"))
             Spacer()
-            Text("LOCAL ASR")
-                .font(.system(size: 9, weight: .medium, design: .rounded))
-                .foregroundStyle(.tertiary)
             // The quit affordance must be readable, not a mystery icon: a labeled
             // button stating what it does (UI quits, service stays).
             Button(action: model.quitUI) {
