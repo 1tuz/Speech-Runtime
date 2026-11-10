@@ -119,9 +119,14 @@ final class MenuApplicationDelegate: NSObject, NSApplicationDelegate, NSPopoverD
     }
     @objc private func quitOnlyUI() { model.quitUI() }
     private func updateIcon() {
-        let image = NSImage(systemSymbolName: model.statusSymbol, accessibilityDescription: model.statusText)
-            ?? NSImage(systemSymbolName: "waveform", accessibilityDescription: model.statusText)
+        // Template PNG glyph recolored by macOS to match menu-bar appearance.
+        var image = Bundle.module.image(forResource: "MenuBarIcon")
+        if image == nil { image = NSImage(systemSymbolName: "waveform", accessibilityDescription: nil) }
         image?.isTemplate = true
+        if let image {
+            image.size = NSSize(width: 18, height: 18)
+            image.accessibilityDescription = model.statusText
+        }
         item.button?.image = image
         item.button?.toolTip = "Speech Runtime \u{2014} " + model.statusText
     }
