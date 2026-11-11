@@ -38,6 +38,47 @@ sr transcribe file.wav --model gigaam --priority batch
 sr stream file.wav --model gigaam --realtime 1   # подача в темпе реального времени
 ```
 
+## TTS: один резидентный синтезатор на весь рантайм
+
+Синтез обслуживает тот же NDJSON-сайдкар `soniqo-tts-sidecar`, который использует Speech
+Studio. Демон держит ровно один такой процесс (`TtsHost`) и один резидентный движок: клиент,
+который включает общий режим, переиспользует уже загруженную модель вместо второй копии в
+памяти. Смена движка отправляет `init_model`, сайдкар сам выгружает предыдущий.
+
+Конфиг (`tts` в `models.json` или в `app-config.json` установленного демона):
+
+```json
+{
+  "tts": {
+    "binary": "/путь/к/soniqo-tts-sidecar",
+    "models": {
+      "qwen3":   {"engine": "qwen3",   "modelId": "aufklarer/Qwen3-TTS-12Hz-1.7B-Base-MLX-bf16", "sampleRate": 24000},
+      "voxcpm2": {"engine": "voxcpm2", "modelId": "aufklarer/VoxCPM2-MLX-bf16", "sampleRate": 24000},
+      "espeech": {"engine": "espeech", "modelId": "local/ESpeech-TTS-1-RL-V2-MLX-fp16", "sampleRate": 24000}
+    }
+  }
+}
+```
+
+`SPEECH_RUNTIME_TTS_BINARY` перекрывает `tts.binary`. Файлы моделей сайдкар ищет и скачивает
+сам; рантайм не копирует веса.
+
+| Метод | Путь | Тело | Ответ |
+|---|---|---|---|
+| GET | `/v1/tts/models` | — | каталог: `engine`, `modelId`, `variant`, `artifact{paths,exists,bytes,loaded}`, `loaded`, `memory` |
+| POST | `/v1/tts/models/load` | `model`, `variant?` | `{model, result}` |
+| POST | `/v1/tts/models/unload` | `model` | `{model, result}` |
+| GET | `/v1/tts/voices` | — | `{voices:[{id,name,language,referenceText,audioPath,createdAt}]}` |
+| POST | `/v1/tts/voices` | `name`, `referenceText`, `audioBase64`, `language?` | `{voice}` |
+| DELETE | `/v1/tts/voices?id=` | — | `{id, deleted}` |
+| POST | `/v1/tts/synthesize` | `model`, `text`, `voiceId` или `referenceAudioBase64`/`referenceAudioPath`, `referenceText?`, `language?`, `seed?`, `variant?`, `requestId?` | `{audioBase64, sampleRate, durationSec, model, engine, wallMs}` |
+| POST | `/v1/tts/cancel` | `requestId` | `{requestId, cancelled, pending}` |
+
+Все маршруты, кроме `GET /health`, требуют `Authorization: Bearer <token>`. Отмена снимает
+ещё не отправленный в сайдкар запрос: текущий такт MLX-сэмплинга не прерывается, его
+результат отбрасывается, модель остаётся загруженной. Простой дольше `idleUnloadSeconds`
+выгружает модель так же, как для ASR.
+
 Протокол сессий: `POST /v1/streams` принимает необязательное поле `source` (`"system"`/`"mic"`,
 или `config.source`) — тег канала, который воркер возвращает в событиях `final`, `cancelled`
 и `error` как поле `source` (клиент без тега получает `null`). Событие `final` также несёт

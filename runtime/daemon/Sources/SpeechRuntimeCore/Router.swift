@@ -7,6 +7,8 @@ public struct Router: Sendable {
     public let worker: WorkerClient
     public let config: @Sendable () -> RuntimeConfig
     public let idle: IdlePolicy
+    public let tts: TtsHost
+    public let voices: VoiceStore
     public let startedAt = Date()
     public let log: @Sendable (String) -> Void
     private let sessions = SessionTable()
@@ -16,12 +18,16 @@ public struct Router: Sendable {
         worker: WorkerClient,
         config: @escaping @Sendable () -> RuntimeConfig,
         idle: IdlePolicy,
+        tts: TtsHost = TtsHost(binaryPath: "", log: { _ in }),
+        voices: VoiceStore = VoiceStore(),
         log: @escaping @Sendable (String) -> Void
     ) {
         self.token = token
         self.worker = worker
         self.config = config
         self.idle = idle
+        self.tts = tts
+        self.voices = voices
         self.log = log
     }
 
@@ -41,6 +47,14 @@ public struct Router: Sendable {
             case ("POST", "/v1/streams/end"): return try await endStream(request)
             case ("GET", "/v1/streams/events"): return try await streamEvents(request)
             case ("DELETE", "/v1/streams"): return try await cancelStream(request)
+            case ("GET", "/v1/tts/models"): return try await ttsModels()
+            case ("POST", "/v1/tts/models/load"): return try await ttsLoad(request)
+            case ("POST", "/v1/tts/models/unload"): return try await ttsUnload(request)
+            case ("GET", "/v1/tts/voices"): return .json(["voices": await voices.list()])
+            case ("POST", "/v1/tts/voices"): return try await ttsRegisterVoice(request)
+            case ("DELETE", "/v1/tts/voices"): return try await ttsDeleteVoice(request)
+            case ("POST", "/v1/tts/synthesize"): return try await ttsSynthesize(request)
+            case ("POST", "/v1/tts/cancel"): return try await ttsCancel(request)
             default: return .error("no route for \(request.method) \(request.path)", status: 404)
             }
         } catch let error as RuntimeError {
@@ -84,6 +98,7 @@ public struct Router: Sendable {
             "memory": MemoryReport.capture().json,
             "worker": workerState,
             "streams": await sessions.activeCount(),
+            "tts": (try? await tts.stats()) ?? ["loaded": false],
         ])
     }
 
@@ -187,6 +202,148 @@ public struct Router: Sendable {
         payload["wall_ms"] = Int(Date().timeIntervalSince(started) * 1000)
         payload["audio_ms"] = audio.samples.count * 1000 / 16_000
         return .json(payload)
+    }
+
+    // MARK: - TTS
+
+    private func ttsEntry(_ body: [String: Any]) throws -> (String, TtsModelEntry) {
+        guard let model = body["model"] as? String else {
+            throw RuntimeError.message("field \"model\" is required")
+        }
+        guard let entry = config().ttsModels[model] else {
+            throw RuntimeError.message(
+                "unknown TTS model \(model); declared models: \(config().ttsModels.keys.sorted())")
+        }
+        return (model, entry)
+    }
+
+    private func ttsModels() async throws -> HTTPResponse {
+        var rows: [[String: Any]] = []
+        let loaded = await tts.loaded
+        for (name, entry) in config().ttsModels.sorted(by: { $0.key < $1.key }) {
+            var row: [String: Any] = [
+                "model": name,
+                "engine": entry.engine,
+                "modelId": entry.modelId,
+                "displayName": entry.displayName ?? name,
+                "sampleRate": entry.sampleRate,
+                "variants": entry.variants,
+                "requiresReferenceAudio": true,
+                "loaded": loaded.modelId == entry.modelId,
+                "loadedVariant": loaded.modelId == entry.modelId
+                    ? (await tts.residentVariant ?? NSNull()) : NSNull(),
+                "memory": await tts.memoryReport ?? NSNull(),
+            ]
+            if let info = try? await tts.info(model: name, entry: entry) {
+                row["artifact"] = info
+                row["exists"] = info["exists"] ?? false
+                row["bytes"] = info["bytes"] ?? 0
+            }
+            rows.append(row)
+        }
+        return .json([
+            "models": rows,
+            "pid": await tts.pid ?? -1,
+            "loadedModel": loaded.modelId ?? NSNull(),
+            "loadedVariant": await tts.residentVariant ?? NSNull(),
+            "restarts": await tts.restartCount,
+        ])
+    }
+
+    private func ttsLoad(_ request: HTTPRequest) async throws -> HTTPResponse {
+        let (model, entry) = try ttsEntry(try Self.body(request))
+        let variant = (try? Self.body(request))?["variant"] as? String
+        let result = try await tts.load(model: model, entry: entry, variant: variant)
+        log("tts load model=\(model) engine=\(entry.engine)")
+        return .json(["model": model, "result": result])
+    }
+
+    private func ttsUnload(_ request: HTTPRequest) async throws -> HTTPResponse {
+        let (model, _) = try ttsEntry(try Self.body(request))
+        let result = try await tts.unload(model: model)
+        log("tts unload model=\(model)")
+        return .json(["model": model, "result": result])
+    }
+
+    private func ttsRegisterVoice(_ request: HTTPRequest) async throws -> HTTPResponse {
+        let body = try Self.body(request)
+        guard let name = body["name"] as? String,
+              let referenceText = body["referenceText"] as? String,
+              let encoded = body["audioBase64"] as? String,
+              let wav = Data(base64Encoded: encoded)
+        else {
+            throw RuntimeError.message("name, referenceText and audioBase64 are required")
+        }
+        let voice = try await voices.register(
+            name: name,
+            language: body["language"] as? String,
+            referenceText: referenceText,
+            wav: wav)
+        log("tts voice registered name=\(name)")
+        return .json(["voice": voice])
+    }
+
+    private func ttsDeleteVoice(_ request: HTTPRequest) async throws -> HTTPResponse {
+        guard let id = request.query["id"], !id.isEmpty else {
+            throw RuntimeError.message("query parameter \"id\" is required")
+        }
+        return .json(["id": id, "deleted": try await voices.delete(id)])
+    }
+
+    private func ttsSynthesize(_ request: HTTPRequest) async throws -> HTTPResponse {
+        let body = try Self.body(request)
+        let (model, entry) = try ttsEntry(body)
+        guard let text = body["text"] as? String, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw RuntimeError.message("field \"text\" is required")
+        }
+        var audioPath = body["referenceAudioPath"] as? String
+        var referenceText = body["referenceText"] as? String
+        // True only for the temp WAV this request itself wrote: caller-supplied
+        // `referenceAudioPath` (and voice profiles) are never deleted.
+        var ownsTempAudio = false
+        if let voiceId = body["voiceId"] as? String, !voiceId.isEmpty {
+            guard let voice = await voices.get(voiceId) else {
+                throw RuntimeError.message("unknown voice \(voiceId)")
+            }
+            audioPath = voice.audioPath
+            referenceText = voice.referenceText
+        } else if let encoded = body["referenceAudioBase64"] as? String,
+                  let wav = Data(base64Encoded: encoded)
+        {
+            let url = FileManager.default.temporaryDirectory
+                .appendingPathComponent("runtime-tts-\(UUID().uuidString).wav")
+            try wav.write(to: url)
+            audioPath = url.path
+            ownsTempAudio = true
+        }
+        defer {
+            if ownsTempAudio, let audioPath {
+                try? FileManager.default.removeItem(atPath: audioPath)
+            }
+        }
+        let started = Date()
+        let result = try await tts.synthesize(
+            model: model,
+            entry: entry,
+            text: text,
+            language: body["language"] as? String,
+            seed: (body["seed"] as? NSNumber)?.uint64Value,
+            referenceAudioPath: audioPath,
+            referenceText: referenceText,
+            requestId: body["requestId"] as? String,
+            variant: body["variant"] as? String)
+        var payload = result
+        payload["wallMs"] = Int(Date().timeIntervalSince(started) * 1000)
+        log("tts synthesize model=\(model) chars=\(text.count)")
+        return .json(payload)
+    }
+
+    private func ttsCancel(_ request: HTTPRequest) async throws -> HTTPResponse {
+        guard let requestId = (try Self.body(request))["requestId"] as? String else {
+            throw RuntimeError.message("field \"requestId\" is required")
+        }
+        let count = await tts.cancel(requestId: requestId)
+        return .json(["requestId": requestId, "cancelled": count > 0, "pending": count])
     }
 
     // MARK: - Streaming

@@ -14,6 +14,22 @@ public struct ModelEntry: Sendable {
     }
 }
 
+public struct TtsModelEntry: Sendable {
+    public var engine: String
+    public var modelId: String
+    public var displayName: String?
+    public var sampleRate: Int
+    public var variants: [String]
+
+    init(jsonObject: [String: Any]) {
+        engine = (jsonObject["engine"] as? String) ?? ""
+        modelId = (jsonObject["modelId"] as? String) ?? ""
+        displayName = jsonObject["displayName"] as? String
+        sampleRate = (jsonObject["sampleRate"] as? NSNumber)?.intValue ?? 24_000
+        variants = jsonObject["variants"] as? [String] ?? []
+    }
+}
+
 public struct RuntimeConfig: Sendable {
     public var port: UInt16 = 8477
     public var idleUnloadSeconds: Int = 900
@@ -21,6 +37,10 @@ public struct RuntimeConfig: Sendable {
     /// Interactive requests are never split.
     public var batchChunkMs: Int = 10_000
     public var models: [String: ModelEntry] = [:]
+    /// NDJSON `soniqo-tts-sidecar` that owns the resident TTS model. One
+    /// process serves every client of this runtime.
+    public var ttsBinary: String = ""
+    public var ttsModels: [String: TtsModelEntry] = [:]
 
     /// Decodes with every top-level key optional: a partial JSON config falls
     /// back to the defaults above (synthesised Codable would require all keys
@@ -31,6 +51,12 @@ public struct RuntimeConfig: Sendable {
         batchChunkMs = (jsonObject["batchChunkMs"] as? NSNumber)?.intValue ?? 10_000
         if let rawModels = jsonObject["models"] as? [String: [String: Any]] {
             models = rawModels.mapValues(ModelEntry.init(jsonObject:))
+        }
+        if let tts = jsonObject["tts"] as? [String: Any] {
+            ttsBinary = tts["binary"] as? String ?? ""
+            if let rawModels = tts["models"] as? [String: [String: Any]] {
+                ttsModels = rawModels.mapValues(TtsModelEntry.init(jsonObject:))
+            }
         }
     }
 
@@ -52,6 +78,7 @@ public struct RuntimeConfig: Sendable {
             entry.path = (entry.path as NSString).expandingTildeInPath
             return entry
         }
+        config.ttsBinary = (config.ttsBinary as NSString).expandingTildeInPath
         return config
     }
 }

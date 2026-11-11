@@ -80,8 +80,14 @@ struct Daemon {
             logger("worker started pid=\(await worker.pid ?? -1) binary=\(workerPath)")
 
             let idle = IdlePolicy()
+            let ttsBinary = ProcessInfo.processInfo.environment["SPEECH_RUNTIME_TTS_BINARY"]
+                ?? config.ttsBinary
+            let tts = TtsHost(binaryPath: ttsBinary, log: logger)
+            let voices = VoiceStore()
             let snapshot = config
-            let router = Router(token: token, worker: worker, config: { snapshot }, idle: idle, log: logger)
+            let router = Router(
+                token: token, worker: worker, config: { snapshot }, idle: idle,
+                tts: tts, voices: voices, log: logger)
             let server = try HTTPServer(port: port) { request in
                 await router.handle(request)
             }
@@ -115,6 +121,12 @@ struct Daemon {
                             await idle.touch(model)
                             logger("idle unload of \(model) failed, will retry: \(error)")
                         }
+                    }
+                    // Same policy for the resident TTS model: unload after
+                    // `idleSeconds` without a load/synthesize request, but
+                    // never while one is in flight.
+                    if await tts.ttsIdleSeconds >= TimeInterval(idleSeconds) {
+                        await tts.unloadIdleTTS()
                     }
                 }
             }
